@@ -7,11 +7,26 @@
 #####################################
 # load the packages
 library(eplusr)
-library(epluspar)
+
+# devtoolsパッケージがインストールされていない場合にインストールする処理
+if (!require("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+  library(devtools)
+}
+
+# eplusparパッケージがインストールされていない場合にGitHubからインストールする処理
+if (!require("epluspar", quietly = TRUE)) {
+  devtools::install_github("hongyuanjia/epluspar")
+  library(epluspar)
+}
 source( "C:/Users/F18863/OneDrive - KAJIMA/00_Program/R/ono_functions.R" )
 
+
 # install here package if not exists
-# if (!require("here", quietly = TRUE)) install.packages("here")
+if (!require("here", quietly = TRUE)) {
+  install.packages("here")
+  library(here)
+}
 
 # turn off verbose information of eplusr package
 eplusr_option(verbose_info = FALSE)
