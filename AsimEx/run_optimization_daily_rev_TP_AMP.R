@@ -8,21 +8,24 @@
 # load the packages
 library(eplusr)
 
-# devtoolsパッケージがインストールされていない場合にインストールする処理
-if (!require("devtools", quietly = TRUE)) {
+# install devtools package if not exists
+#if (!require("devtools", quietly = TRUE)) {
   install.packages("devtools")
   library(devtools)
 }
 
-# eplusparパッケージがインストールされていない場合にGitHubからインストールする処理
-if (!require("epluspar", quietly = TRUE)) {
+# install epluspar package if not exists
+#if (!require("epluspar", quietly = TRUE)) {
   devtools::install_github("hongyuanjia/epluspar")
   library(epluspar)
 }
-source( "C:/Users/F18863/OneDrive - KAJIMA/00_Program/R/ono_functions.R" )
 
+#source( "C:/Users/F18863/OneDrive - KAJIMA/00_Program/R/ono_functions.R" )
 
 # install here package if not exists
+install.packages("here")
+library(here)
+
 if (!require("here", quietly = TRUE)) {
   install.packages("here")
   library(here)
@@ -30,8 +33,12 @@ if (!require("here", quietly = TRUE)) {
 
 # turn off verbose information of eplusr package
 eplusr_option(verbose_info = FALSE)
-
 eplusr_option(autocomplete = TRUE)
+
+
+options(timeout = 1000)
+#error occured because of permission
+install_eplus(9.6)
 
 # see what EnergyPlus has been installed
 avail_eplus()
@@ -43,7 +50,6 @@ ver <- max(avail_eplus())
 #idd <- use_idd(ver, download = "auto")
 
 path_wd <- "C:/Users/F18863/Desktop/Impact_analysis_of_individual_model/"
-
 path_epw <- paste0(path_wd,"data/SGP_Singapore.486980_IWEC.epw")
 
 # path_idf <- paste0(path_wd,"Singapore_Benchmark_Model_V940_ono_VAV.idf")
