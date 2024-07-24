@@ -35,10 +35,10 @@ if (!require("here", quietly = TRUE)) {
 eplusr_option(verbose_info = FALSE)
 eplusr_option(autocomplete = TRUE)
 
-
-options(timeout = 1000)
-#error occured because of permission
+options(timeout = 2000)
 install_eplus(9.6)
+install_eplus(9.4)
+
 
 # see what EnergyPlus has been installed
 avail_eplus()
@@ -49,12 +49,12 @@ ver <- max(avail_eplus())
 # parse IDD
 #idd <- use_idd(ver, download = "auto")
 
-path_wd <- "C:/Users/F18863/Desktop/Impact_analysis_of_individual_model/"
-path_epw <- paste0(path_wd,"data/SGP_Singapore.486980_IWEC.epw")
+path_wd <- "/home/rstudio/localdir"
+path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
 
-# path_idf <- paste0(path_wd,"Singapore_Benchmark_Model_V940_ono_VAV.idf")
-# idf <- read_idf(path = path_idf, idd = NULL)
-# job <- idf$run(path_epw, wait = TRUE)
+path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono.idf")
+idf <- read_idf(path = path_idf, idd = NULL)
+job <- idf$run(path_epw, wait = TRUE)
 
 #####################################
 # Update IDF file during optimization
