@@ -36,9 +36,8 @@ eplusr_option(verbose_info = FALSE)
 eplusr_option(autocomplete = TRUE)
 
 options(timeout = 2000)
-install_eplus(9.6)
+#install_eplus(9.6)
 install_eplus(9.4)
-
 
 # see what EnergyPlus has been installed
 avail_eplus()
@@ -52,7 +51,7 @@ ver <- max(avail_eplus())
 path_wd <- "/home/rstudio/localdir"
 path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
 
-path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono.idf")
+path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
 idf <- read_idf(path = path_idf, idd = NULL)
 job <- idf$run(path_epw, wait = TRUE)
 
@@ -121,7 +120,6 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
   #idf$save(path_idf,"overwrite" = TRUE)
   idf
 }
-
 
 ################################
 # calculate objective function 1
