@@ -36,17 +36,17 @@ eplusr_option(verbose_info = FALSE)
 eplusr_option(autocomplete = TRUE)
 
 options(timeout = 2000)
-#install_eplus(9.6)
 install_eplus(9.4)
 
 # see what EnergyPlus has been installed
 avail_eplus()
 
 # use the example file from latest EnergyPlus installed
-ver <- max(avail_eplus())
+#ver <- max(avail_eplus())
+ver <- "9.4.0"
 
 # parse IDD
-#idd <- use_idd(ver, download = "auto")
+idd <- use_idd(ver, download = "auto")
 
 path_wd <- "/home/rstudio/localdir"
 path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
@@ -712,3 +712,14 @@ for (comfort_model_type in 2){
     }
   }
 }
+
+#####################################
+# Test
+#####################################
+idf <- read_idf(path = path_idf, idd = NULL)
+#job <- idf$last_job()
+job <- idf$run(path_epw, wait = TRUE)
+
+idf
+
+zone_index <- job$read_table("Schedules")[schedule_name == "ZONE_INDEX", schedule_maximum]
