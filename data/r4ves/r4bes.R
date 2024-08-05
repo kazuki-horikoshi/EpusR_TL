@@ -175,4 +175,148 @@ names(bldg) <- str_remove_all(new_name, "_Hourly_")
 names(bldg)
 
 ### 7.2.Data transformation
+### 7.2.1.Select
 
+select(bldg, Date_Time, Cooling_Electricity_J, Heating_Electricity_J)
+
+select(bldg,
+       datetime = Date_Time,
+       cooling = Cooling_Electricity_J,
+       heating = Heating_Electricity_J
+)
+
+select(bldg, starts_with(c("Heating","Cooling")))
+select(bldg, ends_with(c("Time")))
+
+
+select(
+  bldg, 
+  contains("Time"),
+  contains("electricity")
+)
+
+select(
+  bldg,
+  contains(
+    c(
+      "Time",
+      "electricity"
+    )
+  )
+)
+
+
+select(bldg, where(is.numeric))
+
+select(
+  bldg,
+  where(
+    function(x) is.numeric(x)
+  )
+)
+
+### 7.2.2.filter
+filter(bldg, Cooling_Electricity_J != 0)
+
+filter(bldg, InteriorLights_Electricity_J > 100000000)
+
+filter(
+  bldg, Cooling_Electricity_J != 0,
+  Cooling_Electricity_J < 4000000 |
+    Cooling_Electricity_J > 2200000,
+)
+
+
+filter(bldg, month(Date_Time)==1, day(Date_Time)==1)
+
+filter(bldg, month(Date_Time) > 4, day(Date_Time) < 10)
+
+filter(bldg, month(Date_Time) > 4 & day(Date_Time) < 10)
+
+### 7.2.3.arrange
+arrange(bldg, desc(Cooling_Electricity_J))
+
+### 7.2.4.mutate
+mutate(bldg,
+       Total_Heating_J = Heating_NaturalGas_J + Heating_Electricity_J,
+       Cooling_Heating_kWh = (Total_Heating_J + Cooling_Electricity_J)*2.77778e-7
+)
+
+transmute(bldg,
+       Total_Heating_J = Heating_NaturalGas_J + Heating_Electricity_J,
+       Cooling_Heating_kWh = (Total_Heating_J + Cooling_Electricity_J)*2.77778e-7
+)
+
+heat <-transmute(bldg,
+                 Total_Heating_J = Heating_NaturalGas_J + Heating_Electricity_J)
+heat
+
+mutate(
+  heat,
+  lag_1 = lag(Total_Heating_J),
+  lag_2 = lag(lag_1),
+  lag_3 = lag(Total_Heating_J,3)
+)
+
+### To be explored more!!!!!!!!!
+
+### 7.2.5.summarise and group_by()
+summarise(bldg,
+          Heating_Total = sum(Heating_Electricity_J),
+          Heating_Avg = mean(Heating_Electricity_J),
+          Heating_Peak = max(Heating_Electricity_J),
+)
+
+bldg_month <- mutate(bldg,
+    Year = year(Date_Time),
+    Month = month(Date_Time)
+)
+
+bldg_by_month <- group_by(bldg_month, Year, Month)
+
+summarise(bldg_by_month,
+          Heating_Total = sum(Heating_Electricity_J),
+          Heating_Avg = mean(Heating_Electricity_J),
+          Heating_Peak = max(Heating_Electricity_J)
+)
+
+### 7.2.6.across()
+transmute(bldg,
+          Date_Time,
+          total=rowSums(across(where(is.numeric)))
+          )
+
+
+summarise(
+  bldg_by_month,
+  across(
+    contains("electricity"),
+    list(Total = sum, Avg = mean, Peak = max)
+  )
+)
+
+### 7.2.7.Pipes()
+bldg %>%
+  select(Date_Time, contains("Heating")) %>%
+  mutate(
+    Month = month(Date_Time),
+    Total_Heating_J = rowSums(across(where(is.numeric)))
+  ) %>%
+  group_by(Month) %>%
+  summarise(across(
+    where(is.numeric),
+    list(Total = sum, Peak = max)
+  ))
+
+
+#Get Started
+
+## 9.Parse then simulate
+### 9.1.Prerequisites
+library(eplusr)
+library(here)
+### 9.3.Parsing the model
+avail_eplus()
+install_eplus(9.4)
+
+path_idf <- here("data", "idf", "RefBldgMediumOfficeNew")
