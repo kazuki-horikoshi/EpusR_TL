@@ -1,4 +1,4 @@
-Program Version:,EnergyPlus, Version 9.4.0-998c4b761e, YMD=2024.07.25 06:38
+Program Version:,EnergyPlus, Version 9.4.0-998c4b761e, YMD=2024.07.26 07:02
 Tabular Output Report in Format: ,Comma
 
 Building:,Large_Office
@@ -180,7 +180,7 @@ FOR:,Entire Facility
 General
 
 ,,Value
-,Program Version and Build,EnergyPlus, Version 9.4.0-998c4b761e, YMD=2024.07.25 06:38
+,Program Version and Build,EnergyPlus, Version 9.4.0-998c4b761e, YMD=2024.07.26 07:02
 ,RunPeriod,RUNPERIOD 1
 ,Weather File,SINGAPORE - SGP IWEC Data WMO#=486980
 ,Latitude [deg],1.37
