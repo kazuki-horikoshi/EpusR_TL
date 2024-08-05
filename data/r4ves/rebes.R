@@ -123,7 +123,6 @@ file.exists(here("data", "building.csv"))
 
 ## 4.2.Finding your file
 here()
-
 here("data", "iris.csv")
 
 ## 4.3.Parsing a csv file
