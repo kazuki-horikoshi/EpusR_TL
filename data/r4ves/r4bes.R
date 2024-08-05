@@ -316,7 +316,10 @@ bldg %>%
 library(eplusr)
 library(here)
 ### 9.3.Parsing the model
-avail_eplus()
+
+options(timeout = 2000)
 install_eplus(9.4)
+avail_eplus()
+use_eplus("/Applications/EnergyPlus-9-4-0")
 
 path_idf <- here("data", "idf", "RefBldgMediumOfficeNew")
