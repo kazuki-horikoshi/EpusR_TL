@@ -10,15 +10,15 @@ library(eplusr)
 
 # install devtools package if not exists
 #if (!require("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-  library(devtools)
-}
+#  install.packages("devtools")
+#  library(devtools)}
+
 
 # install epluspar package if not exists
 #if (!require("epluspar", quietly = TRUE)) {
   devtools::install_github("hongyuanjia/epluspar")
   library(epluspar)
-}
+  #}
 
 #source( "C:/Users/F18863/OneDrive - KAJIMA/00_Program/R/ono_functions.R" )
 
