@@ -127,3 +127,52 @@ here("data", "iris.csv")
 
 ## 4.3.Parsing a csv file
 read_csv(here("data", "iris.csv"))
+
+## 4.4.Building data
+read_csv(
+    here("data","building.csv"),
+    col_names = c(
+        "datatime",
+        "power"
+    ),
+    skip = 2
+)
+
+## 5.Regular Expressions
+
+### To be explored more but complex, not necessary now
+
+## 6.Functions
+### 6.3.Examples
+cvrmse <- function(meas, pred, p=1){
+  se <- (meas - pred)^2
+  n <- length(se)
+  sqrt(sum(se)/(n-p))/mean(meas) #the last line automaticalle returned
+}
+
+cvrmse(c(1,2,3),c(2,4,6))
+
+nmbe <- function(meas, pred, p = 1) {
+  be <- (meas - pred)
+  n <- length(be)
+  (sum(be) / (n - p)) / mean(meas) # last line automatically returned
+}
+
+nmbe(c(1, 2, 3), c(2, 4, 6))
+
+## 7.Manipulating Data
+### 7.1.Prerequisites
+
+bldg <- read_csv(here("data", "building_meter.csv"))
+bldg
+
+names(bldg)
+
+new_name <- str_replace_all(names(bldg), "\\W+", "_")
+new_name
+
+names(bldg) <- str_remove_all(new_name, "_Hourly_")
+names(bldg)
+
+### 7.2.Data transformation
+
