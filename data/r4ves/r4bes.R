@@ -386,3 +386,29 @@ model$to_table(which = c(
   "Steel Frame NonRes Wall Insulation",
   "1/2IN Gypsum"
 ))
+
+lights_df <- model$to_table(class = c("Lights")) %>%
+  mutate(
+    value = if_else(
+      field == "Watts per Zone Floor Area", # condition
+      "15", # value if TRUE
+      value # value if FALSE
+    )
+  )
+
+lights_df
+
+model$`Lights` #not updated yet
+
+model$update(lights_df)
+
+model$`Lights`
+
+
+## Need to explore more!!!!!!!!!!
+
+
+### 14.3 Create new objects
+
+## Need to explore more!!!!!!!!!!
+
