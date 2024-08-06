@@ -866,25 +866,25 @@ Schedule:Compact,
     Until: 8:00,             !- Field 5
     0,                       !- Field 6
     Until: 9:00,             !- Field 7
-    0.04,                    !- Field 8
+    0.05,                    !- Field 8
     Until: 10:00,            !- Field 9
-    0.09,                    !- Field 10
+    0.14,                    !- Field 10
     Until: 11:00,            !- Field 11
-    0.05,                    !- Field 12
+    0.15,                    !- Field 12
     Until: 12:00,            !- Field 13
-    0.12,                    !- Field 14
+    0.14,                    !- Field 14
     Until: 13:00,            !- Field 15
-    0.09,                    !- Field 16
+    0.02,                    !- Field 16
     Until: 14:00,            !- Field 17
-    0.1,                     !- Field 18
+    0.11,                    !- Field 18
     Until: 15:00,            !- Field 19
-    0.12,                    !- Field 20
+    0.14,                    !- Field 20
     Until: 16:00,            !- Field 21
-    0.08,                    !- Field 22
+    0.14,                    !- Field 22
     Until: 17:00,            !- Field 23
     0.12,                    !- Field 24
     Until: 18:00,            !- Field 25
-    0.05,                    !- Field 26
+    0.07,                    !- Field 26
     Until: 19:00,            !- Field 27
     0,                       !- Field 28
     Until: 24:00,            !- Field 29
@@ -928,7 +928,7 @@ Schedule:Compact,
     Through: 12/31,          !- Field 1
     For: AllDays,            !- Field 2
     Until: 24:00,            !- Field 3
-    1;                       !- Field 4
+    0;                       !- Field 4
 
 Schedule:Compact,
     zone_index,              !- Name
@@ -944,7 +944,7 @@ Schedule:Compact,
     Through: 12/31,          !- Field 1
     For: AllDays,            !- Field 2
     Until: 24:00,            !- Field 3
-    284;                     !- Field 4
+    11;                      !- Field 4
 
 Schedule:Compact,
     case_name1,              !- Name

@@ -16,8 +16,8 @@ library(eplusr)
 
 # install epluspar package if not exists
 #if (!require("epluspar", quietly = TRUE)) {
-  devtools::install_github("hongyuanjia/epluspar")
-  library(epluspar)
+#  devtools::install_github("hongyuanjia/epluspar")
+#  library(epluspar)
   #}
 
 #source( "C:/Users/F18863/OneDrive - KAJIMA/00_Program/R/ono_functions.R" )
@@ -26,7 +26,7 @@ library(eplusr)
 install.packages("here")
 library(here)
 
-if (!require("here", quietly = TRUE)) {
+#if (!require("here", quietly = TRUE)) {
   install.packages("here")
   library(here)
 }
@@ -35,8 +35,8 @@ if (!require("here", quietly = TRUE)) {
 eplusr_option(verbose_info = FALSE)
 eplusr_option(autocomplete = TRUE)
 
-options(timeout = 2000)
-install_eplus(9.4)
+#options(timeout = 2000)
+#install_eplus(9.4)
 
 # see what EnergyPlus has been installed
 avail_eplus()
@@ -53,6 +53,7 @@ path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
 
 path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
 idf <- read_idf(path = path_idf, idd = NULL)
+
 job <- idf$run(path_epw, wait = TRUE)
 
 #####################################
@@ -381,19 +382,26 @@ Nday_start <- 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 # September 30
 # Case loop
 #####################################
 
+
 for (comfort_model_type in 2){
-  for (system in 2){
+  for (system in 1){
     # 1: VAV
     # 2: VAV + ceiling fan
     # 3: VAV + personal fan
     
+    # we may want to update the registry for each system variation
+    
+    
     if (system == 1){
-      path_idf <- paste0(path_wd,"Singapore_Benchmark_Model_V940_ono_VAV.idf")
-    }else{
-      path_idf <- paste0(path_wd,"Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
+      path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf") 
+      path_cal <- paste0(path_wd,"/AsimEx/cal/VAV") 
+      
+          }else{
+      path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
+      path_cal <- paste0(path_wd,"/AsimEx/cal/Hybrid")
     }
 
-    for (opt in 1){
+    for (opt in 0){
       
       if (opt == 0){
         comfort_model_range <- 3
@@ -408,9 +416,9 @@ for (comfort_model_type in 2){
         for (day in 11){
           
           week <- day%%7 + week_ini - 1
+          Nday_start <- 0
           
           if (week <= 5){
-            
             Nday <- Nday_start + day
             
             ###################
@@ -421,7 +429,7 @@ for (comfort_model_type in 2){
             
             # Update schedules
       
-            path_occ_occupant <- paste0(path_wd,"data/occ_occupant.csv")
+            path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
             occ_occupant <- read.csv(path_occ_occupant,header=T)
             occ_total <- occ_occupant[,(Nocc+1)]
             
@@ -542,7 +550,9 @@ for (comfort_model_type in 2){
                                       tasp14, tasp15, tasp16, tasp17, tasp18, tasp19)
               
               idf$save(overwrite = TRUE)
-              idf$run(path_epw, wait = TRUE)
+              idf$run(path_epw,
+                      dir = path_cal,
+                      wait = TRUE)
               
               Eall <- get_energy(idf)
               Rdissatisfied <- get_discomfort(idf)
@@ -556,17 +566,19 @@ for (comfort_model_type in 2){
                 
             }else{
       
+            # comment out for optimization part
+              
               ################################
               # Run GA optimization
               ################################
-              
+
               # create a GA optimization job
               ga <- GAOptimJob$new(path_idf, path_epw)
-              
+
               ####################
               ## apply_measure {{{
               ####################
-              
+
               if (system == 1){
                 Tmin <- 22
                 Tmax <- 26
@@ -574,7 +586,7 @@ for (comfort_model_type in 2){
                 Tmin <- 24
                 Tmax <- 28
               }
-  
+
               ga$apply_measure(
                 measure = update_idf,
                 tasp8 = float_space(Tmin, Tmax),
@@ -590,12 +602,12 @@ for (comfort_model_type in 2){
                 tasp18 = float_space(Tmin, Tmax),
                 tasp19 = float_space(Tmin, Tmax)
               )
-  
+
               ga$objective(get_energy, get_discomfort ,.dir = "min")
-              
-              options("warning.length" = 8170) 
+
+              options("warning.length" = 8170)
               ga$validate()
-              
+
               # specify how to mix solutions
               ga$recombinator()
               # specify how to change parts of one solution randomly
@@ -603,8 +615,8 @@ for (comfort_model_type in 2){
               # specify how to select best solutions
               ga$selector()
               # specify the conditions when to terminate the computation
-              
-      
+
+
               # condition.fun <- function(log) {
               #   # fitness of current individual
               #   fit <- log$env$pop[[log$env$n.gens]]$fitness
@@ -613,13 +625,13 @@ for (comfort_model_type in 2){
               #   fit["get_energy"] <= 0.15 && fit["get_discomfort"] <= 0.1
               # }
               # ga$terminator(condition.fun)
-              
+
               if (comfort_model == 1){ # Individual model increases the number of iterations to converge
                 Nmax_gen <- 40
               }else{
                 Nmax_gen <- 40
               }
-              
+
               condition.fun <- function(log) {
                 # fitness of current individual
                 Ngen <- log$env$n.gens
@@ -631,24 +643,24 @@ for (comfort_model_type in 2){
                   # check if creteria are met
                   abs(fit_pre - fit)/fit_pre < 1e-5
                 }
-                
+
               }
-              
+
               ga$terminator(fun = condition.fun, "MeetCreteria", "Terminated_by_convergence_criteria", max_gen = Nmax_gen)
-    
+
               ga$run(mu = 20, dir = here::here("results"))
-              
-              
+
+
               # get all population
               population <- ga$population()
               # get Pareto set
               pareto <- ga$pareto_set()
-              
+
               population[,"get_energy"] <- population[,"get_energy"]*100
               pareto[,"get_energy"] <- pareto[,"get_energy"]*100
-              
+
             }
-            
+
             tmp <- c()
             tmp2 <- c()
             for (i in 1:nrow(pareto)){
@@ -657,12 +669,12 @@ for (comfort_model_type in 2){
               for (j in 2:6){
                 str1 <- paste0(str1,as.character(round((tasp[j] - 20)*10)))
               }
-              
+
               str2 <- sprintf(round((tasp[7] - 20)*10)/10,fmt = "%0.1f")
               for (j in 8:12){
                 str2 <- paste0(str2,as.character(round((tasp[j] - 20)*10)))
               }
-              
+
               case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
                                   as.character(system),as.character(opt),as.character(Nday),
                                   as.character(as.numeric(str1)*10^11),as.character(as.numeric(str2)*10^11))
@@ -674,7 +686,7 @@ for (comfort_model_type in 2){
             tmp <- as.data.frame(tmp)
             tmp2 <- as.data.frame(tmp2)
             pareto <- cbind(pareto,tmp)
-            
+
             tmp <- c()
             for (i in 1:nrow(population)){
               tasp <- unlist(population[i,3:14])
@@ -682,12 +694,12 @@ for (comfort_model_type in 2){
               for (j in 2:6){
                 str1 <- paste0(str1,as.character(round((tasp[j] - 20)*10)))
               }
-              
+
               str2 <- sprintf(round((tasp[7] - 20)*10)/10,fmt = "%0.1f")
               for (j in 8:12){
                 str2 <- paste0(str2,as.character(round((tasp[j] - 20)*10)))
               }
-              
+
               case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
                                   as.character(system),as.character(opt),as.character(Nday),
                                   as.character(as.numeric(str1)*10^11),as.character(as.numeric(str2)*10^11))
@@ -697,14 +709,16 @@ for (comfort_model_type in 2){
             }
             tmp <- as.data.frame(tmp)
             population <- cbind(population,tmp)
-      
+
             fname_pareto <- paste0(path_wd,"data3/pareto_",zone_name[zone_index],"_combination",tp_combination_index,"_",system_name[system],"_",model_type[comfort_model_type],"_",model_name[comfort_model],"_opt",opt,"_Nday",Nday,".csv")
             fname_pareto2 <- paste0(path_wd,"data3/pareto_hourly_",zone_name[zone_index],"_combination",tp_combination_index,"_",system_name[system],"_",model_type[comfort_model_type],"_",model_name[comfort_model],"_opt",opt,"_Nday",Nday,".csv")
             fname_population <- paste0(path_wd,"data3/population_",zone_name[zone_index],"_combination",tp_combination_index,"_",system_name[system],"_",model_type[comfort_model_type],"_",model_name[comfort_model],"_opt",opt,"_Nday",Nday,".csv")
             write.csv(as.matrix(pareto),fname_pareto, row.names=FALSE)
             write.csv(as.matrix(tmp2),fname_pareto2, row.names=FALSE)
             write.csv(as.matrix(population),fname_population, row.names=FALSE)
-          
+            
+            # end
+            
           }
           
         }
@@ -716,10 +730,18 @@ for (comfort_model_type in 2){
 #####################################
 # Test
 #####################################
+
+path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf")
+path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
+
 idf <- read_idf(path = path_idf, idd = NULL)
-#job <- idf$last_job()
-job <- idf$run(path_epw, wait = TRUE)
+job <- idf$last_job()
 
-idf
+tmp <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
+sch_occupancy_target <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
+dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
 
-zone_index <- job$read_table("Schedules")[schedule_name == "ZONE_INDEX", schedule_maximum]
+
+for (i in 1:12){
+  dt[(2*i+6),6] <- occ_total[24*(Nday-1)+i+7]/100
+}
