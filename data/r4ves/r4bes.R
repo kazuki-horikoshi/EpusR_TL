@@ -4,6 +4,11 @@ library(tidyverse)
 library(data.table)
 library(eplusr)
 
+avail_eplus() #check if 9.4 is available
+
+options(timeout = 2000)
+#install_eplus(9.4)
+
 file.exists(here("data", "iris.csv"))
 file.exists(here("data", "building.csv"))
 file.exists(here("data", "building_meter.csv"))
@@ -320,8 +325,6 @@ library(eplusr)
 library(here)
 ### 9.3.Parsing the model
 
-options(timeout = 2000)
-install_eplus(9.4)
 avail_eplus()
 ver<- 9.4
 
@@ -337,3 +340,49 @@ job <- model$run(
   weather = epw,
   dir = here("data", "idf", "run", "test_run")
 )
+
+## 13.Model Input Structure
+### 13.2 EnergyPlus Documentation
+
+### 13.5 Model Query
+### 13.5.1 Idf class methods
+model$group_name()
+model$class_name(by_group = TRUE)
+
+model$object_name("Material:NoMass")
+
+model$object_name(c("Material", "Construction"))
+
+model$objects(c("Steel Frame Non-res Ext Wall", "IEAD Non-res Roof"))
+
+### 13.5.2 operator
+model$`Material:NoMass`
+
+model$`Material:NoMass`$`CP02 CARPET PAD`
+
+model$`Material:NoMass`$`CP02 CARPET PAD`$`Thermal Resistance`
+
+model$definition("Material:NoMass")
+
+## 14. Modify Model Inputs
+### 14.2 Extract and modify
+###14.2.1 Single object
+model$`Material:NoMass`$`CP02 CARPET PAD`$`Thermal Resistance` <- 0.5
+model$`Material:NoMass`$`CP02 CARPET PAD`
+
+model$Lights$Perimeter_bot_ZN_1_Lights #Existing values was 10.76
+
+model$Lights$Perimeter_bot_ZN_1_Lights$Watts_per_Zone_Floor_Area <- 15
+model$Lights$Perimeter_bot_ZN_1_Lights
+
+### 14.2.2 Multiple objects
+model$to_table()
+model$to_table(class = c("Construction", "Lights"))
+model$to_table(class = ("Construction"))
+model$to_table(class = ("Lights"))
+
+model$to_table(which = c(
+  "Wood Siding",
+  "Steel Frame NonRes Wall Insulation",
+  "1/2IN Gypsum"
+))
