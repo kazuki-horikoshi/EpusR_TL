@@ -217,6 +217,7 @@ get_energy <- function (idf) {
 
   model_name <- c("zone","group","personal")
   model_type <- c("TP","TP_AMP")
+  
   path_prob_sim <- paste0(path_wd2,model_type[comfort_model_type],"model_",model_name[comfort_model],".csv")
   path_prob_eval1 <- paste0(path_wd2,"TPmodel_personal.csv")
   path_prob_eval2 <- paste0(path_wd2,"TP_AMPmodel_personal.csv")
@@ -339,6 +340,7 @@ get_discomfort <- function (idf) {
   stopifnot(!is.null(job))
 
   path_wd <- "/Users/eikichiono/Documents/02_Research/MBDC/Github/Document/Rule optimization/Code/Impact_analysis_of_individual_model/"
+  
   tp_combination_index <- job$read_table("Schedules")[schedule_name=="TP_COMBINATION",schedule_maximum]
   comfort_model <- job$read_table("Schedules")[schedule_name=="COMFORT_MODEL",schedule_maximum]
   comfort_model_type <- job$read_table("Schedules")[schedule_name=="COMFORT_MODEL_TYPE",schedule_maximum]
@@ -351,6 +353,7 @@ get_discomfort <- function (idf) {
   case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
                       as.character(system),as.character(opt),as.character(Nday),
                       as.character(case_name1*10^11),as.character(case_name2*10^11))
+  
   case_name_path <- paste0(path_wd,"tmp/",case_name,".csv")
   A <- read.csv(case_name_path, header=T)
   Rdissatisfied <- A[1,"Rdissatisfied"]
