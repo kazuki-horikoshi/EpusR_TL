@@ -1,5 +1,8 @@
 ## 0.Confirmation of setting
 library("here")
+library(tidyverse)
+library(data.table)
+library(eplusr)
 
 file.exists(here("data", "iris.csv"))
 file.exists(here("data", "building.csv"))
@@ -320,6 +323,17 @@ library(here)
 options(timeout = 2000)
 install_eplus(9.4)
 avail_eplus()
-use_eplus("/Applications/EnergyPlus-9-4-0")
+ver<- 9.4
 
-path_idf <- here("data", "idf", "RefBldgMediumOfficeNew")
+path_idf <- here("data", "idf", "RefBldgMediumOfficeNew2004_Chicago.idf")
+model <- read_idf(path_idf)
+
+path_epw <- here("data", "epw", "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw")
+epw <- read_epw(path_epw)
+
+job <- model$run(weather = epw)
+
+job <- model$run(
+  weather = epw,
+  dir = here("data", "idf", "run", "test_run")
+)
