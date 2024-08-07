@@ -139,12 +139,17 @@ get_energy <- function (idf) {
   Ecfand <- c(0,2,6,10,15,20,26,32)/1000 # ceiling fan electricity from mode 0 to 7
   # met <- 1.1
   # clo <- 0.4
+  
+  # setting of occupants, floors, timesteps
   Nocc <- 16
-  path_wd <- "/Users/eikichiono/Documents/02_Research/MBDC/Github/Document/Rule optimization/Code/Impact_analysis_of_individual_model/"
-  path_wd2 <- "/Users/eikichiono/Documents/02_Research/Mihara-san PhD experiment/"
   Nfloor <- 15
   Nstep <- 24
-  
+
+  # setting paths
+  path_wd <- "/Users/eikichiono/Documents/02_Research/MBDC/Github/Document/Rule optimization/Code/Impact_analysis_of_individual_model/"
+  path_wd2 <- "/Users/eikichiono/Documents/02_Research/Mihara-san PhD experiment/"
+
+  # getting infor from idf
   zone_index <- job$read_table("Schedules")[schedule_name=="ZONE_INDEX",schedule_maximum]
   tp_combination_index <- job$read_table("Schedules")[schedule_name=="TP_COMBINATION",schedule_maximum]
   comfort_model <- job$read_table("Schedules")[schedule_name=="COMFORT_MODEL",schedule_maximum]
@@ -152,15 +157,19 @@ get_energy <- function (idf) {
   system <- job$read_table("Schedules")[schedule_name=="STR_SYSTEM",schedule_maximum]
   opt <- job$read_table("Schedules")[schedule_name=="STR_OPT",schedule_maximum]
   Nday <- job$read_table("Schedules")[schedule_name=="NDAY",schedule_maximum]
-  
+
+  # setting case names
   case_name1 <- job$read_table("Schedules")[schedule_name=="CASE_NAME1",schedule_maximum]
   case_name2 <- job$read_table("Schedules")[schedule_name=="CASE_NAME2",schedule_maximum]
+  
   case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
                       as.character(system),as.character(opt),as.character(Nday),
                       as.character(case_name1*10^11),as.character(case_name2*10^11))
   
   case_name_path <- paste0(path_wd,"tmp/",case_name,".csv")
+
   
+  # calculating the energy
   Qcoil_bot <- unlist(job$report_data("VAV_BOT_COIL","Cooling Coil Total Cooling Rate")[,6])/1000
   Qcoil_mid <- unlist(job$report_data("VAV_MID_COIL","Cooling Coil Total Cooling Rate")[,6])/1000
   Qcoil_top <- unlist(job$report_data("VAV_TOP_COIL","Cooling Coil Total Cooling Rate")[,6])/1000
@@ -195,6 +204,7 @@ get_energy <- function (idf) {
   Qmids <- Qcoil_mid*Vmids/Vahu/Nfloor
   Qmidw <- Qcoil_mid*Vmidw/Vahu/Nfloor
   
+  # choose optimizing target zone(interior or perimeter)
   if (zone_index == 1){ # optimize an interior zone (mid1)
     zone_name <- "CORE_MID1"
     Vtarget <- Vmid1
@@ -202,23 +212,27 @@ get_energy <- function (idf) {
     zone_name <- "ZONE_MID_E"
     Vtarget <- Vmide
   }
-  
+
+  # calculating the environment
   ta <- unlist(job$report_data(zone_name,"Zone Mean Air Temperature")[,6])
   tr <- unlist(job$report_data(zone_name,"Zone Mean Radiant Temperature")[,6])
   rh <- unlist(job$report_data(zone_name,"Zone Air Relative Humidity")[,6])
   
+  # assuming proportional to target air volume
   Eahu_target <- Eahu*Vtarget/Vahu/Nfloor
   Eplant_target <- Eplant*(Qcoil_mid*Vtarget/Vahu)/Qcoil/Nfloor
   
-  
+  # occupants info update
   path_occ_occupant <- paste0(path_wd,"data/occ_occupant.csv")
 
   occ_occupant <- read.csv(path_occ_occupant,header=T)
-  occ_occupant <- occ_occupant[(24*(Nday-1)+1):(24*Nday),1:Nocc]
+  occ_occupant <- occ_occupant[(24*(Nday-1)+1):(24*Nday),1:Nocc]  #containing the presence for 24hours, for 16 occupants
 
+  # cpmfort model types 
   model_name <- c("zone","group","personal")
   model_type <- c("TP","TP_AMP")
-  
+
+  # comfort model types 
   path_prob_sim <- paste0(path_wd2,model_type[comfort_model_type],"model_",model_name[comfort_model],".csv")
   path_prob_eval1 <- paste0(path_wd2,"TPmodel_personal.csv")
   path_prob_eval2 <- paste0(path_wd2,"TP_AMPmodel_personal.csv")
@@ -227,6 +241,11 @@ get_energy <- function (idf) {
   prob_eval1 <- read.csv(path_prob_eval1, skip=0, header=T)
   prob_eval2 <- read.csv(path_prob_eval2, skip=0, header=T)
   
+  # comfort model types 
+    # 1: VAV
+    # 2: VAV + ceiling fan
+    # 3: VAV + personal fan
+  
   if (system == 1){
     Ngroup <- 1
   }else if (system == 2){
@@ -234,8 +253,10 @@ get_energy <- function (idf) {
   }else if (system == 3){
     Ngroup <- 16
   }
-  Nocc_group <- Nocc/Ngroup # number of occupants per group
+  Nocc_group <- Nocc/Ngroup # number of occupants per group : Nocc is defined 16
   
+  
+  # defining mode range accordind to system types
   if (system == 1){
     mode_range <- 0
   }else if (system > 1 && opt == 0){
@@ -244,30 +265,42 @@ get_energy <- function (idf) {
     mode_range <- 0:5
   }
   
+  
+  # why 24???
   Nsatisfied_ave_all_sim <- numeric(Nstep)
   Nsatisfied_ave_all_eval1 <- numeric(Nstep)
   Nsatisfied_ave_all_eval2 <- numeric(Nstep)
+  
   Ecfan <- numeric(Nstep)
   mode <- matrix(numeric(Ngroup*Nstep),nrow=Nstep)
+  
   # ta <- rep(26.5,24)
   # tr <- ta + 2
-  for (i in 1:Nstep){
+
+    for (i in 1:Nstep){
     if (Eahu[i] > 0){
 
+      # occupant presence for each time steps
       presence <- unlist(occ_occupant[i,1:Nocc])
       Npresent <- sum(presence)
       
+      # assining the possibility of comfort, from each comfort model csv
+      # the comfort model represents of comfort possibility, with temperature range for columns and each occupants models for rows 
+
       if (Npresent == 0){
 
       }else{
+        
         # prob_sim_j <- prob_sim[prob_sim["ta"]==round(ta[i]*10)/10,1:(Nocc+2)]
         prob_sim_j <- prob_sim[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
         prob_eval1_j <- prob_eval1[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
         prob_eval2_j <- prob_eval2[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
+        
         prob_sim_j <- t(prob_sim_j)
         prob_eval1_j <- t(prob_eval1_j)
         prob_eval2_j <- t(prob_eval2_j)
 
+        # assign 0 for who is absent 
         prob_sim_j[presence==0,] <- 0
         prob_eval1_j[presence==0,] <- 0
         prob_eval2_j[presence==0,] <- 0
@@ -732,8 +765,9 @@ for (comfort_model_type in 2){
 }
 
 #####################################
-# Test
+# Test for understanding the data structure
 #####################################
+## 2024-08-07 K.Horikoshi
 
 path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf")
 path_cal <- paste0(path_wd,"/AsimEx/cal/VAV") 
