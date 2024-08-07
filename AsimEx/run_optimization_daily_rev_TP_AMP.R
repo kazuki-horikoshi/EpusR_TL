@@ -158,6 +158,7 @@ get_energy <- function (idf) {
   case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
                       as.character(system),as.character(opt),as.character(Nday),
                       as.character(case_name1*10^11),as.character(case_name2*10^11))
+  
   case_name_path <- paste0(path_wd,"tmp/",case_name,".csv")
   
   Qcoil_bot <- unlist(job$report_data("VAV_BOT_COIL","Cooling Coil Total Cooling Rate")[,6])/1000
@@ -735,14 +736,26 @@ for (comfort_model_type in 2){
 #####################################
 
 path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf")
+path_cal <- paste0(path_wd,"/AsimEx/cal/VAV") 
+
 path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
+path_cal <- paste0(path_wd,"/AsimEx/cal/Hybrid") 
 
 idf <- read_idf(path = path_idf, idd = NULL)
+
+idf$run(path_epw,
+        dir = path_cal,
+        wait = TRUE)
+
 job <- idf$last_job()
 
 tmp <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
 sch_occupancy_target <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
 dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+
+tmp <- idf$"Schedule:Compact"[["zone_index"]]
+dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+zone_index <- dt[6,6]
 
 
 for (i in 1:12){
