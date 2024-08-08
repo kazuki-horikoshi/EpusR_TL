@@ -266,7 +266,7 @@ get_energy <- function (idf) {
   }
   
   
-  # why 24???
+  # create 24-length vector
   Nsatisfied_ave_all_sim <- numeric(Nstep)
   Nsatisfied_ave_all_eval1 <- numeric(Nstep)
   Nsatisfied_ave_all_eval2 <- numeric(Nstep)
@@ -306,19 +306,27 @@ get_energy <- function (idf) {
         prob_eval2_j[presence==0,] <- 0
         
         for (group in 1:Ngroup){
+          # for VAV system
           if (length(mode_range) == 1){
+            # sum satisfaction for all the occupant
             Nsatisfied_group_sim <- sum(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
             Nsatisfied_group_eval1 <- sum(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
             Nsatisfied_group_eval2 <- sum(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
+            
             mode[i,group] <- mode_range
             Nsatisfied_ave_all_sim[i] <- Nsatisfied_ave_all_sim[i] + Nsatisfied_group_sim
             Nsatisfied_ave_all_eval1[i] <- Nsatisfied_ave_all_eval1[i] + Nsatisfied_group_eval1
             Nsatisfied_ave_all_eval2[i] <- Nsatisfied_ave_all_eval2[i] + Nsatisfied_group_eval2
+            
+          # for operation optimization
           }else{
+            # sum for all occupant comfort
             if (Nocc_group > 1){
               Nsatisfied_group_sim <- apply(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
               Nsatisfied_group_eval1 <- apply(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
               Nsatisfied_group_eval2 <- apply(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
+            
+            # just extract whole row when only one occupant exist 
             }else{
               Nsatisfied_group_sim <- prob_sim_j[group,]
               Nsatisfied_group_eval1 <- prob_eval1_j[group,]
@@ -795,3 +803,6 @@ zone_index <- dt[6,6]
 for (i in 1:12){
   dt[(2*i+6),6] <- occ_total[24*(Nday-1)+i+7]/100
 }
+
+# Nstep<-24
+# Nsatisfied_ave_all_sim <- numeric(Nstep)
