@@ -1,0 +1,51 @@
+---
+title: "Normal Distribution Fit"
+author: "Kazuki Horikoshi"
+date: "2024-08-08"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+
+```
+# パッケージのインストールと読み込み
+install.packages("readr")
+install.packages("ggplot2")
+install.packages("fitdistrplus")
+
+library(readr)
+library(ggplot2)
+library(fitdistrplus)
+```{r}
+plot(cars)
+```
+# CSVファイルの読み込み
+path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
+comfort_data <- read_csv(path_comfort)
+
+# 列名の確認
+colnames(comfort_data)
+
+# データの確認
+head(comfort_data)
+```{r}
+
+```
+# ユーザーIDごとにデータをリストに格納
+comfort_data$No <- as.factor(comfort_data$No) 
+#user_comfort <- split(comfort_data, comfort_data$No)
+
+# 各ユーザーのデータを表示（例）
+user_comfort[[1]]  # ユーザーIDが1のデータ
+user_comfort[[2]]  # ユーザーIDが2のデータ
+user_comfort[[3]]  # ユーザーIDが3のデータ
+
