@@ -233,14 +233,12 @@ pre code {
 <!-- rnb-text-begin -->
 <div id="パッケージのインストールと読み込み" class="section level1">
 <h1>パッケージのインストールと読み込み</h1>
-<p>install.packages(“readr”) install.packages(“ggplot2”) install.packages(“fitdistrplus”)</p>
-<p>install.packages(“reshape2”)</p>
-<p>library(readr) library(ggplot2) library(fitdistrplus) library(nnet)</p>
-<p>library(reshape2)</p>
+<p>#install.packages(“readr”) #install.packages(“ggplot2”) #install.packages(“fitdistrplus”) #install.packages(“reshape2”) #install.packages(“comf”)</p>
+<p>library(readr) library(ggplot2) library(fitdistrplus) library(nnet) library(reshape2) library(comf)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmVhZGNzdlxuYGBgIn0= -->
-<pre class="r"><code>Readcsv</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUmVhZF9jc3YoKVxuYGBgIn0= -->
+<pre class="r"><code>Read_csv()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -274,38 +272,56 @@ pre code {
 <p>user_comfort &lt;- split(comfort_data, comfort_data[[“No”]])</p>
 </div>
 <div id="各ユーザーのデータを表示例" class="section level1">
-<h1>各ユーザーのデータを表示（例）</h1>
-<p>user_comfort[[1]] # ユーザーIDが1のデータ user_comfort[[2]] # ユーザーIDが2のデータ user_comfort[[3]] # ユーザーIDが3のデータ</p>
+<h1># 各ユーザーのデータを表示（例）</h1>
+</div>
+<div id="user_comfort1-ユーザーidが1のデータ" class="section level1">
+<h1>user_comfort[[1]] # ユーザーIDが1のデータ</h1>
+</div>
+<div id="user_comfort2-ユーザーidが2のデータ" class="section level1">
+<h1>user_comfort[[2]] # ユーザーIDが2のデータ</h1>
+</div>
+<div id="user_comfort3-ユーザーidが3のデータ" class="section level1">
+<h1>user_comfort[[3]] # ユーザーIDが3のデータ</h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- # 1つ目のユーザーのデータを取得 -->
+<!-- first_user_data <- user_comfort[[1]] -->
+<!-- # TP_ctgごとのSET*のデータ -->
+<!-- tp_minus1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == -1]) -->
+<!-- tp_0 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 0]) -->
+<!-- tp_1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 1]) -->
+<!-- # 正規分布のフィット -->
+<!-- fit_minus1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE)) -->
+<!-- fit_0 <- dnorm(first_user_data$`SET*`, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE)) -->
+<!-- fit_1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE)) -->
+<!-- # プロットデータを作成 -->
+<!-- plot_data <- data.frame( -->
+<!--   SET = first_user_data$`SET*`, -->
+<!--   TP_minus1 = fit_minus1, -->
+<!--   TP_0 = fit_0, -->
+<!--   TP_1 = fit_1 -->
+<!-- ) -->
+<!-- # プロット -->
+<!-- library(ggplot2) -->
+<!-- ggplot(plot_data, aes(x = SET)) + -->
+<!--   geom_line(aes(y = TP_minus1), color = "red") + # TP_ctgが-1の場合（右側） -->
+<!--   geom_line(aes(y = TP_0), color = "blue") +    # TP_ctgが0の場合（普通） -->
+<!--   geom_line(aes(y = TP_1), color = "green") +   # TP_ctgが1の場合（左側） -->
+<!--   ggtitle("First User: TP_ctg Distributions") + -->
+<!--   ylab("Probability Density") + -->
+<!--   xlab("SET*") + -->
+<!--   theme_minimal() -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubXVsdGlub21pbmFsX2xvZ2lzdGljX3JlZ3Jlc3Npb25fbW9kZWxcbmBgYCJ9 -->
+<pre class="r"><code>multinominal_logistic_regression_model</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 <div id="つ目のユーザーのデータを取得" class="section level1">
-<h1>1つ目のユーザーのデータを取得</h1>
-<p>first_user_data &lt;- user_comfort[[1]]</p>
-</div>
-<div id="tp_ctgごとのsetのデータ" class="section level1">
-<h1>TP_ctgごとのSET*のデータ</h1>
-<p>tp_minus1 &lt;- as.numeric(first_user_data<span class="math inline">\(`SET*`[first_user_data\)</span>TP_ctg == -1]) tp_0 &lt;- as.numeric(first_user_data<span class="math inline">\(`SET*`[first_user_data\)</span>TP_ctg == 0]) tp_1 &lt;- as.numeric(first_user_data<span class="math inline">\(`SET*`[first_user_data\)</span>TP_ctg == 1])</p>
-</div>
-<div id="正規分布のフィット" class="section level1">
-<h1>正規分布のフィット</h1>
-<p>fit_minus1 &lt;- dnorm(first_user_data<span class="math inline">\(`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE)) fit_0 &lt;- dnorm(first_user_data\)</span><code>SET*</code>, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE)) fit_1 &lt;- dnorm(first_user_data$<code>SET*</code>, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE))</p>
-</div>
-<div id="プロットデータを作成" class="section level1">
-<h1>プロットデータを作成</h1>
-<p>plot_data &lt;- data.frame( SET = first_user_data$<code>SET*</code>, TP_minus1 = fit_minus1, TP_0 = fit_0, TP_1 = fit_1 )</p>
-</div>
-<div id="プロット" class="section level1">
-<h1>プロット</h1>
-<p>library(ggplot2) ggplot(plot_data, aes(x = SET)) + geom_line(aes(y = TP_minus1), color = “red”) + # TP_ctgが-1の場合（右側） geom_line(aes(y = TP_0), color = “blue”) + # TP_ctgが0の場合（普通） geom_line(aes(y = TP_1), color = “green”) + # TP_ctgが1の場合（左側） ggtitle(“First User: TP_ctg Distributions”) + ylab(“Probability Density”) + xlab(&quot;SET*&quot;) + theme_minimal()</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="つ目のユーザーのデータを取得-1" class="section level1">
 <h1>1つ目のユーザーのデータを取得</h1>
 <p>first_user_data &lt;- user_comfort[[1]]</p>
 </div>
@@ -336,10 +352,7 @@ pre code {
 <div id="予測曲線をプロット" class="section level1">
 <h1>予測曲線をプロット</h1>
 <p>ggplot(plot_data, aes(x = <code>SET*</code>, y = Probability, color = Predicted_TP_ctg)) + geom_line(size = 1) + labs(title = “Multinomial Logistic Regression: Predicted Probabilities”, x = &quot;SET*“, y =”Probability“) + theme_minimal() + scale_color_manual(values = c(”1&quot; = “green”, “0” = “blue”, “-1” = “red”))</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
+<pre><code></code></pre>
 </div>
 <div id="モデルを保存するリストを作成" class="section level1">
 <h1>モデルを保存するリストを作成</h1>
@@ -354,11 +367,232 @@ pre code {
 </div>
 <div id="結果の確認例-ユーザーidが-1-のモデル" class="section level1">
 <h1>結果の確認（例: ユーザーIDが “1” のモデル）</h1>
-<p>summary(user_models[[“4”]])</p>
+<p>summary(user_models[[“1”]])</p>
+</div>
+<div id="モデルをファイルに保存" class="section level1">
+<h1>モデルをファイルに保存</h1>
+<p>save(user_models, file = “localdir/AsimEx/Comfort_models/user_models.RData”)</p>
+</div>
+<div id="保存したモデルを読み込む" class="section level1">
+<h1>保存したモデルを読み込む</h1>
+<p>load(“localdir/AsimEx/Comfort_models/user_models.RData”)</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="ユーザーid-2-のモデルを取得" class="section level1">
+<h1>ユーザーID “2” のモデルを取得</h1>
+<p>model_for_user_2 &lt;- user_models[[“2”]]</p>
+</div>
+<div id="ユーザーid-2-のデータを取得" class="section level1">
+<h1>ユーザーID “2” のデータを取得</h1>
+<p>user_data_2 &lt;- user_comfort[[“2”]]</p>
+</div>
+<div id="set-に基づいて予測確率を計算" class="section level1">
+<h1>SET* に基づいて予測確率を計算</h1>
+<p>predicted_probs_2 &lt;- predict(model_for_user_2, newdata = user_data_2, type = “probs”)</p>
+</div>
+<div id="予測確率をデータフレームに追加-1" class="section level1">
+<h1>予測確率をデータフレームに追加</h1>
+<p>user_data_2 &lt;- cbind(user_data_2, predicted_probs_2)</p>
+</div>
+<div id="データを長い形式に変換-1" class="section level1">
+<h1>データを長い形式に変換</h1>
+<p>plot_data_2 &lt;- melt(user_data_2, id.vars = &quot;SET*“, measure.vars = c(”1“,”0“,”-1“), variable.name =”Predicted_TP_ctg“, value.name =”Probability&quot;)</p>
+</div>
+<div id="予測カーブをプロット" class="section level1">
+<h1>予測カーブをプロット</h1>
+<p>ggplot(plot_data_2, aes(x = <code>SET*</code>, y = Probability, color = Predicted_TP_ctg)) + geom_line(size = 1) + labs(title = “User 2: Predicted TP_ctg Probabilities”, x = &quot;SET*“, y =”Probability“) + theme_minimal() + scale_color_manual(values = c(”1&quot; = “green”, “0” = “blue”, “-1” = “red”))</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="ユーザーid-4-のモデルを取得" class="section level1">
+<h1>ユーザーID “4” のモデルを取得</h1>
+<p>model_for_user_4 &lt;- user_models[[“4”]]</p>
+</div>
+<div id="ユーザーid-4-のデータを取得" class="section level1">
+<h1>ユーザーID “4” のデータを取得</h1>
+<p>user_data_4 &lt;- user_comfort[[“4”]]</p>
+</div>
+<div id="set-に基づいて予測確率を計算-1" class="section level1">
+<h1>SET* に基づいて予測確率を計算</h1>
+<p>predicted_probs_4 &lt;- predict(model_for_user_4, newdata = user_data_4, type = “probs”)</p>
+</div>
+<div id="予測確率をデータフレームに追加-2" class="section level1">
+<h1>予測確率をデータフレームに追加</h1>
+<p>user_data_4 &lt;- cbind(user_data_4, predicted_probs_4)</p>
+</div>
+<div id="データを長い形式に変換-2" class="section level1">
+<h1>データを長い形式に変換</h1>
+<p>plot_data_4 &lt;- melt(user_data_4, id.vars = &quot;SET*“, measure.vars = c(”0“,”-1“), variable.name =”Predicted_TP_ctg“, value.name =”Probability&quot;)</p>
+</div>
+<div id="予測カーブをプロット-1" class="section level1">
+<h1>予測カーブをプロット</h1>
+<p>ggplot(plot_data_4, aes(x = <code>SET*</code>, y = Probability, color = Predicted_TP_ctg)) + geom_line(size = 1) + labs(title = “User 4: Predicted TP_ctg Probabilities”, x = &quot;SET*“, y =”Probability“) + theme_minimal() + scale_color_manual(values = c(”0&quot; = “blue”, “-1” = “red”))</p>
+</div>
+<div id="各ユーザーのクラス分布を確認" class="section level1">
+<h1>各ユーザーのクラス分布を確認</h1>
+<p>for (user_id in names(user_comfort)) { user_data &lt;- user_comfort[[user_id]] print(paste(“Class distribution for user”, user_id)) print(table(user_data$TP_ctg)) }</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hlY2tfdGhlX2ltYmFsYW5jZWRfdXNlclxuYGBgIn0= -->
+<pre class="r"><code>check_the_imbalanced_user</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="バランスが悪いユーザーを保存するリストを作成" class="section level1">
+<h1>バランスが悪いユーザーを保存するリストを作成</h1>
+<p>imbalanced_users &lt;- list()</p>
+</div>
+<div id="各ユーザーのクラス分布を確認-1" class="section level1">
+<h1>各ユーザーのクラス分布を確認</h1>
+<p>for (user_id in names(user_comfort)) { user_data &lt;- user_comfort[[user_id]] class_distribution &lt;- table(user_data$TP_ctg)</p>
+<p># クラス分布が偏っている場合 if (length(class_distribution) &lt; 3 || any(class_distribution &lt; 5)) { # クラスが1つしかない、または少なすぎる imbalanced_users[[user_id]] &lt;- class_distribution print(paste(“User”, user_id, “has imbalanced classes”)) print(class_distribution) } }</p>
+</div>
+<div id="バランスが悪いユーザーリストを表示" class="section level1">
+<h1>バランスが悪いユーザーリストを表示</h1>
+<p>print(“Users with imbalanced classes:”) print(imbalanced_users)</p>
+<p>##1,4,8,10,11,15,21,22</p>
+</div>
+<div id="バランスが悪いと判定されたユーザーのリスト" class="section level1">
+<h1>バランスが悪いと判定されたユーザーのリスト</h1>
+<p>imbalanced_user_ids &lt;- c(“1”, “4”, “8”, “10”, “11”, “15”, “21”, “22”)</p>
+</div>
+<div id="指定されたユーザーを-user_models-から取り除く" class="section level1">
+<h1>指定されたユーザーを user_models から取り除く</h1>
+<p>obj_user_models &lt;- user_models[!(names(user_models) %in% imbalanced_user_ids)]</p>
+</div>
+<div id="結果を確認残っているユーザーを表示" class="section level1">
+<h1>結果を確認（残っているユーザーを表示）</h1>
+<p>print(“Remaining user models:”) print(names(obj_user_models))</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdF9jb21mX3BhY2thZ2VcbmBgYCJ9 -->
+<pre class="r"><code>test_comf_package</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="温度湿度clo値を設定" class="section level1">
+<h1># 温度、湿度、clo値を設定</h1>
+</div>
+<div id="temperature---25-任意の温度-例-25c" class="section level1">
+<h1>temperature &lt;- 25 # 任意の温度 (例: 25°C)</h1>
+</div>
+<div id="humidity---50-湿度-50" class="section level1">
+<h1>humidity &lt;- 50 # 湿度 50%</h1>
+</div>
+<div id="clo_value---0.4-clo値-0.4" class="section level1">
+<h1>clo_value &lt;- 0.4 # clo値 0.4</h1>
+</div>
+<div id="section" class="section level1">
+<h1></h1>
+</div>
+<div id="その他のパラメータ-必要に応じて設定可能" class="section level1">
+<h1># その他のパラメータ (必要に応じて設定可能)</h1>
+</div>
+<div id="met_value---1-メタボリックレート-例-1.2-met" class="section level1">
+<h1>met_value &lt;- 1 # メタボリックレート (例: 1.2 met)</h1>
+</div>
+<div id="air_velocity---0.1-空気の流速-例-0.1-ms" class="section level1">
+<h1>air_velocity &lt;- 0.1 # 空気の流速 (例: 0.1 m/s)</h1>
+</div>
+<div id="section-1" class="section level1">
+<h1></h1>
+</div>
+<div id="setの計算" class="section level1">
+<h1># SET*の計算</h1>
+</div>
+<div id="set_star---calcsetta-temperature-tr-temperature-vel-air_velocity-rh-humidity-clo-clo_value-met-met_value" class="section level1">
+<h1>set_star &lt;- calcSET(ta = temperature, tr = temperature, vel = air_velocity, rh = humidity, clo = clo_value, met = met_value)</h1>
+</div>
+<div id="section-2" class="section level1">
+<h1></h1>
+</div>
+<div id="結果を表示" class="section level1">
+<h1># 結果を表示</h1>
+</div>
+<div id="printset_star" class="section level1">
+<h1>print(set_star)</h1>
+</div>
+<div id="section-3" class="section level1">
+<h1></h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2V0X2Vudl9yYW5nZVxuYGBgIn0= -->
+<pre class="r"><code>set_env_range</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="温度の範囲を設定-22cから30cを0.5c刻みで" class="section level1">
+<h1>温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)</h1>
+<p>temperatures &lt;- seq(22, 30, by = 0.5)</p>
+</div>
+<div id="ファンモードを設定-05" class="section level1">
+<h1>ファンモードを設定 (0~5)</h1>
+<p>fan_modes &lt;- 0:5</p>
+</div>
+<div id="ファンスピードを設定" class="section level1">
+<h1>ファンスピードを設定</h1>
+<p>fan_speeds &lt;- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)</p>
+</div>
+<div id="各温度ごとにファンモードとファンスピードを繰り返しデータフレームを作成" class="section level1">
+<h1>各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成</h1>
+<p>env_list &lt;- data.frame( Temperature = rep(temperatures, each = length(fan_modes)), FanMode = rep(fan_modes, times = length(temperatures)), FanSpeed = rep(fan_speeds, times = length(temperatures)) )</p>
+</div>
+<div id="結果を表示-1" class="section level1">
+<h1>結果を表示</h1>
+<p>print(env_list)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="湿度とその他の定数設定" class="section level1">
+<h1>湿度とその他の定数設定</h1>
+<p>humidity &lt;- 50 # 湿度 50% clo_value &lt;- 0.4 # clo値 0.4 met_value &lt;- 1 # メタボリックレート 1 met</p>
+</div>
+<div id="setを計算してリストに追加する" class="section level1">
+<h1>SET*を計算してリストに追加する</h1>
+<p>env_list<span class="math inline">\(`SET*` &lt;- mapply(function(temp, fan_speed) {  # SET*を計算  calcSET(ta = temp, tr = temp, vel = fan_speed, rh = humidity, clo = clo_value, met = met_value) }, env_list\)</span>Temperature, env_list$FanSpeed)</p>
+</div>
+<div id="結果を表示-2" class="section level1">
+<h1>結果を表示</h1>
+<p>print(env_list)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="確率を保存するデータフレームを初期化" class="section level1">
+<h1>確率を保存するデータフレームを初期化</h1>
+<p>user_probabilities &lt;- matrix(NA, nrow = nrow(env_list), ncol = length(obj_user_models))</p>
+</div>
+<div id="各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算" class="section level1">
+<h1>各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算</h1>
+<p>for (i in seq_along(names(obj_user_models))) { user_id &lt;- names(obj_user_models)[i]</p>
+<p># ユーザーごとのモデルを取得 model &lt;- obj_user_models[[user_id]]</p>
+<p># 2つ目のクラス（TP_ctg = 0）に分類される確率を予測 predicted_probs &lt;- predict(model, newdata = env_list, type = “probs”)</p>
+<p># 2つ目のクラスの確率を user_probabilities の対応する列に保存 user_probabilities[, i] &lt;- predicted_probs[, “0”] }</p>
+</div>
+<div id="列名にユーザーidを付与" class="section level1">
+<h1>列名にユーザーIDを付与</h1>
+<p>colnames(user_probabilities) &lt;- names(obj_user_models)</p>
+</div>
+<div id="結果を確認-1" class="section level1">
+<h1>結果を確認</h1>
+<p>print(user_probabilities)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTm9ybWFsIERpc3RyaWJ1dGlvbiBGaXQiCmF1dGhvcjogIkthenVraSBIb3Jpa29zaGkiCmRhdGU6ICIyMDI0LTA4LTA4IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDdHJsK1NoaWZ0K0VudGVyKi4gCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ3RybCtBbHQrSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4KClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KYGBge3J9ClJlYWRMaWJyYXJpZXMoY2FycykKYGBgCiMg44OR44OD44Kx44O844K444Gu44Kk44Oz44K544OI44O844Or44Go6Kqt44G/6L6844G/Cmluc3RhbGwucGFja2FnZXMoInJlYWRyIikKaW5zdGFsbC5wYWNrYWdlcygiZ2dwbG90MiIpCmluc3RhbGwucGFja2FnZXMoImZpdGRpc3RycGx1cyIpCgppbnN0YWxsLnBhY2thZ2VzKCJyZXNoYXBlMiIpCgpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkoZml0ZGlzdHJwbHVzKQpsaWJyYXJ5KG5uZXQpCgpsaWJyYXJ5KHJlc2hhcGUyKQoKYGBge3J9ClJlYWRjc3YKYGBgCiMgQ1NW44OV44Kh44Kk44Or44Gu6Kqt44G/6L6844G/CnBhdGhfY29tZm9ydCA8LSAifi9sb2NhbGRpci9Bc2ltRXgvQ29tZm9ydF9tb2RlbHMvY29tZm9ydF9pbnB1dHNfY2xvMC40LmNzdiIKY29tZm9ydF9kYXRhIDwtIHJlYWRfY3N2KHBhdGhfY29tZm9ydCkKCiMg5YiX5ZCN44Gu56K66KqNCmNvbG5hbWVzKGNvbWZvcnRfZGF0YSkKCiMg44OH44O844K/44Gu56K66KqNCmhlYWQoY29tZm9ydF9kYXRhKQpgYGB7cn0KYGBgCgojICdUUF9jdGcnIOWIl+OCkuS9nOaIkOOBl+OBpuOAgSdUUCcg5YiX44Gu5YCk44Gr5Z+644Gl44GN5YiG6aGe44GZ44KLCmNvbWZvcnRfZGF0YSRUUF9jdGcgPC0gaWZlbHNlKGNvbWZvcnRfZGF0YSRUUCA+PSAxLCAxLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWZlbHNlKGNvbWZvcnRfZGF0YSRUUCA8PSAtMSwgLTEsIGNvbWZvcnRfZGF0YSRUUCkpCmN1c3RvbV9jb21mb3J0X2RhdGEgPC1jb21mb3J0X2RhdGEKCiMg57WQ5p6c44KS56K66KqNCmhlYWQoY3VzdG9tX2NvbWZvcnRfZGF0YVssIGMoIlRQIiwgIlRQX2N0ZyIpXSkKCiMg44Om44O844K244O8SUTjgZTjgajjgavjg4fjg7zjgr/jgpLjg6rjgrnjg4jjgavmoLzntI0KdXNlcl9jb21mb3J0IDwtIHNwbGl0KGNvbWZvcnRfZGF0YSwgY29tZm9ydF9kYXRhW1siTm8iXV0pCgojIOWQhOODpuODvOOCtuODvOOBruODh+ODvOOCv+OCkuihqOekuu+8iOS+i++8iQp1c2VyX2NvbWZvcnRbWzFdXSAgIyDjg6bjg7zjgrbjg7xJROOBjDHjga7jg4fjg7zjgr8KdXNlcl9jb21mb3J0W1syXV0gICMg44Om44O844K244O8SUTjgYwy44Gu44OH44O844K/CnVzZXJfY29tZm9ydFtbM11dICAjIOODpuODvOOCtuODvElE44GMM+OBruODh+ODvOOCvwpgYGB7cn0KCmBgYAoKIyAx44Gk55uu44Gu44Om44O844K244O844Gu44OH44O844K/44KS5Y+W5b6XCmZpcnN0X3VzZXJfZGF0YSA8LSB1c2VyX2NvbWZvcnRbWzFdXQoKIyBUUF9jdGfjgZTjgajjga5TRVQq44Gu44OH44O844K/CnRwX21pbnVzMSA8LSBhcy5udW1lcmljKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmBbZmlyc3RfdXNlcl9kYXRhJFRQX2N0ZyA9PSAtMV0pCnRwXzAgPC0gYXMubnVtZXJpYyhmaXJzdF91c2VyX2RhdGEkYFNFVCpgW2ZpcnN0X3VzZXJfZGF0YSRUUF9jdGcgPT0gMF0pCnRwXzEgPC0gYXMubnVtZXJpYyhmaXJzdF91c2VyX2RhdGEkYFNFVCpgW2ZpcnN0X3VzZXJfZGF0YSRUUF9jdGcgPT0gMV0pCgojIOato+imj+WIhuW4g+OBruODleOCo+ODg+ODiApmaXRfbWludXMxIDwtIGRub3JtKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmAsIG1lYW4gPSBtZWFuKHRwX21pbnVzMSwgbmEucm0gPSBUUlVFKSwgc2QgPSBzZCh0cF9taW51czEsIG5hLnJtID0gVFJVRSkpCmZpdF8wIDwtIGRub3JtKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmAsIG1lYW4gPSBtZWFuKHRwXzAsIG5hLnJtID0gVFJVRSksIHNkID0gc2QodHBfMCwgbmEucm0gPSBUUlVFKSkKZml0XzEgPC0gZG5vcm0oZmlyc3RfdXNlcl9kYXRhJGBTRVQqYCwgbWVhbiA9IG1lYW4odHBfMSwgbmEucm0gPSBUUlVFKSwgc2QgPSBzZCh0cF8xLCBuYS5ybSA9IFRSVUUpKQoKIyDjg5fjg63jg4Pjg4jjg4fjg7zjgr/jgpLkvZzmiJAKcGxvdF9kYXRhIDwtIGRhdGEuZnJhbWUoCiAgU0VUID0gZmlyc3RfdXNlcl9kYXRhJGBTRVQqYCwKICBUUF9taW51czEgPSBmaXRfbWludXMxLAogIFRQXzAgPSBmaXRfMCwKICBUUF8xID0gZml0XzEKKQoKIyDjg5fjg63jg4Pjg4gKbGlicmFyeShnZ3Bsb3QyKQpnZ3Bsb3QocGxvdF9kYXRhLCBhZXMoeCA9IFNFVCkpICsKICBnZW9tX2xpbmUoYWVzKHkgPSBUUF9taW51czEpLCBjb2xvciA9ICJyZWQiKSArICMgVFBfY3Rn44GMLTHjga7loLTlkIjvvIjlj7PlgbTvvIkKICBnZW9tX2xpbmUoYWVzKHkgPSBUUF8wKSwgY29sb3IgPSAiYmx1ZSIpICsgICAgIyBUUF9jdGfjgYww44Gu5aC05ZCI77yI5pmu6YCa77yJCiAgZ2VvbV9saW5lKGFlcyh5ID0gVFBfMSksIGNvbG9yID0gImdyZWVuIikgKyAgICMgVFBfY3Rn44GMMeOBruWgtOWQiO+8iOW3puWBtO+8iQogIGdndGl0bGUoIkZpcnN0IFVzZXI6IFRQX2N0ZyBEaXN0cmlidXRpb25zIikgKwogIHlsYWIoIlByb2JhYmlsaXR5IERlbnNpdHkiKSArCiAgeGxhYigiU0VUKiIpICsKICB0aGVtZV9taW5pbWFsKCkKCmBgYHtyfQoKYGBgCgojIDHjgaTnm67jga7jg6bjg7zjgrbjg7zjga7jg4fjg7zjgr/jgpLlj5blvpcKZmlyc3RfdXNlcl9kYXRhIDwtIHVzZXJfY29tZm9ydFtbMV1dCgojIG11bHRpbm9taW5hbCBsb2dpc3RpYyByZWdyZXNzaW9uIG1vZGVsIOOCkuS9nOaIkAptbG9naXRfbW9kZWwgPC0gbXVsdGlub20oVFBfY3RnIH4gYFNFVCpgLCBkYXRhID0gZmlyc3RfdXNlcl9kYXRhKQoKIyDjg6Ljg4fjg6vjga7mpoLopoHjgpLooajnpLoKc3VtbWFyeShtbG9naXRfbW9kZWwpCgojIOS6iOa4rOe1kOaenOOCkuWPluW+lwpwcmVkaWN0ZWRfcHJvYnMgPC0gcHJlZGljdChtbG9naXRfbW9kZWwsIG5ld2RhdGEgPSBmaXJzdF91c2VyX2RhdGEsdHlwZSA9ICJwcm9icyIpCgojIOS6iOa4rOeiuueOh+OCkuODh+ODvOOCv+ODleODrOODvOODoOOBq+i/veWKoApmaXJzdF91c2VyX2RhdGEgPC0gY2JpbmQoZmlyc3RfdXNlcl9kYXRhLCBwcmVkaWN0ZWRfcHJvYnMpCgojIOS6iOa4rOe1kOaenOOCkueiuuiqjQpoZWFkKGZpcnN0X3VzZXJfZGF0YSkKCiMg44OH44O844K/44KS6ZW344GE5b2i5byP44Gr5aSJ5o+bCnBsb3RfZGF0YSA8LSBtZWx0KGZpcnN0X3VzZXJfZGF0YSwgaWQudmFycyA9ICJTRVQqIiwgbWVhc3VyZS52YXJzID0gYygiMSIsICIwIiwgIi0xIiksCiAgICAgICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAiUHJlZGljdGVkX1RQX2N0ZyIsIHZhbHVlLm5hbWUgPSAiUHJvYmFiaWxpdHkiKQoKIyDkuojmuKzmm7Lnt5rjgpLjg5fjg63jg4Pjg4gKZ2dwbG90KHBsb3RfZGF0YSwgYWVzKHggPSBgU0VUKmAsIHkgPSBQcm9iYWJpbGl0eSwgY29sb3IgPSBQcmVkaWN0ZWRfVFBfY3RnKSkgKwogIGdlb21fbGluZShzaXplID0gMSkgKwogIGxhYnModGl0bGUgPSAiTXVsdGlub21pYWwgTG9naXN0aWMgUmVncmVzc2lvbjogUHJlZGljdGVkIFByb2JhYmlsaXRpZXMiLAogICAgICAgeCA9ICJTRVQqIiwKICAgICAgIHkgPSAiUHJvYmFiaWxpdHkiKSArCiAgdGhlbWVfbWluaW1hbCgpICsKICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzID0gYygiMSIgPSAiZ3JlZW4iLCAiMCIgPSAiYmx1ZSIsICItMSIgPSAicmVkIikpCgpgYGB7cn0KCmBgYAoKIyDjg6Ljg4fjg6vjgpLkv53lrZjjgZnjgovjg6rjgrnjg4jjgpLkvZzmiJAKdXNlcl9tb2RlbHMgPC0gbGlzdCgpCgojIOWQhOODpuODvOOCtuODvOOBq+WvvuOBl+OBpuODouODh+ODq+OCkumBqeeUqApmb3IgKHVzZXJfaWQgaW4gbmFtZXModXNlcl9jb21mb3J0KSkgewogIAogICMg44Om44O844K244O844GU44Go44Gu44OH44O844K/44KS5Y+W5b6XCiAgdXNlcl9kYXRhIDwtIHVzZXJfY29tZm9ydFtbdXNlcl9pZF1dCiAgCiAgIyBtdWx0aW5vbWlhbCBsb2dpc3RpYyByZWdyZXNzaW9uIG1vZGVsIOOCkuS9nOaIkAogIG1sb2dpdF9tb2RlbCA8LSBtdWx0aW5vbShUUF9jdGcgfiBgU0VUKmAsIGRhdGEgPSB1c2VyX2RhdGEpCiAgCiAgIyDjg6Ljg4fjg6vjgpLjg6rjgrnjg4jjgavkv53lrZgKICB1c2VyX21vZGVsc1tbdXNlcl9pZF1dIDwtIG1sb2dpdF9tb2RlbAp9CgojIOe1kOaenOOBrueiuuiqje+8iOS+izog44Om44O844K244O8SUTjgYwgIjEiIOOBruODouODh+ODq++8iQpzdW1tYXJ5KHVzZXJfbW9kZWxzW1siNCJdXSkKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTm9ybWFsIERpc3RyaWJ1dGlvbiBGaXQiCmF1dGhvcjogIkthenVraSBIb3Jpa29zaGkiCmRhdGU6ICIyMDI0LTA4LTA4IgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDdHJsK1NoaWZ0K0VudGVyKi4gCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ3RybCtBbHQrSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4KClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KYGBge3J9ClJlYWRMaWJyYXJpZXMoY2FycykKYGBgCiMg44OR44OD44Kx44O844K444Gu44Kk44Oz44K544OI44O844Or44Go6Kqt44G/6L6844G/CgojaW5zdGFsbC5wYWNrYWdlcygicmVhZHIiKQojaW5zdGFsbC5wYWNrYWdlcygiZ2dwbG90MiIpCiNpbnN0YWxsLnBhY2thZ2VzKCJmaXRkaXN0cnBsdXMiKQojaW5zdGFsbC5wYWNrYWdlcygicmVzaGFwZTIiKQojaW5zdGFsbC5wYWNrYWdlcygiY29tZiIpCgpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkoZml0ZGlzdHJwbHVzKQpsaWJyYXJ5KG5uZXQpCmxpYnJhcnkocmVzaGFwZTIpCmxpYnJhcnkoY29tZikKCmBgYHtyfQpSZWFkX2NzdigpCmBgYAoKIyBDU1bjg5XjgqHjgqTjg6vjga7oqq3jgb/ovrzjgb8KcGF0aF9jb21mb3J0IDwtICJ+L2xvY2FsZGlyL0FzaW1FeC9Db21mb3J0X21vZGVscy9jb21mb3J0X2lucHV0c19jbG8wLjQuY3N2Igpjb21mb3J0X2RhdGEgPC0gcmVhZF9jc3YocGF0aF9jb21mb3J0KQoKIyDliJflkI3jga7norroqo0KY29sbmFtZXMoY29tZm9ydF9kYXRhKQoKIyDjg4fjg7zjgr/jga7norroqo0KaGVhZChjb21mb3J0X2RhdGEpCmBgYHtyfQpgYGAKCiMgJ1RQX2N0Zycg5YiX44KS5L2c5oiQ44GX44Gm44CBJ1RQJyDliJfjga7lgKTjgavln7rjgaXjgY3liIbpoZ7jgZnjgosKY29tZm9ydF9kYXRhJFRQX2N0ZyA8LSBpZmVsc2UoY29tZm9ydF9kYXRhJFRQID49IDEsIDEsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZmVsc2UoY29tZm9ydF9kYXRhJFRQIDw9IC0xLCAtMSwgY29tZm9ydF9kYXRhJFRQKSkKY3VzdG9tX2NvbWZvcnRfZGF0YSA8LWNvbWZvcnRfZGF0YQoKIyDntZDmnpzjgpLnorroqo0KaGVhZChjdXN0b21fY29tZm9ydF9kYXRhWywgYygiVFAiLCAiVFBfY3RnIildKQoKIyDjg6bjg7zjgrbjg7xJROOBlOOBqOOBq+ODh+ODvOOCv+OCkuODquOCueODiOOBq+agvOe0jQp1c2VyX2NvbWZvcnQgPC0gc3BsaXQoY29tZm9ydF9kYXRhLCBjb21mb3J0X2RhdGFbWyJObyJdXSkKCiMgIyDlkITjg6bjg7zjgrbjg7zjga7jg4fjg7zjgr/jgpLooajnpLrvvIjkvovvvIkKIyB1c2VyX2NvbWZvcnRbWzFdXSAgIyDjg6bjg7zjgrbjg7xJROOBjDHjga7jg4fjg7zjgr8KIyB1c2VyX2NvbWZvcnRbWzJdXSAgIyDjg6bjg7zjgrbjg7xJROOBjDLjga7jg4fjg7zjgr8KIyB1c2VyX2NvbWZvcnRbWzNdXSAgIyDjg6bjg7zjgrbjg7xJROOBjDPjga7jg4fjg7zjgr8KYGBge3J9CgpgYGAKCjwhLS0gIyAx44Gk55uu44Gu44Om44O844K244O844Gu44OH44O844K/44KS5Y+W5b6XIC0tPgo8IS0tIGZpcnN0X3VzZXJfZGF0YSA8LSB1c2VyX2NvbWZvcnRbWzFdXSAtLT4KCjwhLS0gIyBUUF9jdGfjgZTjgajjga5TRVQq44Gu44OH44O844K/IC0tPgo8IS0tIHRwX21pbnVzMSA8LSBhcy5udW1lcmljKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmBbZmlyc3RfdXNlcl9kYXRhJFRQX2N0ZyA9PSAtMV0pIC0tPgo8IS0tIHRwXzAgPC0gYXMubnVtZXJpYyhmaXJzdF91c2VyX2RhdGEkYFNFVCpgW2ZpcnN0X3VzZXJfZGF0YSRUUF9jdGcgPT0gMF0pIC0tPgo8IS0tIHRwXzEgPC0gYXMubnVtZXJpYyhmaXJzdF91c2VyX2RhdGEkYFNFVCpgW2ZpcnN0X3VzZXJfZGF0YSRUUF9jdGcgPT0gMV0pIC0tPgoKPCEtLSAjIOato+imj+WIhuW4g+OBruODleOCo+ODg+ODiCAtLT4KPCEtLSBmaXRfbWludXMxIDwtIGRub3JtKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmAsIG1lYW4gPSBtZWFuKHRwX21pbnVzMSwgbmEucm0gPSBUUlVFKSwgc2QgPSBzZCh0cF9taW51czEsIG5hLnJtID0gVFJVRSkpIC0tPgo8IS0tIGZpdF8wIDwtIGRub3JtKGZpcnN0X3VzZXJfZGF0YSRgU0VUKmAsIG1lYW4gPSBtZWFuKHRwXzAsIG5hLnJtID0gVFJVRSksIHNkID0gc2QodHBfMCwgbmEucm0gPSBUUlVFKSkgLS0+CjwhLS0gZml0XzEgPC0gZG5vcm0oZmlyc3RfdXNlcl9kYXRhJGBTRVQqYCwgbWVhbiA9IG1lYW4odHBfMSwgbmEucm0gPSBUUlVFKSwgc2QgPSBzZCh0cF8xLCBuYS5ybSA9IFRSVUUpKSAtLT4KCjwhLS0gIyDjg5fjg63jg4Pjg4jjg4fjg7zjgr/jgpLkvZzmiJAgLS0+CjwhLS0gcGxvdF9kYXRhIDwtIGRhdGEuZnJhbWUoIC0tPgo8IS0tICAgU0VUID0gZmlyc3RfdXNlcl9kYXRhJGBTRVQqYCwgLS0+CjwhLS0gICBUUF9taW51czEgPSBmaXRfbWludXMxLCAtLT4KPCEtLSAgIFRQXzAgPSBmaXRfMCwgLS0+CjwhLS0gICBUUF8xID0gZml0XzEgLS0+CjwhLS0gKSAtLT4KCjwhLS0gIyDjg5fjg63jg4Pjg4ggLS0+CjwhLS0gbGlicmFyeShnZ3Bsb3QyKSAtLT4KPCEtLSBnZ3Bsb3QocGxvdF9kYXRhLCBhZXMoeCA9IFNFVCkpICsgLS0+CjwhLS0gICBnZW9tX2xpbmUoYWVzKHkgPSBUUF9taW51czEpLCBjb2xvciA9ICJyZWQiKSArICMgVFBfY3Rn44GMLTHjga7loLTlkIjvvIjlj7PlgbTvvIkgLS0+CjwhLS0gICBnZW9tX2xpbmUoYWVzKHkgPSBUUF8wKSwgY29sb3IgPSAiYmx1ZSIpICsgICAgIyBUUF9jdGfjgYww44Gu5aC05ZCI77yI5pmu6YCa77yJIC0tPgo8IS0tICAgZ2VvbV9saW5lKGFlcyh5ID0gVFBfMSksIGNvbG9yID0gImdyZWVuIikgKyAgICMgVFBfY3Rn44GMMeOBruWgtOWQiO+8iOW3puWBtO+8iSAtLT4KPCEtLSAgIGdndGl0bGUoIkZpcnN0IFVzZXI6IFRQX2N0ZyBEaXN0cmlidXRpb25zIikgKyAtLT4KPCEtLSAgIHlsYWIoIlByb2JhYmlsaXR5IERlbnNpdHkiKSArIC0tPgo8IS0tICAgeGxhYigiU0VUKiIpICsgLS0+CjwhLS0gICB0aGVtZV9taW5pbWFsKCkgLS0+CgpgYGB7cn0KbXVsdGlub21pbmFsX2xvZ2lzdGljX3JlZ3Jlc3Npb25fbW9kZWwKYGBgCgojIDHjgaTnm67jga7jg6bjg7zjgrbjg7zjga7jg4fjg7zjgr/jgpLlj5blvpcKZmlyc3RfdXNlcl9kYXRhIDwtIHVzZXJfY29tZm9ydFtbMV1dCgojIG11bHRpbm9taW5hbCBsb2dpc3RpYyByZWdyZXNzaW9uIG1vZGVsIOOCkuS9nOaIkAptbG9naXRfbW9kZWwgPC0gbXVsdGlub20oVFBfY3RnIH4gYFNFVCpgLCBkYXRhID0gZmlyc3RfdXNlcl9kYXRhKQoKIyDjg6Ljg4fjg6vjga7mpoLopoHjgpLooajnpLoKc3VtbWFyeShtbG9naXRfbW9kZWwpCgojIOS6iOa4rOe1kOaenOOCkuWPluW+lwpwcmVkaWN0ZWRfcHJvYnMgPC0gcHJlZGljdChtbG9naXRfbW9kZWwsIG5ld2RhdGEgPSBmaXJzdF91c2VyX2RhdGEsdHlwZSA9ICJwcm9icyIpCgojIOS6iOa4rOeiuueOh+OCkuODh+ODvOOCv+ODleODrOODvOODoOOBq+i/veWKoApmaXJzdF91c2VyX2RhdGEgPC0gY2JpbmQoZmlyc3RfdXNlcl9kYXRhLCBwcmVkaWN0ZWRfcHJvYnMpCgojIOS6iOa4rOe1kOaenOOCkueiuuiqjQpoZWFkKGZpcnN0X3VzZXJfZGF0YSkKCiMg44OH44O844K/44KS6ZW344GE5b2i5byP44Gr5aSJ5o+bCnBsb3RfZGF0YSA8LSBtZWx0KGZpcnN0X3VzZXJfZGF0YSwgaWQudmFycyA9ICJTRVQqIiwgbWVhc3VyZS52YXJzID0gYygiMSIsICIwIiwgIi0xIiksCiAgICAgICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAiUHJlZGljdGVkX1RQX2N0ZyIsIHZhbHVlLm5hbWUgPSAiUHJvYmFiaWxpdHkiKQoKIyDkuojmuKzmm7Lnt5rjgpLjg5fjg63jg4Pjg4gKZ2dwbG90KHBsb3RfZGF0YSwgYWVzKHggPSBgU0VUKmAsIHkgPSBQcm9iYWJpbGl0eSwgY29sb3IgPSBQcmVkaWN0ZWRfVFBfY3RnKSkgKwogIGdlb21fbGluZShzaXplID0gMSkgKwogIGxhYnModGl0bGUgPSAiTXVsdGlub21pYWwgTG9naXN0aWMgUmVncmVzc2lvbjogUHJlZGljdGVkIFByb2JhYmlsaXRpZXMiLAogICAgICAgeCA9ICJTRVQqIiwKICAgICAgIHkgPSAiUHJvYmFiaWxpdHkiKSArCiAgdGhlbWVfbWluaW1hbCgpICsKICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzID0gYygiMSIgPSAiZ3JlZW4iLCAiMCIgPSAiYmx1ZSIsICItMSIgPSAicmVkIikpCgpgYGB7fQoKYGBgCiMg44Oi44OH44Or44KS5L+d5a2Y44GZ44KL44Oq44K544OI44KS5L2c5oiQCnVzZXJfbW9kZWxzIDwtIGxpc3QoKQoKIyDlkITjg6bjg7zjgrbjg7zjgavlr77jgZfjgabjg6Ljg4fjg6vjgpLpgannlKgKZm9yICh1c2VyX2lkIGluIG5hbWVzKHVzZXJfY29tZm9ydCkpIHsKICAKICAjIOODpuODvOOCtuODvOOBlOOBqOOBruODh+ODvOOCv+OCkuWPluW+lwogIHVzZXJfZGF0YSA8LSB1c2VyX2NvbWZvcnRbW3VzZXJfaWRdXQogIAogICMgbXVsdGlub21pYWwgbG9naXN0aWMgcmVncmVzc2lvbiBtb2RlbCDjgpLkvZzmiJAKICBtbG9naXRfbW9kZWwgPC0gbXVsdGlub20oVFBfY3RnIH4gYFNFVCpgLCBkYXRhID0gdXNlcl9kYXRhKQogIAogICMg44Oi44OH44Or44KS44Oq44K544OI44Gr5L+d5a2YCiAgdXNlcl9tb2RlbHNbW3VzZXJfaWRdXSA8LSBtbG9naXRfbW9kZWwKfQoKIyDntZDmnpzjga7norroqo3vvIjkvos6IOODpuODvOOCtuODvElE44GMICIxIiDjga7jg6Ljg4fjg6vvvIkKc3VtbWFyeSh1c2VyX21vZGVsc1tbIjEiXV0pCgojIOODouODh+ODq+OCkuODleOCoeOCpOODq+OBq+S/neWtmApzYXZlKHVzZXJfbW9kZWxzLCBmaWxlID0gImxvY2FsZGlyL0FzaW1FeC9Db21mb3J0X21vZGVscy91c2VyX21vZGVscy5SRGF0YSIpCgojIOS/neWtmOOBl+OBn+ODouODh+ODq+OCkuiqreOBv+i+vOOCgApsb2FkKCJsb2NhbGRpci9Bc2ltRXgvQ29tZm9ydF9tb2RlbHMvdXNlcl9tb2RlbHMuUkRhdGEiKQpgYGB7cn0KCmBgYAojIOODpuODvOOCtuODvElEICIyIiDjga7jg6Ljg4fjg6vjgpLlj5blvpcKbW9kZWxfZm9yX3VzZXJfMiA8LSB1c2VyX21vZGVsc1tbIjIiXV0KCiMg44Om44O844K244O8SUQgIjIiIOOBruODh+ODvOOCv+OCkuWPluW+lwp1c2VyX2RhdGFfMiA8LSB1c2VyX2NvbWZvcnRbWyIyIl1dCgojIFNFVCog44Gr5Z+644Gl44GE44Gm5LqI5ris56K6546H44KS6KiI566XCnByZWRpY3RlZF9wcm9ic18yIDwtIHByZWRpY3QobW9kZWxfZm9yX3VzZXJfMiwgbmV3ZGF0YSA9IHVzZXJfZGF0YV8yLCB0eXBlID0gInByb2JzIikKCiMg5LqI5ris56K6546H44KS44OH44O844K/44OV44Os44O844Og44Gr6L+95YqgCnVzZXJfZGF0YV8yIDwtIGNiaW5kKHVzZXJfZGF0YV8yLCBwcmVkaWN0ZWRfcHJvYnNfMikKCiMg44OH44O844K/44KS6ZW344GE5b2i5byP44Gr5aSJ5o+bCnBsb3RfZGF0YV8yIDwtIG1lbHQodXNlcl9kYXRhXzIsIGlkLnZhcnMgPSAiU0VUKiIsIG1lYXN1cmUudmFycyA9IGMoIjEiLCAiMCIsICItMSIpLAogICAgICAgICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAiUHJlZGljdGVkX1RQX2N0ZyIsIHZhbHVlLm5hbWUgPSAiUHJvYmFiaWxpdHkiKQoKIyDkuojmuKzjgqvjg7zjg5bjgpLjg5fjg63jg4Pjg4gKZ2dwbG90KHBsb3RfZGF0YV8yLCBhZXMoeCA9IGBTRVQqYCwgeSA9IFByb2JhYmlsaXR5LCBjb2xvciA9IFByZWRpY3RlZF9UUF9jdGcpKSArCiAgZ2VvbV9saW5lKHNpemUgPSAxKSArCiAgbGFicyh0aXRsZSA9ICJVc2VyIDI6IFByZWRpY3RlZCBUUF9jdGcgUHJvYmFiaWxpdGllcyIsCiAgICAgICB4ID0gIlNFVCoiLAogICAgICAgeSA9ICJQcm9iYWJpbGl0eSIpICsKICB0aGVtZV9taW5pbWFsKCkgKwogIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXMgPSBjKCIxIiA9ICJncmVlbiIsICIwIiA9ICJibHVlIiwgIi0xIiA9ICJyZWQiKSkKYGBge3J9CmBgYAoKIyDjg6bjg7zjgrbjg7xJRCAiNCIg44Gu44Oi44OH44Or44KS5Y+W5b6XCm1vZGVsX2Zvcl91c2VyXzQgPC0gdXNlcl9tb2RlbHNbWyI0Il1dCgojIOODpuODvOOCtuODvElEICI0IiDjga7jg4fjg7zjgr/jgpLlj5blvpcKdXNlcl9kYXRhXzQgPC0gdXNlcl9jb21mb3J0W1siNCJdXQoKIyBTRVQqIOOBq+WfuuOBpeOBhOOBpuS6iOa4rOeiuueOh+OCkuioiOeulwpwcmVkaWN0ZWRfcHJvYnNfNCA8LSBwcmVkaWN0KG1vZGVsX2Zvcl91c2VyXzQsIG5ld2RhdGEgPSB1c2VyX2RhdGFfNCwgdHlwZSA9ICJwcm9icyIpCgojIOS6iOa4rOeiuueOh+OCkuODh+ODvOOCv+ODleODrOODvOODoOOBq+i/veWKoAp1c2VyX2RhdGFfNCA8LSBjYmluZCh1c2VyX2RhdGFfNCwgcHJlZGljdGVkX3Byb2JzXzQpCgojIOODh+ODvOOCv+OCkumVt+OBhOW9ouW8j+OBq+WkieaPmwpwbG90X2RhdGFfNCA8LSBtZWx0KHVzZXJfZGF0YV80LCBpZC52YXJzID0gIlNFVCoiLCBtZWFzdXJlLnZhcnMgPSBjKCIwIiwgIi0xIiksCiAgICAgICAgICAgICAgICAgICAgdmFyaWFibGUubmFtZSA9ICJQcmVkaWN0ZWRfVFBfY3RnIiwgdmFsdWUubmFtZSA9ICJQcm9iYWJpbGl0eSIpCgojIOS6iOa4rOOCq+ODvOODluOCkuODl+ODreODg+ODiApnZ3Bsb3QocGxvdF9kYXRhXzQsIGFlcyh4ID0gYFNFVCpgLCB5ID0gUHJvYmFiaWxpdHksIGNvbG9yID0gUHJlZGljdGVkX1RQX2N0ZykpICsKICBnZW9tX2xpbmUoc2l6ZSA9IDEpICsKICBsYWJzKHRpdGxlID0gIlVzZXIgNDogUHJlZGljdGVkIFRQX2N0ZyBQcm9iYWJpbGl0aWVzIiwKICAgICAgIHggPSAiU0VUKiIsCiAgICAgICB5ID0gIlByb2JhYmlsaXR5IikgKwogIHRoZW1lX21pbmltYWwoKSArCiAgc2NhbGVfY29sb3JfbWFudWFsKHZhbHVlcyA9IGMoICIwIiA9ICJibHVlIiwgIi0xIiA9ICJyZWQiKSkKCiMg5ZCE44Om44O844K244O844Gu44Kv44Op44K55YiG5biD44KS56K66KqNCmZvciAodXNlcl9pZCBpbiBuYW1lcyh1c2VyX2NvbWZvcnQpKSB7CiAgdXNlcl9kYXRhIDwtIHVzZXJfY29tZm9ydFtbdXNlcl9pZF1dCiAgcHJpbnQocGFzdGUoIkNsYXNzIGRpc3RyaWJ1dGlvbiBmb3IgdXNlciIsIHVzZXJfaWQpKQogIHByaW50KHRhYmxlKHVzZXJfZGF0YSRUUF9jdGcpKQp9CgpgYGB7cn0KY2hlY2tfdGhlX2ltYmFsYW5jZWRfdXNlcgpgYGAKCiMg44OQ44Op44Oz44K544GM5oKq44GE44Om44O844K244O844KS5L+d5a2Y44GZ44KL44Oq44K544OI44KS5L2c5oiQCmltYmFsYW5jZWRfdXNlcnMgPC0gbGlzdCgpCgojIOWQhOODpuODvOOCtuODvOOBruOCr+ODqeOCueWIhuW4g+OCkueiuuiqjQpmb3IgKHVzZXJfaWQgaW4gbmFtZXModXNlcl9jb21mb3J0KSkgewogIHVzZXJfZGF0YSA8LSB1c2VyX2NvbWZvcnRbW3VzZXJfaWRdXQogIGNsYXNzX2Rpc3RyaWJ1dGlvbiA8LSB0YWJsZSh1c2VyX2RhdGEkVFBfY3RnKQogIAogICMg44Kv44Op44K55YiG5biD44GM5YGP44Gj44Gm44GE44KL5aC05ZCICiAgaWYgKGxlbmd0aChjbGFzc19kaXN0cmlidXRpb24pIDwgMyB8fCBhbnkoY2xhc3NfZGlzdHJpYnV0aW9uIDwgNSkpIHsgICMg44Kv44Op44K544GMMeOBpOOBl+OBi+OBquOBhOOAgeOBvuOBn+OBr+WwkeOBquOBmeOBjuOCiwogICAgaW1iYWxhbmNlZF91c2Vyc1tbdXNlcl9pZF1dIDwtIGNsYXNzX2Rpc3RyaWJ1dGlvbgogICAgcHJpbnQocGFzdGUoIlVzZXIiLCB1c2VyX2lkLCAiaGFzIGltYmFsYW5jZWQgY2xhc3NlcyIpKQogICAgcHJpbnQoY2xhc3NfZGlzdHJpYnV0aW9uKQogIH0KfQoKIyDjg5Djg6njg7PjgrnjgYzmgqrjgYTjg6bjg7zjgrbjg7zjg6rjgrnjg4jjgpLooajnpLoKcHJpbnQoIlVzZXJzIHdpdGggaW1iYWxhbmNlZCBjbGFzc2VzOiIpCnByaW50KGltYmFsYW5jZWRfdXNlcnMpCgojIzEsNCw4LDEwLDExLDE1LDIxLDIyCgojIOODkOODqeODs+OCueOBjOaCquOBhOOBqOWIpOWumuOBleOCjOOBn+ODpuODvOOCtuODvOOBruODquOCueODiAppbWJhbGFuY2VkX3VzZXJfaWRzIDwtIGMoIjEiLCAiNCIsICI4IiwgIjEwIiwgIjExIiwgIjE1IiwgIjIxIiwgIjIyIikKCiMg5oyH5a6a44GV44KM44Gf44Om44O844K244O844KSIHVzZXJfbW9kZWxzIOOBi+OCieWPluOCiumZpOOBjwpvYmpfdXNlcl9tb2RlbHMgPC0gdXNlcl9tb2RlbHNbIShuYW1lcyh1c2VyX21vZGVscykgJWluJSBpbWJhbGFuY2VkX3VzZXJfaWRzKV0KCiMg57WQ5p6c44KS56K66KqN77yI5q6L44Gj44Gm44GE44KL44Om44O844K244O844KS6KGo56S677yJCnByaW50KCJSZW1haW5pbmcgdXNlciBtb2RlbHM6IikKcHJpbnQobmFtZXMob2JqX3VzZXJfbW9kZWxzKSkKCmBgYHtyfQp0ZXN0X2NvbWZfcGFja2FnZQpgYGAKCiMgIyDmuKnluqbjgIHmub/luqbjgIFjbG/lgKTjgpLoqK3lrpoKIyB0ZW1wZXJhdHVyZSA8LSAyNSAgIyDku7vmhI/jga7muKnluqYgKOS+izogMjXCsEMpCiMgaHVtaWRpdHkgPC0gNTAgICMg5rm/5bqmIDUwJQojIGNsb192YWx1ZSA8LSAwLjQgICMgY2xv5YCkIDAuNAojIAojICMg44Gd44Gu5LuW44Gu44OR44Op44Oh44O844K/ICjlv4XopoHjgavlv5zjgZjjgaboqK3lrprlj6/og70pCiMgbWV0X3ZhbHVlIDwtIDEgICMg44Oh44K/44Oc44Oq44OD44Kv44Os44O844OIICjkvos6IDEuMiBtZXQpCiMgYWlyX3ZlbG9jaXR5IDwtIDAuMSAgIyDnqbrmsJfjga7mtYHpgJ8gKOS+izogMC4xIG0vcykKIyAKIyAjIFNFVCrjga7oqIjnrpcKIyBzZXRfc3RhciA8LSBjYWxjU0VUKHRhID0gdGVtcGVyYXR1cmUsIHRyID0gdGVtcGVyYXR1cmUsIHZlbCA9IGFpcl92ZWxvY2l0eSwgcmggPSBodW1pZGl0eSwgY2xvID0gY2xvX3ZhbHVlLCBtZXQgPSBtZXRfdmFsdWUpCiMgCiMgIyDntZDmnpzjgpLooajnpLoKIyBwcmludChzZXRfc3RhcikKIyAKYGBge3J9CnNldF9lbnZfcmFuZ2UKYGBgCgoKIyDmuKnluqbjga7nr4Tlm7LjgpLoqK3lrpogKDIywrBD44GL44KJMzDCsEPjgpIwLjXCsEPliLvjgb/jgacpCnRlbXBlcmF0dXJlcyA8LSBzZXEoMjIsIDMwLCBieSA9IDAuNSkKCiMg44OV44Kh44Oz44Oi44O844OJ44KS6Kit5a6aICgwfjUpCmZhbl9tb2RlcyA8LSAwOjUKCiMg44OV44Kh44Oz44K544OU44O844OJ44KS6Kit5a6aCmZhbl9zcGVlZHMgPC0gYygwLjA3LCAwLjI5LCAwLjU4LCAwLjk0LCAxLjM3LCAxLjg3KQoKIyDlkITmuKnluqbjgZTjgajjgavjg5XjgqHjg7Pjg6Ljg7zjg4njgajjg5XjgqHjg7Pjgrnjg5Tjg7zjg4njgpLnubDjgorov5TjgZfjgIHjg4fjg7zjgr/jg5Xjg6zjg7zjg6DjgpLkvZzmiJAKZW52X2xpc3QgPC0gZGF0YS5mcmFtZSgKICBUZW1wZXJhdHVyZSA9IHJlcCh0ZW1wZXJhdHVyZXMsIGVhY2ggPSBsZW5ndGgoZmFuX21vZGVzKSksCiAgRmFuTW9kZSA9IHJlcChmYW5fbW9kZXMsIHRpbWVzID0gbGVuZ3RoKHRlbXBlcmF0dXJlcykpLAogIEZhblNwZWVkID0gcmVwKGZhbl9zcGVlZHMsIHRpbWVzID0gbGVuZ3RoKHRlbXBlcmF0dXJlcykpCikKCiMg57WQ5p6c44KS6KGo56S6CnByaW50KGVudl9saXN0KQoKYGBge3J9CgpgYGAKCiMg5rm/5bqm44Go44Gd44Gu5LuW44Gu5a6a5pWw6Kit5a6aCmh1bWlkaXR5IDwtIDUwICAjIOa5v+W6piA1MCUKY2xvX3ZhbHVlIDwtIDAuNCAgIyBjbG/lgKQgMC40Cm1ldF92YWx1ZSA8LSAxICAjIOODoeOCv+ODnOODquODg+OCr+ODrOODvOODiCAxIG1ldAoKIyBTRVQq44KS6KiI566X44GX44Gm44Oq44K544OI44Gr6L+95Yqg44GZ44KLCmVudl9saXN0JGBTRVQqYCA8LSBtYXBwbHkoZnVuY3Rpb24odGVtcCwgZmFuX3NwZWVkKSB7CiAgIyBTRVQq44KS6KiI566XCiAgY2FsY1NFVCh0YSA9IHRlbXAsIHRyID0gdGVtcCwgdmVsID0gZmFuX3NwZWVkLCByaCA9IGh1bWlkaXR5LCBjbG8gPSBjbG9fdmFsdWUsIG1ldCA9IG1ldF92YWx1ZSkKfSwgZW52X2xpc3QkVGVtcGVyYXR1cmUsIGVudl9saXN0JEZhblNwZWVkKQoKIyDntZDmnpzjgpLooajnpLoKcHJpbnQoZW52X2xpc3QpCgpgYGB7cn0KCmBgYAoKIyDnorrnjofjgpLkv53lrZjjgZnjgovjg4fjg7zjgr/jg5Xjg6zjg7zjg6DjgpLliJ3mnJ/ljJYKdXNlcl9wcm9iYWJpbGl0aWVzIDwtIG1hdHJpeChOQSwgbnJvdyA9IG5yb3coZW52X2xpc3QpLCBuY29sID0gbGVuZ3RoKG9ial91c2VyX21vZGVscykpCgojIOWQhOODpuODvOOCtuODvOOBq+WvvuOBl+OBpuODouODh+ODq+OCkumBqeeUqOOBl+OBpjLjgaTnm67jga7jgq/jg6njgrnjga7norrnjofjgpLoqIjnrpcKZm9yIChpIGluIHNlcV9hbG9uZyhuYW1lcyhvYmpfdXNlcl9tb2RlbHMpKSkgewogIHVzZXJfaWQgPC0gbmFtZXMob2JqX3VzZXJfbW9kZWxzKVtpXQogIAogICMg44Om44O844K244O844GU44Go44Gu44Oi44OH44Or44KS5Y+W5b6XCiAgbW9kZWwgPC0gb2JqX3VzZXJfbW9kZWxzW1t1c2VyX2lkXV0KICAKICAjIDLjgaTnm67jga7jgq/jg6njgrnvvIhUUF9jdGcgPSAw77yJ44Gr5YiG6aGe44GV44KM44KL56K6546H44KS5LqI5risCiAgcHJlZGljdGVkX3Byb2JzIDwtIHByZWRpY3QobW9kZWwsIG5ld2RhdGEgPSBlbnZfbGlzdCwgdHlwZSA9ICJwcm9icyIpCiAgCiAgIyAy44Gk55uu44Gu44Kv44Op44K544Gu56K6546H44KSIHVzZXJfcHJvYmFiaWxpdGllcyDjga7lr77lv5zjgZnjgovliJfjgavkv53lrZgKICB1c2VyX3Byb2JhYmlsaXRpZXNbLCBpXSA8LSBwcmVkaWN0ZWRfcHJvYnNbLCAiMCJdCn0KCiMg5YiX5ZCN44Gr44Om44O844K244O8SUTjgpLku5jkuI4KY29sbmFtZXModXNlcl9wcm9iYWJpbGl0aWVzKSA8LSBuYW1lcyhvYmpfdXNlcl9tb2RlbHMpCgojIOe1kOaenOOCkueiuuiqjQpwcmludCh1c2VyX3Byb2JhYmlsaXRpZXMpCgoKYGBge3J9CgpgYGAK</div>
 
 
 

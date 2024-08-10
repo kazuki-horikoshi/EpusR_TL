@@ -18,22 +18,24 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 ReadLibraries(cars)
 ```
 # パッケージのインストールと読み込み
-install.packages("readr")
-install.packages("ggplot2")
-install.packages("fitdistrplus")
 
-install.packages("reshape2")
+#install.packages("readr")
+#install.packages("ggplot2")
+#install.packages("fitdistrplus")
+#install.packages("reshape2")
+#install.packages("comf")
 
 library(readr)
 library(ggplot2)
 library(fitdistrplus)
 library(nnet)
-
 library(reshape2)
+library(comf)
 
 ```{r}
-Readcsv
+Read_csv()
 ```
+
 # CSVファイルの読み込み
 path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
 comfort_data <- read_csv(path_comfort)
@@ -57,48 +59,48 @@ head(custom_comfort_data[, c("TP", "TP_ctg")])
 # ユーザーIDごとにデータをリストに格納
 user_comfort <- split(comfort_data, comfort_data[["No"]])
 
-# 各ユーザーのデータを表示（例）
-user_comfort[[1]]  # ユーザーIDが1のデータ
-user_comfort[[2]]  # ユーザーIDが2のデータ
-user_comfort[[3]]  # ユーザーIDが3のデータ
+# # 各ユーザーのデータを表示（例）
+# user_comfort[[1]]  # ユーザーIDが1のデータ
+# user_comfort[[2]]  # ユーザーIDが2のデータ
+# user_comfort[[3]]  # ユーザーIDが3のデータ
 ```{r}
 
 ```
 
-# 1つ目のユーザーのデータを取得
-first_user_data <- user_comfort[[1]]
+<!-- # 1つ目のユーザーのデータを取得 -->
+<!-- first_user_data <- user_comfort[[1]] -->
 
-# TP_ctgごとのSET*のデータ
-tp_minus1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == -1])
-tp_0 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 0])
-tp_1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 1])
+<!-- # TP_ctgごとのSET*のデータ -->
+<!-- tp_minus1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == -1]) -->
+<!-- tp_0 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 0]) -->
+<!-- tp_1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 1]) -->
 
-# 正規分布のフィット
-fit_minus1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE))
-fit_0 <- dnorm(first_user_data$`SET*`, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE))
-fit_1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE))
+<!-- # 正規分布のフィット -->
+<!-- fit_minus1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE)) -->
+<!-- fit_0 <- dnorm(first_user_data$`SET*`, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE)) -->
+<!-- fit_1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE)) -->
 
-# プロットデータを作成
-plot_data <- data.frame(
-  SET = first_user_data$`SET*`,
-  TP_minus1 = fit_minus1,
-  TP_0 = fit_0,
-  TP_1 = fit_1
-)
+<!-- # プロットデータを作成 -->
+<!-- plot_data <- data.frame( -->
+<!--   SET = first_user_data$`SET*`, -->
+<!--   TP_minus1 = fit_minus1, -->
+<!--   TP_0 = fit_0, -->
+<!--   TP_1 = fit_1 -->
+<!-- ) -->
 
-# プロット
-library(ggplot2)
-ggplot(plot_data, aes(x = SET)) +
-  geom_line(aes(y = TP_minus1), color = "red") + # TP_ctgが-1の場合（右側）
-  geom_line(aes(y = TP_0), color = "blue") +    # TP_ctgが0の場合（普通）
-  geom_line(aes(y = TP_1), color = "green") +   # TP_ctgが1の場合（左側）
-  ggtitle("First User: TP_ctg Distributions") +
-  ylab("Probability Density") +
-  xlab("SET*") +
-  theme_minimal()
+<!-- # プロット -->
+<!-- library(ggplot2) -->
+<!-- ggplot(plot_data, aes(x = SET)) + -->
+<!--   geom_line(aes(y = TP_minus1), color = "red") + # TP_ctgが-1の場合（右側） -->
+<!--   geom_line(aes(y = TP_0), color = "blue") +    # TP_ctgが0の場合（普通） -->
+<!--   geom_line(aes(y = TP_1), color = "green") +   # TP_ctgが1の場合（左側） -->
+<!--   ggtitle("First User: TP_ctg Distributions") + -->
+<!--   ylab("Probability Density") + -->
+<!--   xlab("SET*") + -->
+<!--   theme_minimal() -->
 
 ```{r}
-
+multinominal_logistic_regression_model
 ```
 
 # 1つ目のユーザーのデータを取得
@@ -132,10 +134,9 @@ ggplot(plot_data, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
   theme_minimal() +
   scale_color_manual(values = c("1" = "green", "0" = "blue", "-1" = "red"))
 
-```{r}
+```{}
 
 ```
-
 # モデルを保存するリストを作成
 user_models <- list()
 
@@ -153,5 +154,200 @@ for (user_id in names(user_comfort)) {
 }
 
 # 結果の確認（例: ユーザーIDが "1" のモデル）
-summary(user_models[["4"]])
+summary(user_models[["1"]])
 
+# モデルをファイルに保存
+save(user_models, file = "localdir/AsimEx/Comfort_models/user_models.RData")
+
+# 保存したモデルを読み込む
+load("localdir/AsimEx/Comfort_models/user_models.RData")
+```{r}
+
+```
+# ユーザーID "2" のモデルを取得
+model_for_user_2 <- user_models[["2"]]
+
+# ユーザーID "2" のデータを取得
+user_data_2 <- user_comfort[["2"]]
+
+# SET* に基づいて予測確率を計算
+predicted_probs_2 <- predict(model_for_user_2, newdata = user_data_2, type = "probs")
+
+# 予測確率をデータフレームに追加
+user_data_2 <- cbind(user_data_2, predicted_probs_2)
+
+# データを長い形式に変換
+plot_data_2 <- melt(user_data_2, id.vars = "SET*", measure.vars = c("1", "0", "-1"),
+                    variable.name = "Predicted_TP_ctg", value.name = "Probability")
+
+# 予測カーブをプロット
+ggplot(plot_data_2, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
+  geom_line(size = 1) +
+  labs(title = "User 2: Predicted TP_ctg Probabilities",
+       x = "SET*",
+       y = "Probability") +
+  theme_minimal() +
+  scale_color_manual(values = c("1" = "green", "0" = "blue", "-1" = "red"))
+```{r}
+```
+
+# ユーザーID "4" のモデルを取得
+model_for_user_4 <- user_models[["4"]]
+
+# ユーザーID "4" のデータを取得
+user_data_4 <- user_comfort[["4"]]
+
+# SET* に基づいて予測確率を計算
+predicted_probs_4 <- predict(model_for_user_4, newdata = user_data_4, type = "probs")
+
+# 予測確率をデータフレームに追加
+user_data_4 <- cbind(user_data_4, predicted_probs_4)
+
+# データを長い形式に変換
+plot_data_4 <- melt(user_data_4, id.vars = "SET*", measure.vars = c("0", "-1"),
+                    variable.name = "Predicted_TP_ctg", value.name = "Probability")
+
+# 予測カーブをプロット
+ggplot(plot_data_4, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
+  geom_line(size = 1) +
+  labs(title = "User 4: Predicted TP_ctg Probabilities",
+       x = "SET*",
+       y = "Probability") +
+  theme_minimal() +
+  scale_color_manual(values = c( "0" = "blue", "-1" = "red"))
+
+# 各ユーザーのクラス分布を確認
+for (user_id in names(user_comfort)) {
+  user_data <- user_comfort[[user_id]]
+  print(paste("Class distribution for user", user_id))
+  print(table(user_data$TP_ctg))
+}
+
+```{r}
+check_the_imbalanced_user
+```
+
+# バランスが悪いユーザーを保存するリストを作成
+imbalanced_users <- list()
+
+# 各ユーザーのクラス分布を確認
+for (user_id in names(user_comfort)) {
+  user_data <- user_comfort[[user_id]]
+  class_distribution <- table(user_data$TP_ctg)
+  
+  # クラス分布が偏っている場合
+  if (length(class_distribution) < 3 || any(class_distribution < 5)) {  # クラスが1つしかない、または少なすぎる
+    imbalanced_users[[user_id]] <- class_distribution
+    print(paste("User", user_id, "has imbalanced classes"))
+    print(class_distribution)
+  }
+}
+
+# バランスが悪いユーザーリストを表示
+print("Users with imbalanced classes:")
+print(imbalanced_users)
+
+##1,4,8,10,11,15,21,22
+
+# バランスが悪いと判定されたユーザーのリスト
+imbalanced_user_ids <- c("1", "4", "8", "10", "11", "15", "21", "22")
+
+# 指定されたユーザーを user_models から取り除く
+obj_user_models <- user_models[!(names(user_models) %in% imbalanced_user_ids)]
+
+# 結果を確認（残っているユーザーを表示）
+print("Remaining user models:")
+print(names(obj_user_models))
+
+```{r}
+test_comf_package
+```
+
+# # 温度、湿度、clo値を設定
+# temperature <- 25  # 任意の温度 (例: 25°C)
+# humidity <- 50  # 湿度 50%
+# clo_value <- 0.4  # clo値 0.4
+# 
+# # その他のパラメータ (必要に応じて設定可能)
+# met_value <- 1  # メタボリックレート (例: 1.2 met)
+# air_velocity <- 0.1  # 空気の流速 (例: 0.1 m/s)
+# 
+# # SET*の計算
+# set_star <- calcSET(ta = temperature, tr = temperature, vel = air_velocity, rh = humidity, clo = clo_value, met = met_value)
+# 
+# # 結果を表示
+# print(set_star)
+# 
+```{r}
+set_env_range
+```
+
+
+# 温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)
+temperatures <- seq(22, 30, by = 0.5)
+
+# ファンモードを設定 (0~5)
+fan_modes <- 0:5
+
+# ファンスピードを設定
+fan_speeds <- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)
+
+# 各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成
+env_list <- data.frame(
+  Temperature = rep(temperatures, each = length(fan_modes)),
+  FanMode = rep(fan_modes, times = length(temperatures)),
+  FanSpeed = rep(fan_speeds, times = length(temperatures))
+)
+
+# 結果を表示
+print(env_list)
+
+```{r}
+
+```
+
+# 湿度とその他の定数設定
+humidity <- 50  # 湿度 50%
+clo_value <- 0.4  # clo値 0.4
+met_value <- 1  # メタボリックレート 1 met
+
+# SET*を計算してリストに追加する
+env_list$`SET*` <- mapply(function(temp, fan_speed) {
+  # SET*を計算
+  calcSET(ta = temp, tr = temp, vel = fan_speed, rh = humidity, clo = clo_value, met = met_value)
+}, env_list$Temperature, env_list$FanSpeed)
+
+# 結果を表示
+print(env_list)
+
+```{r}
+
+```
+
+# 確率を保存するデータフレームを初期化
+user_probabilities <- matrix(NA, nrow = nrow(env_list), ncol = length(obj_user_models))
+
+# 各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算
+for (i in seq_along(names(obj_user_models))) {
+  user_id <- names(obj_user_models)[i]
+  
+  # ユーザーごとのモデルを取得
+  model <- obj_user_models[[user_id]]
+  
+  # 2つ目のクラス（TP_ctg = 0）に分類される確率を予測
+  predicted_probs <- predict(model, newdata = env_list, type = "probs")
+  
+  # 2つ目のクラスの確率を user_probabilities の対応する列に保存
+  user_probabilities[, i] <- predicted_probs[, "0"]
+}
+
+# 列名にユーザーIDを付与
+colnames(user_probabilities) <- names(obj_user_models)
+
+# 結果を確認
+print(user_probabilities)
+
+
+```{r}
+
+```
