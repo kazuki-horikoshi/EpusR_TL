@@ -24,6 +24,7 @@ ReadLibraries(cars)
 #install.packages("fitdistrplus")
 #install.packages("reshape2")
 #install.packages("comf")
+#install.packages("gridExtra")
 
 library(readr)
 library(ggplot2)
@@ -31,6 +32,9 @@ library(fitdistrplus)
 library(nnet)
 library(reshape2)
 library(comf)
+
+library(gridExtra)
+
 
 ```{r}
 Read_csv()
@@ -347,7 +351,45 @@ colnames(user_probabilities) <- names(obj_user_models)
 # 結果を確認
 print(user_probabilities)
 
-
 ```{r}
 
 ```
+
+# user_probabilities をデータフレームに変換
+user_probabilities_df <- as.data.frame(user_probabilities)
+
+# env_list と user_probabilities_df を結合
+env_comf_agent <- cbind(env_list, user_probabilities_df)
+
+# 結果を確認
+print(head(env_comf_agent))
+
+
+# テスト対象のユーザーID
+test_users <- c("2", "3", "5", "6")
+
+# プロットリストを作成
+plot_list <- lapply(test_users, function(user_id) {
+  
+  # 対象ユーザーのデータを抽出
+  user_data <- combined_data[, c("SET*", user_id)]
+  
+  # 相関係数を計算
+  corr_coeff <- cor(user_data$`SET*`, user_data[, user_id], use = "complete.obs")
+  
+  # 相関プロットの作成
+  p <- ggplot(user_data, aes(x = `SET*`, y = user_data[, user_id])) +
+    geom_point() +
+    geom_smooth(method = "lm", col = "blue") +
+    labs(title = paste("User", user_id, "- Correlation:", round(corr_coeff, 2)),
+         x = "SET*",
+         y = paste("Comfort Probability (User", user_id, ")")) +
+    theme_minimal()
+  
+  # プロットを返す
+  return(p)
+})
+
+# プロットを強制表示
+print(do.call(grid.arrange, c(plot_list, ncol = 2)))
+
