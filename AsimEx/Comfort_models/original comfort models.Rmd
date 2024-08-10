@@ -15,18 +15,24 @@ When you save the notebook, an HTML file containing the code and output will be 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 ```{r}
-
+ReadLibraries(cars)
 ```
 # パッケージのインストールと読み込み
 install.packages("readr")
 install.packages("ggplot2")
 install.packages("fitdistrplus")
 
+install.packages("reshape2")
+
 library(readr)
 library(ggplot2)
 library(fitdistrplus)
+library(nnet)
+
+library(reshape2)
+
 ```{r}
-plot(cars)
+Readcsv
 ```
 # CSVファイルの読み込み
 path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
@@ -38,14 +44,114 @@ colnames(comfort_data)
 # データの確認
 head(comfort_data)
 ```{r}
-
 ```
+
+# 'TP_ctg' 列を作成して、'TP' 列の値に基づき分類する
+comfort_data$TP_ctg <- ifelse(comfort_data$TP >= 1, 1, 
+                              ifelse(comfort_data$TP <= -1, -1, comfort_data$TP))
+custom_comfort_data <-comfort_data
+
+# 結果を確認
+head(custom_comfort_data[, c("TP", "TP_ctg")])
+
 # ユーザーIDごとにデータをリストに格納
-comfort_data$No <- as.factor(comfort_data$No) 
-#user_comfort <- split(comfort_data, comfort_data$No)
+user_comfort <- split(comfort_data, comfort_data[["No"]])
 
 # 各ユーザーのデータを表示（例）
 user_comfort[[1]]  # ユーザーIDが1のデータ
 user_comfort[[2]]  # ユーザーIDが2のデータ
 user_comfort[[3]]  # ユーザーIDが3のデータ
+```{r}
+
+```
+
+# 1つ目のユーザーのデータを取得
+first_user_data <- user_comfort[[1]]
+
+# TP_ctgごとのSET*のデータ
+tp_minus1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == -1])
+tp_0 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 0])
+tp_1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 1])
+
+# 正規分布のフィット
+fit_minus1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE))
+fit_0 <- dnorm(first_user_data$`SET*`, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE))
+fit_1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE))
+
+# プロットデータを作成
+plot_data <- data.frame(
+  SET = first_user_data$`SET*`,
+  TP_minus1 = fit_minus1,
+  TP_0 = fit_0,
+  TP_1 = fit_1
+)
+
+# プロット
+library(ggplot2)
+ggplot(plot_data, aes(x = SET)) +
+  geom_line(aes(y = TP_minus1), color = "red") + # TP_ctgが-1の場合（右側）
+  geom_line(aes(y = TP_0), color = "blue") +    # TP_ctgが0の場合（普通）
+  geom_line(aes(y = TP_1), color = "green") +   # TP_ctgが1の場合（左側）
+  ggtitle("First User: TP_ctg Distributions") +
+  ylab("Probability Density") +
+  xlab("SET*") +
+  theme_minimal()
+
+```{r}
+
+```
+
+# 1つ目のユーザーのデータを取得
+first_user_data <- user_comfort[[1]]
+
+# multinominal logistic regression model を作成
+mlogit_model <- multinom(TP_ctg ~ `SET*`, data = first_user_data)
+
+# モデルの概要を表示
+summary(mlogit_model)
+
+# 予測結果を取得
+predicted_probs <- predict(mlogit_model, newdata = first_user_data,type = "probs")
+
+# 予測確率をデータフレームに追加
+first_user_data <- cbind(first_user_data, predicted_probs)
+
+# 予測結果を確認
+head(first_user_data)
+
+# データを長い形式に変換
+plot_data <- melt(first_user_data, id.vars = "SET*", measure.vars = c("1", "0", "-1"),
+                  variable.name = "Predicted_TP_ctg", value.name = "Probability")
+
+# 予測曲線をプロット
+ggplot(plot_data, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
+  geom_line(size = 1) +
+  labs(title = "Multinomial Logistic Regression: Predicted Probabilities",
+       x = "SET*",
+       y = "Probability") +
+  theme_minimal() +
+  scale_color_manual(values = c("1" = "green", "0" = "blue", "-1" = "red"))
+
+```{r}
+
+```
+
+# モデルを保存するリストを作成
+user_models <- list()
+
+# 各ユーザーに対してモデルを適用
+for (user_id in names(user_comfort)) {
+  
+  # ユーザーごとのデータを取得
+  user_data <- user_comfort[[user_id]]
+  
+  # multinomial logistic regression model を作成
+  mlogit_model <- multinom(TP_ctg ~ `SET*`, data = user_data)
+  
+  # モデルをリストに保存
+  user_models[[user_id]] <- mlogit_model
+}
+
+# 結果の確認（例: ユーザーIDが "1" のモデル）
+summary(user_models[["4"]])
 
