@@ -222,50 +222,265 @@ pre code {
 <p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucGxvdChjYXJzKVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+plot(cars)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+# 保存したモデルを読み込む
+load(&quot;localdir/AsimEx/Comfort_models/user_models.RData&quot;)
+
+# ユーザーID &quot;2&quot; のモデルを取得
+model_for_user_2 &lt;- user_models[[&quot;2&quot;]]
+
+# ユーザーID &quot;2&quot; のデータを取得
+user_data_2 &lt;- user_comfort[[&quot;2&quot;]]
+
+# SET* に基づいて予測確率を計算
+predicted_probs_2 &lt;- predict(model_for_user_2, newdata = user_data_2, type = &quot;probs&quot;)
+
+# 予測確率をデータフレームに追加
+user_data_2 &lt;- cbind(user_data_2, predicted_probs_2)
+
+# データを長い形式に変換
+plot_data_2 &lt;- melt(user_data_2, id.vars = &quot;SET*&quot;, measure.vars = c(&quot;1&quot;, &quot;0&quot;, &quot;-1&quot;),
+                    variable.name = &quot;Predicted_TP_ctg&quot;, value.name = &quot;Probability&quot;)
+
+# 予測カーブをプロット
+ggplot(plot_data_2, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
+  geom_line(size = 1) +
+  labs(title = &quot;User 2: Predicted TP_ctg Probabilities&quot;,
+       x = &quot;SET*&quot;,
+       y = &quot;Probability&quot;) +
+  theme_minimal() +
+  scale_color_manual(values = c(&quot;1&quot; = &quot;green&quot;, &quot;0&quot; = &quot;blue&quot;, &quot;-1&quot; = &quot;red&quot;))
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuY2hlY2tfdGhlX2ltYmFsYW5jZWRfdXNlclxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+check_the_imbalanced_user</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+# バランスが悪いユーザーを保存するリストを作成
+imbalanced_users &lt;- list()
+
+# 各ユーザーのクラス分布を確認
+for (user_id in names(user_comfort)) {
+  user_data &lt;- user_comfort[[user_id]]
+  class_distribution &lt;- table(user_data$TP_ctg)
+  
+  # クラス分布が偏っている場合
+  if (length(class_distribution) &lt; 3 || any(class_distribution &lt; 5)) {  # クラスが1つしかない、または少なすぎる
+    imbalanced_users[[user_id]] &lt;- class_distribution
+    print(paste(&quot;User&quot;, user_id, &quot;has imbalanced classes&quot;))
+    print(class_distribution)
+  }
+}
+
+# バランスが悪いユーザーリストを表示
+print(&quot;Users with imbalanced classes:&quot;)
+print(imbalanced_users)
+
+##1,4,8,10,11,15,21,22
+
+# バランスが悪いと判定されたユーザーのリスト
+imbalanced_user_ids &lt;- c(&quot;1&quot;, &quot;4&quot;, &quot;8&quot;, &quot;10&quot;, &quot;11&quot;, &quot;15&quot;, &quot;21&quot;, &quot;22&quot;)
+
+# 指定されたユーザーを user_models から取り除く
+obj_user_models &lt;- user_models[!(names(user_models) %in% imbalanced_user_ids)]
+
+# 結果を確認（残っているユーザーを表示）
+print(&quot;Remaining user models:&quot;)
+print(names(obj_user_models))
+
+# モデルをファイルに保存
+save(obj_user_models, file = &quot;localdir/AsimEx/Comfort_models/obj_user_models.RData&quot;)
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuc2V0X2Vudl9yYW5nZVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+set_env_range</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+# 温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)
+tair &lt;- seq(22, 30, by = 0.5)
+
+# ファンモードを設定 (0~5)
+fan_modes &lt;- 0:5
+
+# ファンスピードを設定
+fan_speeds &lt;- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)
+
+# 各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成
+env_list &lt;- data.frame(
+  Tair = rep(tair, each = length(fan_modes)),
+  FanMode = rep(fan_modes, times = length(temperatures)),
+  Velocity = rep(fan_speeds, times = length(temperatures))
+)
+
+humidity &lt;- 50  # 湿度 50%
+clo_value &lt;- 0.4  # clo値 0.4
+# その他のパラメータ (必要に応じて設定可能)
+met_value &lt;- 1.2  # メタボリックレート (例: 1.2 met)
+
+
+# calcSETを使用してSET*を計算し、結果を新しい列に追加
+
+env_list$`SET*` &lt;- mapply(calcSET, 
+                            ta = env_list$Tair, 
+                            tr = env_list$Tair,  # 平均放射温度も同じ温度として仮定
+                            vel = env_list$Velocity, 
+                            rh = humidity, 
+                            clo = clo_value, 
+                            met = met_value)
+
+# 結果を確認
+print(head(env_list))
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIyMjIyMjIGNhbGN1bGF0ZSB0aGUgcG9zc2liaWxpdHkgb2YgY29tZm9ydCBmb3IgZWFjaCBlbnYgIyMjIyMjIyMjXG5cbmBgYCJ9 --&gt;
+
+```r
+######### calculate the possibility of comfort for each env #########
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>library(readr) library(ggplot2) library(fitdistrplus) library(nnet) library(reshape2) library(comf) library(gridExtra)</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<div id="csvファイルの読み込み" class="section level1">
-<h1>CSVファイルの読み込み</h1>
-<p>path_comfort &lt;- “~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv” comfort_data &lt;- read_csv(path_comfort)</p>
+<div id="確率を保存するデータフレームを初期化" class="section level1">
+<h1>確率を保存するデータフレームを初期化</h1>
+<p>user_probabilities &lt;- matrix(NA, nrow = nrow(env_list), ncol = length(obj_user_models))</p>
 </div>
-<div id="列名の確認" class="section level1">
-<h1>列名の確認</h1>
-<p>colnames(comfort_data)</p>
+<div id="各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算" class="section level1">
+<h1>各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算</h1>
+<p>for (i in seq_along(names(obj_user_models))) { user_id &lt;- names(obj_user_models)[i]</p>
+<p># ユーザーごとのモデルを取得 model &lt;- obj_user_models[[user_id]]</p>
+<p># 2つ目のクラス（TP_ctg = 0）に分類される確率を予測 predicted_probs &lt;- predict(model, newdata = env_list, type = “probs”)</p>
+<p># 2つ目のクラスの確率を user_probabilities の対応する列に保存 user_probabilities[, i] &lt;- predicted_probs[, “0”] }</p>
 </div>
-<div id="湿度を逆算する関数を定義" class="section level1">
-<h1>湿度を逆算する関数を定義</h1>
-<p>calc_humidity &lt;- function(clo, Tair, velocity, SET_star) { MET &lt;- 1.0 # MET値を1.0に設定</p>
-<p># 湿度を逆算する rh_values &lt;- seq(0, 100, by = 0.1) # 湿度の範囲を設定 best_rh &lt;- NA min_diff &lt;- Inf</p>
-<p>for (rh in rh_values) { # comf::pmvppdを使用して予測されたSETを計算 pmv_result &lt;- pmv(Tair = Tair, Tr = Tair, vel = velocity, clo = clo, met = MET, rh = rh) predicted_SET &lt;- pmv_result$SET</p>
-<pre><code># 逆算した湿度を見つけるために、計算されたSETと与えられたSET*の差を最小化
-diff &lt;- abs(predicted_SET - SET_star)
-
-if (diff &lt; min_diff) {
-  min_diff &lt;- diff
-  best_rh &lt;- rh
-}</code></pre>
-<p>}</p>
-<p>return(best_rh) }</p>
-</div>
-<div id="各行に対して湿度を計算" class="section level1">
-<h1>各行に対して湿度を計算</h1>
-<p>comfort_data<span class="math inline">\(RH &lt;- mapply(calc_humidity,  clo = comfort_data\)</span>clo, Tair = comfort_data<span class="math inline">\(Tair,  velocity = comfort_data\)</span>velocity, SET_star = comfort_data$<code>SET*</code>)</p>
+<div id="列名にユーザーidを付与" class="section level1">
+<h1>列名にユーザーIDを付与</h1>
+<p>colnames(user_probabilities) &lt;- names(obj_user_models)</p>
 </div>
 <div id="結果を確認" class="section level1">
 <h1>結果を確認</h1>
-<p>head(comfort_data)</p>
+<p>print(user_probabilities)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIyMjIyMjIGNvbmZpcm0gdGhlIHBvc3NpYmlsaXR5IGN1cnZlICMjIyMjIyMjI1xuYGBgIn0= -->
+<pre class="r"><code>######### confirm the possibility curve #########</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="user_probabilities-をデータフレームに変換" class="section level1">
+<h1>user_probabilities をデータフレームに変換</h1>
+<p>user_probabilities_df &lt;- as.data.frame(user_probabilities)</p>
+</div>
+<div id="env_list-と-user_probabilities_df-を結合" class="section level1">
+<h1>env_list と user_probabilities_df を結合</h1>
+<p>env_comf_agent &lt;- cbind(env_list, user_probabilities_df)</p>
+</div>
+<div id="結果を確認-1" class="section level1">
+<h1>結果を確認</h1>
+<p>print(head(env_comf_agent))</p>
+</div>
+<div id="テスト対象のユーザーid" class="section level1">
+<h1>テスト対象のユーザーID</h1>
+<p>test_users &lt;- c(“2”, “3”, “5”, “6”)</p>
+</div>
+<div id="プロットリストを作成" class="section level1">
+<h1>プロットリストを作成</h1>
+<p>plot_list &lt;- lapply(test_users, function(user_id) {</p>
+<p># 対象ユーザーのデータを抽出 user_data &lt;- env_comf_agent[, c(&quot;SET*&quot;, user_id)]</p>
+<p># 相関係数を計算 corr_coeff &lt;- cor(user_data$<code>SET*</code>, user_data[, user_id], use = “complete.obs”)</p>
+<p># 相関プロットの作成 p &lt;- ggplot(user_data, aes(x = <code>SET*</code>, y = user_data[, user_id])) + geom_point() + geom_smooth(method = “lm”, col = “blue”) + labs(title = paste(“User”, user_id, “- Correlation:”, round(corr_coeff, 2)), x = &quot;SET*“, y = paste(”Comfort Probability (User“, user_id,”)&quot;)) + theme_minimal()</p>
+<p># プロットを返す return(p) })</p>
+</div>
+<div id="プロットを強制表示" class="section level1">
+<h1>プロットを強制表示</h1>
+<p>print(do.call(grid.arrange, c(plot_list, ncol = 2)))</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMjIyMjIyMjIGFkZCBub2lzZSB0byB0aGUgcG9zc2liaWxpdHkgIyMjIyMjIyMjXG5gYGAifQ== -->
+<pre class="r"><code>######### add noise to the possibility #########</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="のノイズを加えるための係数" class="section level1">
+<h1>20%のノイズを加えるための係数</h1>
+<p>noise_factor &lt;- 0.2</p>
+</div>
+<div id="survey-data-のノイズを追加したい部分を抽出" class="section level1">
+<h1>Survey data のノイズを追加したい部分を抽出</h1>
+</div>
+<div id="ここでsurvey_dataは環境要素とユーザー番号を含むデータフレームだと仮定" class="section level1">
+<h1>ここで、survey_dataは環境要素とユーザー番号を含むデータフレームだと仮定</h1>
+<p>user_columns &lt;- env_comf_agent[, -(1:4)] # 最初の4列を除いたユーザー番号の列を抽出</p>
+</div>
+<div id="元の値の20増減範囲でノイズを加える" class="section level1">
+<h1>元の値の20%増減範囲でノイズを加える</h1>
+<p>set.seed(123) # 再現性のためにシードを設定 noise &lt;- 1 + runif(n = length(user_columns), min = -noise_factor, max = noise_factor) noisy_user_columns &lt;- user_columns * matrix(noise, nrow = nrow(user_columns), ncol = ncol(user_columns))</p>
+</div>
+<div id="値が01の範囲に収まるように修正" class="section level1">
+<h1>値が0〜1の範囲に収まるように修正</h1>
+<p>noisy_user_columns &lt;- pmin(pmax(noisy_user_columns, 0), 1)</p>
+</div>
+<div id="環境要素の列とノイズを加えたユーザー列を結合" class="section level1">
+<h1>環境要素の列とノイズを加えたユーザー列を結合</h1>
+<p>noisy_survey_data &lt;- cbind(env_comf_agent[, 1:4], noisy_user_columns)</p>
+</div>
+<div id="結果を確認-2" class="section level1">
+<h1>結果を確認</h1>
+<p>print(head(noisy_survey_data))</p>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ3RybCtTaGlmdCtFbnRlciouIAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDdHJsK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCmBgYHtyfQpwbG90KGNhcnMpCmBgYAoKbGlicmFyeShyZWFkcikKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KGZpdGRpc3RycGx1cykKbGlicmFyeShubmV0KQpsaWJyYXJ5KHJlc2hhcGUyKQpsaWJyYXJ5KGNvbWYpCmxpYnJhcnkoZ3JpZEV4dHJhKQpgYGB7cn0KCmBgYAoKCiMgQ1NW44OV44Kh44Kk44Or44Gu6Kqt44G/6L6844G/CnBhdGhfY29tZm9ydCA8LSAifi9sb2NhbGRpci9Bc2ltRXgvQ29tZm9ydF9tb2RlbHMvY29tZm9ydF9pbnB1dHNfY2xvMC40LmNzdiIKY29tZm9ydF9kYXRhIDwtIHJlYWRfY3N2KHBhdGhfY29tZm9ydCkKCiMg5YiX5ZCN44Gu56K66KqNCmNvbG5hbWVzKGNvbWZvcnRfZGF0YSkKCiMg5rm/5bqm44KS6YCG566X44GZ44KL6Zai5pWw44KS5a6a576pCmNhbGNfaHVtaWRpdHkgPC0gZnVuY3Rpb24oY2xvLCBUYWlyLCB2ZWxvY2l0eSwgU0VUX3N0YXIpIHsKICBNRVQgPC0gMS4wICAjIE1FVOWApOOCkjEuMOOBq+ioreWumgoKICAjIOa5v+W6puOCkumAhueul+OBmeOCiwogIHJoX3ZhbHVlcyA8LSBzZXEoMCwgMTAwLCBieSA9IDAuMSkgICMg5rm/5bqm44Gu56+E5Zuy44KS6Kit5a6aCiAgYmVzdF9yaCA8LSBOQQogIG1pbl9kaWZmIDwtIEluZgogIAogIGZvciAocmggaW4gcmhfdmFsdWVzKSB7CiAgICAjIGNvbWY6OnBtdnBwZOOCkuS9v+eUqOOBl+OBpuS6iOa4rOOBleOCjOOBn1NFVOOCkuioiOeulwogICAgcG12X3Jlc3VsdCA8LSBwbXYoVGFpciA9IFRhaXIsIFRyID0gVGFpciwgdmVsID0gdmVsb2NpdHksIGNsbyA9IGNsbywgbWV0ID0gTUVULCByaCA9IHJoKQogICAgcHJlZGljdGVkX1NFVCA8LSBwbXZfcmVzdWx0JFNFVAogICAgCiAgICAjIOmAhueul+OBl+OBn+a5v+W6puOCkuimi+OBpOOBkeOCi+OBn+OCgeOBq+OAgeioiOeul+OBleOCjOOBn1NFVOOBqOS4juOBiOOCieOCjOOBn1NFVCrjga7lt67jgpLmnIDlsI/ljJYKICAgIGRpZmYgPC0gYWJzKHByZWRpY3RlZF9TRVQgLSBTRVRfc3RhcikKICAgIAogICAgaWYgKGRpZmYgPCBtaW5fZGlmZikgewogICAgICBtaW5fZGlmZiA8LSBkaWZmCiAgICAgIGJlc3RfcmggPC0gcmgKICAgIH0KICB9CiAgCiAgcmV0dXJuKGJlc3RfcmgpCn0KCgojIOWQhOihjOOBq+WvvuOBl+OBpua5v+W6puOCkuioiOeulwpjb21mb3J0X2RhdGEkUkggPC0gbWFwcGx5KGNhbGNfaHVtaWRpdHksIAogICAgICAgICAgICAgICAgICAgICAgICAgIGNsbyA9IGNvbWZvcnRfZGF0YSRjbG8sIAogICAgICAgICAgICAgICAgICAgICAgICAgIFRhaXIgPSBjb21mb3J0X2RhdGEkVGFpciwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgdmVsb2NpdHkgPSBjb21mb3J0X2RhdGEkdmVsb2NpdHksIAogICAgICAgICAgICAgICAgICAgICAgICAgIFNFVF9zdGFyID0gY29tZm9ydF9kYXRhJGBTRVQqYCkKCiMg57WQ5p6c44KS56K66KqNCmhlYWQoY29tZm9ydF9kYXRhKQoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ3RybCtTaGlmdCtFbnRlciouIAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDdHJsK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCgpgYGB7cn0KcGxvdChjYXJzKQpgYGAKCiMg5L+d5a2Y44GX44Gf44Oi44OH44Or44KS6Kqt44G/6L6844KACmxvYWQoImxvY2FsZGlyL0FzaW1FeC9Db21mb3J0X21vZGVscy91c2VyX21vZGVscy5SRGF0YSIpCgojIOODpuODvOOCtuODvElEICIyIiDjga7jg6Ljg4fjg6vjgpLlj5blvpcKbW9kZWxfZm9yX3VzZXJfMiA8LSB1c2VyX21vZGVsc1tbIjIiXV0KCiMg44Om44O844K244O8SUQgIjIiIOOBruODh+ODvOOCv+OCkuWPluW+lwp1c2VyX2RhdGFfMiA8LSB1c2VyX2NvbWZvcnRbWyIyIl1dCgojIFNFVCog44Gr5Z+644Gl44GE44Gm5LqI5ris56K6546H44KS6KiI566XCnByZWRpY3RlZF9wcm9ic18yIDwtIHByZWRpY3QobW9kZWxfZm9yX3VzZXJfMiwgbmV3ZGF0YSA9IHVzZXJfZGF0YV8yLCB0eXBlID0gInByb2JzIikKCiMg5LqI5ris56K6546H44KS44OH44O844K/44OV44Os44O844Og44Gr6L+95YqgCnVzZXJfZGF0YV8yIDwtIGNiaW5kKHVzZXJfZGF0YV8yLCBwcmVkaWN0ZWRfcHJvYnNfMikKCiMg44OH44O844K/44KS6ZW344GE5b2i5byP44Gr5aSJ5o+bCnBsb3RfZGF0YV8yIDwtIG1lbHQodXNlcl9kYXRhXzIsIGlkLnZhcnMgPSAiU0VUKiIsIG1lYXN1cmUudmFycyA9IGMoIjEiLCAiMCIsICItMSIpLAogICAgICAgICAgICAgICAgICAgIHZhcmlhYmxlLm5hbWUgPSAiUHJlZGljdGVkX1RQX2N0ZyIsIHZhbHVlLm5hbWUgPSAiUHJvYmFiaWxpdHkiKQoKIyDkuojmuKzjgqvjg7zjg5bjgpLjg5fjg63jg4Pjg4gKZ2dwbG90KHBsb3RfZGF0YV8yLCBhZXMoeCA9IGBTRVQqYCwgeSA9IFByb2JhYmlsaXR5LCBjb2xvciA9IFByZWRpY3RlZF9UUF9jdGcpKSArCiAgZ2VvbV9saW5lKHNpemUgPSAxKSArCiAgbGFicyh0aXRsZSA9ICJVc2VyIDI6IFByZWRpY3RlZCBUUF9jdGcgUHJvYmFiaWxpdGllcyIsCiAgICAgICB4ID0gIlNFVCoiLAogICAgICAgeSA9ICJQcm9iYWJpbGl0eSIpICsKICB0aGVtZV9taW5pbWFsKCkgKwogIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXMgPSBjKCIxIiA9ICJncmVlbiIsICIwIiA9ICJibHVlIiwgIi0xIiA9ICJyZWQiKSkKCmBgYHtyfQpjaGVja190aGVfaW1iYWxhbmNlZF91c2VyCmBgYAoKIyDjg5Djg6njg7PjgrnjgYzmgqrjgYTjg6bjg7zjgrbjg7zjgpLkv53lrZjjgZnjgovjg6rjgrnjg4jjgpLkvZzmiJAKaW1iYWxhbmNlZF91c2VycyA8LSBsaXN0KCkKCiMg5ZCE44Om44O844K244O844Gu44Kv44Op44K55YiG5biD44KS56K66KqNCmZvciAodXNlcl9pZCBpbiBuYW1lcyh1c2VyX2NvbWZvcnQpKSB7CiAgdXNlcl9kYXRhIDwtIHVzZXJfY29tZm9ydFtbdXNlcl9pZF1dCiAgY2xhc3NfZGlzdHJpYnV0aW9uIDwtIHRhYmxlKHVzZXJfZGF0YSRUUF9jdGcpCiAgCiAgIyDjgq/jg6njgrnliIbluIPjgYzlgY/jgaPjgabjgYTjgovloLTlkIgKICBpZiAobGVuZ3RoKGNsYXNzX2Rpc3RyaWJ1dGlvbikgPCAzIHx8IGFueShjbGFzc19kaXN0cmlidXRpb24gPCA1KSkgeyAgIyDjgq/jg6njgrnjgYwx44Gk44GX44GL44Gq44GE44CB44G+44Gf44Gv5bCR44Gq44GZ44GO44KLCiAgICBpbWJhbGFuY2VkX3VzZXJzW1t1c2VyX2lkXV0gPC0gY2xhc3NfZGlzdHJpYnV0aW9uCiAgICBwcmludChwYXN0ZSgiVXNlciIsIHVzZXJfaWQsICJoYXMgaW1iYWxhbmNlZCBjbGFzc2VzIikpCiAgICBwcmludChjbGFzc19kaXN0cmlidXRpb24pCiAgfQp9CgojIOODkOODqeODs+OCueOBjOaCquOBhOODpuODvOOCtuODvOODquOCueODiOOCkuihqOekugpwcmludCgiVXNlcnMgd2l0aCBpbWJhbGFuY2VkIGNsYXNzZXM6IikKcHJpbnQoaW1iYWxhbmNlZF91c2VycykKCiMjMSw0LDgsMTAsMTEsMTUsMjEsMjIKCiMg44OQ44Op44Oz44K544GM5oKq44GE44Go5Yik5a6a44GV44KM44Gf44Om44O844K244O844Gu44Oq44K544OICmltYmFsYW5jZWRfdXNlcl9pZHMgPC0gYygiMSIsICI0IiwgIjgiLCAiMTAiLCAiMTEiLCAiMTUiLCAiMjEiLCAiMjIiKQoKIyDmjIflrprjgZXjgozjgZ/jg6bjg7zjgrbjg7zjgpIgdXNlcl9tb2RlbHMg44GL44KJ5Y+W44KK6Zmk44GPCm9ial91c2VyX21vZGVscyA8LSB1c2VyX21vZGVsc1shKG5hbWVzKHVzZXJfbW9kZWxzKSAlaW4lIGltYmFsYW5jZWRfdXNlcl9pZHMpXQoKIyDntZDmnpzjgpLnorroqo3vvIjmrovjgaPjgabjgYTjgovjg6bjg7zjgrbjg7zjgpLooajnpLrvvIkKcHJpbnQoIlJlbWFpbmluZyB1c2VyIG1vZGVsczoiKQpwcmludChuYW1lcyhvYmpfdXNlcl9tb2RlbHMpKQoKIyDjg6Ljg4fjg6vjgpLjg5XjgqHjgqTjg6vjgavkv53lrZgKc2F2ZShvYmpfdXNlcl9tb2RlbHMsIGZpbGUgPSAibG9jYWxkaXIvQXNpbUV4L0NvbWZvcnRfbW9kZWxzL29ial91c2VyX21vZGVscy5SRGF0YSIpCgpgYGB7cn0Kc2V0X2Vudl9yYW5nZQpgYGAKCiMg5rip5bqm44Gu56+E5Zuy44KS6Kit5a6aICgyMsKwQ+OBi+OCiTMwwrBD44KSMC41wrBD5Yi744G/44GnKQp0YWlyIDwtIHNlcSgyMiwgMzAsIGJ5ID0gMC41KQoKIyDjg5XjgqHjg7Pjg6Ljg7zjg4njgpLoqK3lrpogKDB+NSkKZmFuX21vZGVzIDwtIDA6NQoKIyDjg5XjgqHjg7Pjgrnjg5Tjg7zjg4njgpLoqK3lrpoKZmFuX3NwZWVkcyA8LSBjKDAuMDcsIDAuMjksIDAuNTgsIDAuOTQsIDEuMzcsIDEuODcpCgojIOWQhOa4qeW6puOBlOOBqOOBq+ODleOCoeODs+ODouODvOODieOBqOODleOCoeODs+OCueODlOODvOODieOCkue5sOOCiui/lOOBl+OAgeODh+ODvOOCv+ODleODrOODvOODoOOCkuS9nOaIkAplbnZfbGlzdCA8LSBkYXRhLmZyYW1lKAogIFRhaXIgPSByZXAodGFpciwgZWFjaCA9IGxlbmd0aChmYW5fbW9kZXMpKSwKICBGYW5Nb2RlID0gcmVwKGZhbl9tb2RlcywgdGltZXMgPSBsZW5ndGgodGVtcGVyYXR1cmVzKSksCiAgVmVsb2NpdHkgPSByZXAoZmFuX3NwZWVkcywgdGltZXMgPSBsZW5ndGgodGVtcGVyYXR1cmVzKSkKKQoKaHVtaWRpdHkgPC0gNTAgICMg5rm/5bqmIDUwJQpjbG9fdmFsdWUgPC0gMC40ICAjIGNsb+WApCAwLjQKIyDjgZ3jga7ku5bjga7jg5Hjg6njg6Hjg7zjgr8gKOW/heimgeOBq+W/nOOBmOOBpuioreWumuWPr+iDvSkKbWV0X3ZhbHVlIDwtIDEuMiAgIyDjg6Hjgr/jg5zjg6rjg4Pjgq/jg6zjg7zjg4ggKOS+izogMS4yIG1ldCkKCgojIGNhbGNTRVTjgpLkvb/nlKjjgZfjgaZTRVQq44KS6KiI566X44GX44CB57WQ5p6c44KS5paw44GX44GE5YiX44Gr6L+95YqgCgplbnZfbGlzdCRgU0VUKmAgPC0gbWFwcGx5KGNhbGNTRVQsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGEgPSBlbnZfbGlzdCRUYWlyLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRyID0gZW52X2xpc3QkVGFpciwgICMg5bmz5Z2H5pS+5bCE5rip5bqm44KC5ZCM44GY5rip5bqm44Go44GX44Gm5Luu5a6aCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZWwgPSBlbnZfbGlzdCRWZWxvY2l0eSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICByaCA9IGh1bWlkaXR5LCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsbyA9IGNsb192YWx1ZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBtZXQgPSBtZXRfdmFsdWUpCgojIOe1kOaenOOCkueiuuiqjQpwcmludChoZWFkKGVudl9saXN0KSkKCgpgYGB7cn0KIyMjIyMjIyMjIGNhbGN1bGF0ZSB0aGUgcG9zc2liaWxpdHkgb2YgY29tZm9ydCBmb3IgZWFjaCBlbnYgIyMjIyMjIyMjCgpgYGAKCiMg56K6546H44KS5L+d5a2Y44GZ44KL44OH44O844K/44OV44Os44O844Og44KS5Yid5pyf5YyWCnVzZXJfcHJvYmFiaWxpdGllcyA8LSBtYXRyaXgoTkEsIG5yb3cgPSBucm93KGVudl9saXN0KSwgbmNvbCA9IGxlbmd0aChvYmpfdXNlcl9tb2RlbHMpKQoKIyDlkITjg6bjg7zjgrbjg7zjgavlr77jgZfjgabjg6Ljg4fjg6vjgpLpgannlKjjgZfjgaYy44Gk55uu44Gu44Kv44Op44K544Gu56K6546H44KS6KiI566XCmZvciAoaSBpbiBzZXFfYWxvbmcobmFtZXMob2JqX3VzZXJfbW9kZWxzKSkpIHsKICB1c2VyX2lkIDwtIG5hbWVzKG9ial91c2VyX21vZGVscylbaV0KICAKICAjIOODpuODvOOCtuODvOOBlOOBqOOBruODouODh+ODq+OCkuWPluW+lwogIG1vZGVsIDwtIG9ial91c2VyX21vZGVsc1tbdXNlcl9pZF1dCiAgCiAgIyAy44Gk55uu44Gu44Kv44Op44K577yIVFBfY3RnID0gMO+8ieOBq+WIhumhnuOBleOCjOOCi+eiuueOh+OCkuS6iOa4rAogIHByZWRpY3RlZF9wcm9icyA8LSBwcmVkaWN0KG1vZGVsLCBuZXdkYXRhID0gZW52X2xpc3QsIHR5cGUgPSAicHJvYnMiKQogIAogICMgMuOBpOebruOBruOCr+ODqeOCueOBrueiuueOh+OCkiB1c2VyX3Byb2JhYmlsaXRpZXMg44Gu5a++5b+c44GZ44KL5YiX44Gr5L+d5a2YCiAgdXNlcl9wcm9iYWJpbGl0aWVzWywgaV0gPC0gcHJlZGljdGVkX3Byb2JzWywgIjAiXQp9CgojIOWIl+WQjeOBq+ODpuODvOOCtuODvElE44KS5LuY5LiOCmNvbG5hbWVzKHVzZXJfcHJvYmFiaWxpdGllcykgPC0gbmFtZXMob2JqX3VzZXJfbW9kZWxzKQoKIyDntZDmnpzjgpLnorroqo0KcHJpbnQodXNlcl9wcm9iYWJpbGl0aWVzKQoKYGBge3J9CiMjIyMjIyMjIyBjb25maXJtIHRoZSBwb3NzaWJpbGl0eSBjdXJ2ZSAjIyMjIyMjIyMKYGBgCgoKIyB1c2VyX3Byb2JhYmlsaXRpZXMg44KS44OH44O844K/44OV44Os44O844Og44Gr5aSJ5o+bCnVzZXJfcHJvYmFiaWxpdGllc19kZiA8LSBhcy5kYXRhLmZyYW1lKHVzZXJfcHJvYmFiaWxpdGllcykKCiMgZW52X2xpc3Qg44GoIHVzZXJfcHJvYmFiaWxpdGllc19kZiDjgpLntZDlkIgKZW52X2NvbWZfYWdlbnQgPC0gY2JpbmQoZW52X2xpc3QsIHVzZXJfcHJvYmFiaWxpdGllc19kZikKCiMg57WQ5p6c44KS56K66KqNCnByaW50KGhlYWQoZW52X2NvbWZfYWdlbnQpKQoKCiMg44OG44K544OI5a++6LGh44Gu44Om44O844K244O8SUQKdGVzdF91c2VycyA8LSBjKCIyIiwgIjMiLCAiNSIsICI2IikKCiMg44OX44Ot44OD44OI44Oq44K544OI44KS5L2c5oiQCnBsb3RfbGlzdCA8LSBsYXBwbHkodGVzdF91c2VycywgZnVuY3Rpb24odXNlcl9pZCkgewogIAogICMg5a++6LGh44Om44O844K244O844Gu44OH44O844K/44KS5oq95Ye6CiAgdXNlcl9kYXRhIDwtIGVudl9jb21mX2FnZW50WywgYygiU0VUKiIsIHVzZXJfaWQpXQogIAogICMg55u46Zai5L+C5pWw44KS6KiI566XCiAgY29ycl9jb2VmZiA8LSBjb3IodXNlcl9kYXRhJGBTRVQqYCwgdXNlcl9kYXRhWywgdXNlcl9pZF0sIHVzZSA9ICJjb21wbGV0ZS5vYnMiKQogIAogICMg55u46Zai44OX44Ot44OD44OI44Gu5L2c5oiQCiAgcCA8LSBnZ3Bsb3QodXNlcl9kYXRhLCBhZXMoeCA9IGBTRVQqYCwgeSA9IHVzZXJfZGF0YVssIHVzZXJfaWRdKSkgKwogICAgZ2VvbV9wb2ludCgpICsKICAgIGdlb21fc21vb3RoKG1ldGhvZCA9ICJsbSIsIGNvbCA9ICJibHVlIikgKwogICAgbGFicyh0aXRsZSA9IHBhc3RlKCJVc2VyIiwgdXNlcl9pZCwgIi0gQ29ycmVsYXRpb246Iiwgcm91bmQoY29ycl9jb2VmZiwgMikpLAogICAgICAgICB4ID0gIlNFVCoiLAogICAgICAgICB5ID0gcGFzdGUoIkNvbWZvcnQgUHJvYmFiaWxpdHkgKFVzZXIiLCB1c2VyX2lkLCAiKSIpKSArCiAgICB0aGVtZV9taW5pbWFsKCkKICAKICAjIOODl+ODreODg+ODiOOCkui/lOOBmQogIHJldHVybihwKQp9KQoKIyDjg5fjg63jg4Pjg4jjgpLlvLfliLbooajnpLoKcHJpbnQoZG8uY2FsbChncmlkLmFycmFuZ2UsIGMocGxvdF9saXN0LCBuY29sID0gMikpKQoKYGBge3J9CiMjIyMjIyMjIyBhZGQgbm9pc2UgdG8gdGhlIHBvc3NpYmlsaXR5ICMjIyMjIyMjIwpgYGAKCiMgMjAl44Gu44OO44Kk44K644KS5Yqg44GI44KL44Gf44KB44Gu5L+C5pWwCm5vaXNlX2ZhY3RvciA8LSAwLjIKCiMgU3VydmV5IGRhdGEg44Gu44OO44Kk44K644KS6L+95Yqg44GX44Gf44GE6YOo5YiG44KS5oq95Ye6CiMg44GT44GT44Gn44CBc3VydmV5X2RhdGHjga/nkrDlooPopoHntKDjgajjg6bjg7zjgrbjg7znlarlj7fjgpLlkKvjgoDjg4fjg7zjgr/jg5Xjg6zjg7zjg6DjgaDjgajku67lrpoKdXNlcl9jb2x1bW5zIDwtIGVudl9jb21mX2FnZW50WywgLSgxOjQpXSAgIyDmnIDliJ3jga405YiX44KS6Zmk44GE44Gf44Om44O844K244O855Wq5Y+344Gu5YiX44KS5oq95Ye6CgojIOWFg+OBruWApOOBrjIwJeWil+a4m+evhOWbsuOBp+ODjuOCpOOCuuOCkuWKoOOBiOOCiwpzZXQuc2VlZCgxMjMpICAjIOWGjeePvuaAp+OBruOBn+OCgeOBq+OCt+ODvOODieOCkuioreWumgpub2lzZSA8LSAxICsgcnVuaWYobiA9IGxlbmd0aCh1c2VyX2NvbHVtbnMpLCBtaW4gPSAtbm9pc2VfZmFjdG9yLCBtYXggPSBub2lzZV9mYWN0b3IpCm5vaXN5X3VzZXJfY29sdW1ucyA8LSB1c2VyX2NvbHVtbnMgKiBtYXRyaXgobm9pc2UsIG5yb3cgPSBucm93KHVzZXJfY29sdW1ucyksIG5jb2wgPSBuY29sKHVzZXJfY29sdW1ucykpCgojIOWApOOBjDDjgJwx44Gu56+E5Zuy44Gr5Y+O44G+44KL44KI44GG44Gr5L+u5q2jCm5vaXN5X3VzZXJfY29sdW1ucyA8LSBwbWluKHBtYXgobm9pc3lfdXNlcl9jb2x1bW5zLCAwKSwgMSkKCiMg55Kw5aKD6KaB57Sg44Gu5YiX44Go44OO44Kk44K644KS5Yqg44GI44Gf44Om44O844K244O85YiX44KS57WQ5ZCICm5vaXN5X3N1cnZleV9kYXRhIDwtIGNiaW5kKGVudl9jb21mX2FnZW50WywgMTo0XSwgbm9pc3lfdXNlcl9jb2x1bW5zKQoKIyDntZDmnpzjgpLnorroqo0KcHJpbnQoaGVhZChub2lzeV9zdXJ2ZXlfZGF0YSkpCgo=</div>
 
 
 
@@ -312,7 +527,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("agent_virtual_survey.Rmd");
+  window.initializeSourceEmbed("agent perception.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

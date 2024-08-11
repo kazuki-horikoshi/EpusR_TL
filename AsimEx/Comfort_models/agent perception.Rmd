@@ -1,0 +1,222 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+plot(cars)
+```
+
+# 保存したモデルを読み込む
+load("localdir/AsimEx/Comfort_models/user_models.RData")
+
+# ユーザーID "2" のモデルを取得
+model_for_user_2 <- user_models[["2"]]
+
+# ユーザーID "2" のデータを取得
+user_data_2 <- user_comfort[["2"]]
+
+# SET* に基づいて予測確率を計算
+predicted_probs_2 <- predict(model_for_user_2, newdata = user_data_2, type = "probs")
+
+# 予測確率をデータフレームに追加
+user_data_2 <- cbind(user_data_2, predicted_probs_2)
+
+# データを長い形式に変換
+plot_data_2 <- melt(user_data_2, id.vars = "SET*", measure.vars = c("1", "0", "-1"),
+                    variable.name = "Predicted_TP_ctg", value.name = "Probability")
+
+# 予測カーブをプロット
+ggplot(plot_data_2, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) +
+  geom_line(size = 1) +
+  labs(title = "User 2: Predicted TP_ctg Probabilities",
+       x = "SET*",
+       y = "Probability") +
+  theme_minimal() +
+  scale_color_manual(values = c("1" = "green", "0" = "blue", "-1" = "red"))
+
+```{r}
+check_the_imbalanced_user
+```
+
+# バランスが悪いユーザーを保存するリストを作成
+imbalanced_users <- list()
+
+# 各ユーザーのクラス分布を確認
+for (user_id in names(user_comfort)) {
+  user_data <- user_comfort[[user_id]]
+  class_distribution <- table(user_data$TP_ctg)
+  
+  # クラス分布が偏っている場合
+  if (length(class_distribution) < 3 || any(class_distribution < 5)) {  # クラスが1つしかない、または少なすぎる
+    imbalanced_users[[user_id]] <- class_distribution
+    print(paste("User", user_id, "has imbalanced classes"))
+    print(class_distribution)
+  }
+}
+
+# バランスが悪いユーザーリストを表示
+print("Users with imbalanced classes:")
+print(imbalanced_users)
+
+##1,4,8,10,11,15,21,22
+
+# バランスが悪いと判定されたユーザーのリスト
+imbalanced_user_ids <- c("1", "4", "8", "10", "11", "15", "21", "22")
+
+# 指定されたユーザーを user_models から取り除く
+obj_user_models <- user_models[!(names(user_models) %in% imbalanced_user_ids)]
+
+# 結果を確認（残っているユーザーを表示）
+print("Remaining user models:")
+print(names(obj_user_models))
+
+# モデルをファイルに保存
+save(obj_user_models, file = "localdir/AsimEx/Comfort_models/obj_user_models.RData")
+
+```{r}
+set_env_range
+```
+
+# 温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)
+tair <- seq(22, 30, by = 0.5)
+
+# ファンモードを設定 (0~5)
+fan_modes <- 0:5
+
+# ファンスピードを設定
+fan_speeds <- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)
+
+# 各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成
+env_list <- data.frame(
+  Tair = rep(tair, each = length(fan_modes)),
+  FanMode = rep(fan_modes, times = length(temperatures)),
+  Velocity = rep(fan_speeds, times = length(temperatures))
+)
+
+humidity <- 50  # 湿度 50%
+clo_value <- 0.4  # clo値 0.4
+# その他のパラメータ (必要に応じて設定可能)
+met_value <- 1.2  # メタボリックレート (例: 1.2 met)
+
+
+# calcSETを使用してSET*を計算し、結果を新しい列に追加
+
+env_list$`SET*` <- mapply(calcSET, 
+                            ta = env_list$Tair, 
+                            tr = env_list$Tair,  # 平均放射温度も同じ温度として仮定
+                            vel = env_list$Velocity, 
+                            rh = humidity, 
+                            clo = clo_value, 
+                            met = met_value)
+
+# 結果を確認
+print(head(env_list))
+
+
+```{r}
+######### calculate the possibility of comfort for each env #########
+
+```
+
+# 確率を保存するデータフレームを初期化
+user_probabilities <- matrix(NA, nrow = nrow(env_list), ncol = length(obj_user_models))
+
+# 各ユーザーに対してモデルを適用して2つ目のクラスの確率を計算
+for (i in seq_along(names(obj_user_models))) {
+  user_id <- names(obj_user_models)[i]
+  
+  # ユーザーごとのモデルを取得
+  model <- obj_user_models[[user_id]]
+  
+  # 2つ目のクラス（TP_ctg = 0）に分類される確率を予測
+  predicted_probs <- predict(model, newdata = env_list, type = "probs")
+  
+  # 2つ目のクラスの確率を user_probabilities の対応する列に保存
+  user_probabilities[, i] <- predicted_probs[, "0"]
+}
+
+# 列名にユーザーIDを付与
+colnames(user_probabilities) <- names(obj_user_models)
+
+# 結果を確認
+print(user_probabilities)
+
+```{r}
+######### confirm the possibility curve #########
+```
+
+
+# user_probabilities をデータフレームに変換
+user_probabilities_df <- as.data.frame(user_probabilities)
+
+# env_list と user_probabilities_df を結合
+env_comf_agent <- cbind(env_list, user_probabilities_df)
+
+# 結果を確認
+print(head(env_comf_agent))
+
+
+# テスト対象のユーザーID
+test_users <- c("2", "3", "5", "6")
+
+# プロットリストを作成
+plot_list <- lapply(test_users, function(user_id) {
+  
+  # 対象ユーザーのデータを抽出
+  user_data <- env_comf_agent[, c("SET*", user_id)]
+  
+  # 相関係数を計算
+  corr_coeff <- cor(user_data$`SET*`, user_data[, user_id], use = "complete.obs")
+  
+  # 相関プロットの作成
+  p <- ggplot(user_data, aes(x = `SET*`, y = user_data[, user_id])) +
+    geom_point() +
+    geom_smooth(method = "lm", col = "blue") +
+    labs(title = paste("User", user_id, "- Correlation:", round(corr_coeff, 2)),
+         x = "SET*",
+         y = paste("Comfort Probability (User", user_id, ")")) +
+    theme_minimal()
+  
+  # プロットを返す
+  return(p)
+})
+
+# プロットを強制表示
+print(do.call(grid.arrange, c(plot_list, ncol = 2)))
+
+```{r}
+######### add noise to the possibility #########
+```
+
+# 20%のノイズを加えるための係数
+noise_factor <- 0.2
+
+# Survey data のノイズを追加したい部分を抽出
+# ここで、survey_dataは環境要素とユーザー番号を含むデータフレームだと仮定
+user_columns <- env_comf_agent[, -(1:4)]  # 最初の4列を除いたユーザー番号の列を抽出
+
+# 元の値の20%増減範囲でノイズを加える
+set.seed(123)  # 再現性のためにシードを設定
+noise <- 1 + runif(n = length(user_columns), min = -noise_factor, max = noise_factor)
+noisy_user_columns <- user_columns * matrix(noise, nrow = nrow(user_columns), ncol = ncol(user_columns))
+
+# 値が0〜1の範囲に収まるように修正
+noisy_user_columns <- pmin(pmax(noisy_user_columns, 0), 1)
+
+# 環境要素の列とノイズを加えたユーザー列を結合
+noisy_survey_data <- cbind(env_comf_agent[, 1:4], noisy_user_columns)
+
+# 結果を確認
+print(head(noisy_survey_data))
+

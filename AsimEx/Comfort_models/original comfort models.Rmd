@@ -1,5 +1,5 @@
 ---
-title: "Normal Distribution Fit"
+title: "Multinominal logistic Regression Fit"
 author: "Kazuki Horikoshi"
 date: "2024-08-08"
 output: html_notebook
@@ -14,6 +14,7 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
 ```{r}
 ReadLibraries(cars)
 ```
@@ -32,13 +33,8 @@ library(fitdistrplus)
 library(nnet)
 library(reshape2)
 library(comf)
-
 library(gridExtra)
 
-
-```{r}
-Read_csv()
-```
 
 # CSVファイルの読み込み
 path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
@@ -49,6 +45,59 @@ colnames(comfort_data)
 
 # データの確認
 head(comfort_data)
+
+```{r}
+##ReadLibraries(cars)##
+```
+
+######### confirm the RH of data source #########
+
+# CSVファイルの読み込み
+path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
+comfort_data <- read_csv(path_comfort)
+
+# 列名の確認
+colnames(comfort_data)
+
+# 湿度を逆算する関数を定義
+calc_humidity <- function(clo, Tair, velocity, SET_star) {
+  MET <- 1.2  # MET値を1.2に設定
+
+  # 湿度を逆算する
+  rh_values <- seq(0, 100, by = 1)  # 湿度の範囲を設定
+  best_rh <- NA
+  min_diff <- Inf
+  
+  for (rh in rh_values) {
+    # calcSETを使用して予測されたSETを計算
+    predicted_SET <- calcSET(ta = Tair, tr = Tair, vel = velocity, rh = rh, clo = clo, met = MET)
+    
+    # 逆算した湿度を見つけるために、計算されたSETと与えられたSET*の差を最小化
+    diff <- abs(predicted_SET - SET_star)
+    
+    if (diff < min_diff) {
+      min_diff <- diff
+      best_rh <- rh
+    }
+  }
+  
+  return(best_rh)
+}
+
+
+# 各行に対して湿度を計算
+comfort_data$RH <- mapply(calc_humidity, 
+                          clo = comfort_data$clo, 
+                          Tair = comfort_data$Tair, 
+                          velocity = comfort_data$velocity, 
+                          SET_star = comfort_data$`SET*`)
+
+# 結果を確認
+head(comfort_data)
+
+# comfort_dataをCSVファイルとして保存
+write.csv(comfort_data, file = "localdir/AsimEx/Comfort_models/comfort_data_with_RH.csv", row.names = FALSE)
+
 ```{r}
 ```
 
@@ -67,41 +116,6 @@ user_comfort <- split(comfort_data, comfort_data[["No"]])
 # user_comfort[[1]]  # ユーザーIDが1のデータ
 # user_comfort[[2]]  # ユーザーIDが2のデータ
 # user_comfort[[3]]  # ユーザーIDが3のデータ
-```{r}
-
-```
-
-<!-- # 1つ目のユーザーのデータを取得 -->
-<!-- first_user_data <- user_comfort[[1]] -->
-
-<!-- # TP_ctgごとのSET*のデータ -->
-<!-- tp_minus1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == -1]) -->
-<!-- tp_0 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 0]) -->
-<!-- tp_1 <- as.numeric(first_user_data$`SET*`[first_user_data$TP_ctg == 1]) -->
-
-<!-- # 正規分布のフィット -->
-<!-- fit_minus1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_minus1, na.rm = TRUE), sd = sd(tp_minus1, na.rm = TRUE)) -->
-<!-- fit_0 <- dnorm(first_user_data$`SET*`, mean = mean(tp_0, na.rm = TRUE), sd = sd(tp_0, na.rm = TRUE)) -->
-<!-- fit_1 <- dnorm(first_user_data$`SET*`, mean = mean(tp_1, na.rm = TRUE), sd = sd(tp_1, na.rm = TRUE)) -->
-
-<!-- # プロットデータを作成 -->
-<!-- plot_data <- data.frame( -->
-<!--   SET = first_user_data$`SET*`, -->
-<!--   TP_minus1 = fit_minus1, -->
-<!--   TP_0 = fit_0, -->
-<!--   TP_1 = fit_1 -->
-<!-- ) -->
-
-<!-- # プロット -->
-<!-- library(ggplot2) -->
-<!-- ggplot(plot_data, aes(x = SET)) + -->
-<!--   geom_line(aes(y = TP_minus1), color = "red") + # TP_ctgが-1の場合（右側） -->
-<!--   geom_line(aes(y = TP_0), color = "blue") +    # TP_ctgが0の場合（普通） -->
-<!--   geom_line(aes(y = TP_1), color = "green") +   # TP_ctgが1の場合（左側） -->
-<!--   ggtitle("First User: TP_ctg Distributions") + -->
-<!--   ylab("Probability Density") + -->
-<!--   xlab("SET*") + -->
-<!--   theme_minimal() -->
 
 ```{r}
 multinominal_logistic_regression_model
@@ -163,8 +177,13 @@ summary(user_models[["1"]])
 # モデルをファイルに保存
 save(user_models, file = "localdir/AsimEx/Comfort_models/user_models.RData")
 
+```{r}
+
+```
+
 # 保存したモデルを読み込む
 load("localdir/AsimEx/Comfort_models/user_models.RData")
+
 ```{r}
 
 ```
@@ -288,7 +307,7 @@ set_env_range
 
 
 # 温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)
-temperatures <- seq(22, 30, by = 0.5)
+tair <- seq(22, 30, by = 0.5)
 
 # ファンモードを設定 (0~5)
 fan_modes <- 0:5
@@ -298,31 +317,34 @@ fan_speeds <- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)
 
 # 各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成
 env_list <- data.frame(
-  Temperature = rep(temperatures, each = length(fan_modes)),
+  Tair = rep(tair, each = length(fan_modes)),
   FanMode = rep(fan_modes, times = length(temperatures)),
-  FanSpeed = rep(fan_speeds, times = length(temperatures))
+  Velocity = rep(fan_speeds, times = length(temperatures))
 )
 
-# 結果を表示
-print(env_list)
-
-```{r}
-
-```
-
-# 湿度とその他の定数設定
 humidity <- 50  # 湿度 50%
 clo_value <- 0.4  # clo値 0.4
-met_value <- 1  # メタボリックレート 1 met
+# その他のパラメータ (必要に応じて設定可能)
+met_value <- 1.2  # メタボリックレート (例: 1.2 met)
 
-# SET*を計算してリストに追加する
-env_list$`SET*` <- mapply(function(temp, fan_speed) {
-  # SET*を計算
-  calcSET(ta = temp, tr = temp, vel = fan_speed, rh = humidity, clo = clo_value, met = met_value)
-}, env_list$Temperature, env_list$FanSpeed)
+
+# calcSETを使用してSET*を計算し、結果を新しい列に追加
+
+env_list$`SET*` <- mapply(calcSET, 
+                            ta = env_list$Tair, 
+                            tr = env_list$Tair,  # 平均放射温度も同じ温度として仮定
+                            vel = env_list$Velocity, 
+                            rh = humidity, 
+                            clo = clo_value, 
+                            met = met_value)
+
+# 結果を確認
+print(head(env_list))
+
 
 # 結果を表示
 print(env_list)
+
 
 ```{r}
 
