@@ -156,7 +156,6 @@ print(user_probabilities)
 ######### confirm the possibility curve #########
 ```
 
-
 # user_probabilities をデータフレームに変換
 user_probabilities_df <- as.data.frame(user_probabilities)
 
@@ -165,7 +164,6 @@ env_comf_agent <- cbind(env_list, user_probabilities_df)
 
 # 結果を確認
 print(head(env_comf_agent))
-
 
 # テスト対象のユーザーID
 test_users <- c("2", "3", "5", "6")
@@ -176,14 +174,10 @@ plot_list <- lapply(test_users, function(user_id) {
   # 対象ユーザーのデータを抽出
   user_data <- env_comf_agent[, c("SET*", user_id)]
   
-  # 相関係数を計算
-  corr_coeff <- cor(user_data$`SET*`, user_data[, user_id], use = "complete.obs")
-  
-  # 相関プロットの作成
+  # 散布図の作成
   p <- ggplot(user_data, aes(x = `SET*`, y = user_data[, user_id])) +
     geom_point() +
-    geom_smooth(method = "lm", col = "blue") +
-    labs(title = paste("User", user_id, "- Correlation:", round(corr_coeff, 2)),
+    labs(title = paste("User", user_id),
          x = "SET*",
          y = paste("Comfort Probability (User", user_id, ")")) +
     theme_minimal()
@@ -194,6 +188,7 @@ plot_list <- lapply(test_users, function(user_id) {
 
 # プロットを強制表示
 print(do.call(grid.arrange, c(plot_list, ncol = 2)))
+
 
 ```{r}
 ######### add noise to the possibility #########
