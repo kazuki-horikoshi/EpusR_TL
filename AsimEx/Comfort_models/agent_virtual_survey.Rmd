@@ -1,0 +1,74 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+plot(cars)
+```
+
+library(readr)
+library(ggplot2)
+library(fitdistrplus)
+library(nnet)
+library(reshape2)
+library(comf)
+library(gridExtra)
+```{r}
+
+```
+
+
+# CSVファイルの読み込み
+path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
+comfort_data <- read_csv(path_comfort)
+
+# 列名の確認
+colnames(comfort_data)
+
+# 湿度を逆算する関数を定義
+calc_humidity <- function(clo, Tair, velocity, SET_star) {
+  MET <- 1.0  # MET値を1.0に設定
+
+  # 湿度を逆算する
+  rh_values <- seq(0, 100, by = 0.1)  # 湿度の範囲を設定
+  best_rh <- NA
+  min_diff <- Inf
+  
+  for (rh in rh_values) {
+    # comf::pmvppdを使用して予測されたSETを計算
+    pmv_result <- pmv(Tair = Tair, Tr = Tair, vel = velocity, clo = clo, met = MET, rh = rh)
+    predicted_SET <- pmv_result$SET
+    
+    # 逆算した湿度を見つけるために、計算されたSETと与えられたSET*の差を最小化
+    diff <- abs(predicted_SET - SET_star)
+    
+    if (diff < min_diff) {
+      min_diff <- diff
+      best_rh <- rh
+    }
+  }
+  
+  return(best_rh)
+}
+
+
+# 各行に対して湿度を計算
+comfort_data$RH <- mapply(calc_humidity, 
+                          clo = comfort_data$clo, 
+                          Tair = comfort_data$Tair, 
+                          velocity = comfort_data$velocity, 
+                          SET_star = comfort_data$`SET*`)
+
+# 結果を確認
+head(comfort_data)
+
