@@ -247,3 +247,26 @@ print(head(noisy_survey_data))
 # noise_survey_data を CSV ファイルとして保存
 write.csv(noisy_survey_data, file = "localdir/AsimEx/Comfort_models/noisy_survey_data.csv", row.names = FALSE)
 
+```{r}
+######### extract agent data with noise #########
+```
+
+# ユーザー列の名前を取得
+user_ids <- colnames(noisy_survey_data)[6:ncol(noisy_survey_data)]
+
+# ユーザーごとにCSVファイルに分割して保存
+for (user_id in user_ids) {
+  
+  # 最初の5列とユーザーの応答確率を抽出
+  user_data <- noisy_survey_data[, c(1:5, which(colnames(noisy_survey_data) == user_id))]
+  
+  # CSVファイルの名前を作成
+  file_name <- paste0("localdir/AsimEx/Comfort_models/agent_comfort/user_", user_id, "_data.csv")
+  
+  # データをCSVファイルとして保存（エンコーディングを指定）
+  write.csv(user_data, file = file_name, row.names = FALSE, fileEncoding = "UTF-8")
+  
+  # 処理が完了したことを確認するメッセージを表示
+  message("Saved ", file_name)
+}
+
