@@ -16,7 +16,7 @@ When you save the notebook, an HTML file containing the code and output will be 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
 ```{r}
-ReadLibraries(cars)
+### ReadLibraries(cars)
 ```
 # パッケージのインストールと読み込み
 
@@ -47,10 +47,9 @@ colnames(comfort_data)
 head(comfort_data)
 
 ```{r}
-##ReadLibraries(cars)##
+######### confirm the RH of data source #########
 ```
 
-######### confirm the RH of data source #########
 
 # CSVファイルの読み込み
 path_comfort <- "~/localdir/AsimEx/Comfort_models/comfort_inputs_clo0.4.csv"
@@ -118,7 +117,7 @@ user_comfort <- split(comfort_data, comfort_data[["No"]])
 # user_comfort[[3]]  # ユーザーIDが3のデータ
 
 ```{r}
-multinominal_logistic_regression_model
+### multinominal_logistic_regression_model
 ```
 
 # 1つ目のユーザーのデータを取得

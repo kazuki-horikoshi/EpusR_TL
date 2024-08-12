@@ -13,6 +13,28 @@ When you save the notebook, an HTML file containing the code and output will be 
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
+
+```{r}
+###ReadLibraries(cars)
+```
+# パッケージのインストールと読み込み
+
+#install.packages("readr")
+#install.packages("ggplot2")
+#install.packages("fitdistrplus")
+#install.packages("reshape2")
+#install.packages("comf")
+#install.packages("gridExtra")
+
+library(readr)
+library(ggplot2)
+library(fitdistrplus)
+library(nnet)
+library(reshape2)
+library(comf)
+library(gridExtra)
+
+
 ```{r}
 plot(cars)
 ```
@@ -85,7 +107,7 @@ print(names(obj_user_models))
 save(obj_user_models, file = "localdir/AsimEx/Comfort_models/obj_user_models.RData")
 
 ```{r}
-set_env_range
+###set_env_range
 ```
 
 # 温度の範囲を設定 (22°Cから30°Cを0.5°C刻みで)
@@ -100,8 +122,8 @@ fan_speeds <- c(0.07, 0.29, 0.58, 0.94, 1.37, 1.87)
 # 各温度ごとにファンモードとファンスピードを繰り返し、データフレームを作成
 env_list <- data.frame(
   Tair = rep(tair, each = length(fan_modes)),
-  FanMode = rep(fan_modes, times = length(temperatures)),
-  Velocity = rep(fan_speeds, times = length(temperatures))
+  FanMode = rep(fan_modes, times = length(tair)),
+  Velocity = rep(fan_speeds, times = length(tair))
 )
 
 humidity <- 50  # 湿度 50%
@@ -109,9 +131,10 @@ clo_value <- 0.4  # clo値 0.4
 # その他のパラメータ (必要に応じて設定可能)
 met_value <- 1.2  # メタボリックレート (例: 1.2 met)
 
+# 湿度を追加
+env_list$Humidity <- humidity
 
 # calcSETを使用してSET*を計算し、結果を新しい列に追加
-
 env_list$`SET*` <- mapply(calcSET, 
                             ta = env_list$Tair, 
                             tr = env_list$Tair,  # 平均放射温度も同じ温度として仮定
@@ -194,24 +217,33 @@ print(do.call(grid.arrange, c(plot_list, ncol = 2)))
 ######### add noise to the possibility #########
 ```
 
-# 20%のノイズを加えるための係数
-noise_factor <- 0.2
+# +-0.1の範囲でノイズを加えるための設定
+noise_range <- 0.1
 
 # Survey data のノイズを追加したい部分を抽出
-# ここで、survey_dataは環境要素とユーザー番号を含むデータフレームだと仮定
-user_columns <- env_comf_agent[, -(1:4)]  # 最初の4列を除いたユーザー番号の列を抽出
+user_columns <- env_comf_agent[, -(1:5)]  # 最初の5列を除いたユーザー番号の列を抽出
 
-# 元の値の20%増減範囲でノイズを加える
+# 元の値に対してランダムに+-0.1のノイズを加える
 set.seed(123)  # 再現性のためにシードを設定
-noise <- 1 + runif(n = length(user_columns), min = -noise_factor, max = noise_factor)
-noisy_user_columns <- user_columns * matrix(noise, nrow = nrow(user_columns), ncol = ncol(user_columns))
+noise <- runif(n = length(user_columns), min = -noise_range, max = noise_range)
 
-# 値が0〜1の範囲に収まるように修正
-noisy_user_columns <- pmin(pmax(noisy_user_columns, 0), 1)
+# 元のデータにノイズを加える
+noisy_user_columns <- user_columns + matrix(noise, nrow = nrow(user_columns), ncol = ncol(user_columns))
+
+
+# 値が0〜1の範囲に収まるように修正し、NAやInfを処理
+noisy_user_columns <- as.data.frame(lapply(noisy_user_columns, function(x) {
+  x <- pmin(pmax(x, 0), 1)
+  x[is.na(x) | is.infinite(x)] <- 0
+  return(x)
+}))
 
 # 環境要素の列とノイズを加えたユーザー列を結合
-noisy_survey_data <- cbind(env_comf_agent[, 1:4], noisy_user_columns)
+noisy_survey_data <- cbind(env_comf_agent[, 1:5], noisy_user_columns)
 
 # 結果を確認
 print(head(noisy_survey_data))
+
+# noise_survey_data を CSV ファイルとして保存
+write.csv(noisy_survey_data, file = "localdir/AsimEx/Comfort_models/noisy_survey_data.csv", row.names = FALSE)
 
