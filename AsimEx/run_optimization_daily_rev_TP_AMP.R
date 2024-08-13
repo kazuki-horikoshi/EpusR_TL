@@ -27,9 +27,9 @@ install.packages("here")
 library(here)
 
 #if (!require("here", quietly = TRUE)) {
-  install.packages("here")
-  library(here)
-}
+#   install.packages("here")
+#   library(here)
+# }
 
 # turn off verbose information of eplusr package
 eplusr_option(verbose_info = FALSE)
@@ -771,6 +771,55 @@ for (comfort_model_type in 2){
     }
   }
 }
+
+#####################################
+# Test for control logic
+#####################################
+## 2024-08-13 K.Horikoshi
+
+path_wd <- "/home/rstudio/localdir"
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+
+data <- read.csv(path_accep)
+
+### Test Zone Control
+
+# Fan Modeが0のデータのみをフィルタリング
+fan_mode_0_data <- subset(data, FanMode == 0)
+
+# 7列目から22列目（X2からX24）を対象にする
+acceptable_temperature_ranges <- fan_mode_0_data[apply(fan_mode_0_data[, 7:22], 1, function(row) {
+  mean(row == 1) >= 0.75
+}), "Indoor.Temp"]
+
+# 結果を表示
+print(acceptable_temperature_ranges)
+
+### Test Personal Hybrid Control
+
+# ユニークな温度帯を取得
+unique_temperatures <- unique(data$Indoor.Temp)
+
+# 各温度帯ごとに最適な環境を探す
+optimal_temperatures <- c()
+
+for (temp in unique_temperatures) {
+  # 同じ温度の行をフィルタリング
+  temp_data <- subset(data, Indoor.Temp == temp)
+  
+  # 7列目から22列目（X2からX24）を対象に、行ごとに75%以上のユーザーが1であるかを確認
+  acceptable_rows <- apply(temp_data[, 7:22], 1, function(row) {
+    mean(row == 1) >= 0.75
+  })
+  
+  # 少なくとも1行で条件を満たしているか確認
+  if (any(acceptable_rows)) {
+    optimal_temperatures <- c(optimal_temperatures, temp)
+  }
+}
+
+# 結果を表示
+print(optimal_temperatures)
 
 #####################################
 # Test for understanding the data structure
