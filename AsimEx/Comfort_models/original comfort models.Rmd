@@ -210,6 +210,7 @@ ggplot(plot_data_2, aes(x = `SET*`, y = Probability, color = Predicted_TP_ctg)) 
        y = "Probability") +
   theme_minimal() +
   scale_color_manual(values = c("1" = "green", "0" = "blue", "-1" = "red"))
+  
 ```{r}
 ```
 
@@ -340,10 +341,8 @@ env_list$`SET*` <- mapply(calcSET,
 # 結果を確認
 print(head(env_list))
 
-
 # 結果を表示
 print(env_list)
-
 
 ```{r}
 

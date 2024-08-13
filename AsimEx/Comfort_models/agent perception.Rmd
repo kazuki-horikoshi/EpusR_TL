@@ -223,6 +223,7 @@ noise_range <- 0.1
 # Survey data のノイズを追加したい部分を抽出
 user_columns <- env_comf_agent[, -(1:5)]  # 最初の5列を除いたユーザー番号の列を抽出
 
+
 # 元の値に対してランダムに+-0.1のノイズを加える
 set.seed(123)  # 再現性のためにシードを設定
 noise <- runif(n = length(user_columns), min = -noise_range, max = noise_range)
@@ -230,13 +231,15 @@ noise <- runif(n = length(user_columns), min = -noise_range, max = noise_range)
 # 元のデータにノイズを加える
 noisy_user_columns <- user_columns + matrix(noise, nrow = nrow(user_columns), ncol = ncol(user_columns))
 
-
 # 値が0〜1の範囲に収まるように修正し、NAやInfを処理
 noisy_user_columns <- as.data.frame(lapply(noisy_user_columns, function(x) {
   x <- pmin(pmax(x, 0), 1)
   x[is.na(x) | is.infinite(x)] <- 0
   return(x)
 }))
+
+# カラム名を修正
+names(noisy_user_columns) <- names(env_comf_agent)[6:ncol(env_comf_agent)]  # env_comf_agentのカラム名に合わせる
 
 # 環境要素の列とノイズを加えたユーザー列を結合
 noisy_survey_data <- cbind(env_comf_agent[, 1:5], noisy_user_columns)
@@ -269,4 +272,5 @@ for (user_id in user_ids) {
   # 処理が完了したことを確認するメッセージを表示
   message("Saved ", file_name)
 }
+
 
