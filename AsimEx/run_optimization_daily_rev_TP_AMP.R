@@ -57,29 +57,52 @@ idf <- read_idf(path = path_idf, idd = NULL)
 job <- idf$run(path_epw, wait = TRUE)
 
 #####################################
-# Update IDF file during optimization
+# Update IDF file
 #####################################
-update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
-                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L) {
 
+# added occupancy matrix and system
+update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
+                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
+                        occ_day_data, system)) {
+
+  # create the vector to include temperature schedule for full-day timeline
   tasp <- c(tasp8,tasp9,tasp10,tasp11,tasp12,tasp13,tasp14,tasp15,tasp16,tasp17,tasp18,tasp19)
   
+  # test temperature
   # tasp <- c(21.36003937,22.67353829,23.76306684,23.43645242,23.12542441,23.51378413,23.03272871,22.85321603,23.41572812,23.78539024,22.43757939,22.28954219)
   
-  ## Update "Zone cooling setpoint"
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ## Update "Zone cooling setpoint"
   tmp <- idf$"Schedule:Compact"[["zone_index"]]
   dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
   zone_index <- dt[6,6]
   
-  if (zone_index == 1){ # optimize an interior zone
+  if (zone_index == 1){ # set temperature schedule for an interior zone
     tasp_core <- tasp
     tasp_peri <- tasp - 1
-  }else if(zone_index == 2){ # optimize a perimeter zone
+  }else if(zone_index == 2){ #  set temperature schedule for a perimeter zone
     tasp_core <- tasp + 1
     tasp_peri <- tasp
   }
-
+  
+  # set temperature schedule for an core zone
   tmp <- idf$"Schedule:Compact"[["sch_setpoint_core"]]
   dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
   
@@ -88,7 +111,9 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
   }
   
   idf$update(dt)
-  
+
+
+  # set temperature schedule for an interior zone
   tmp <- idf$"Schedule:Compact"[["sch_setpoint_peri"]]
   dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
   
@@ -97,7 +122,8 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
   }
   
   idf$update(dt)
-  
+
+  # set case name
   str1 <- sprintf(round((tasp[1] - 20)*10)/10,fmt = "%0.1f")
   for (i in 2:6){
     str1 <- paste0(str1,as.character(round((tasp[i] - 20)*10)))
@@ -107,6 +133,7 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
   for (i in 8:12){
     str2 <- paste0(str2,as.character(round((tasp[i] - 20)*10)))
   }
+  
   
   tmp <- idf$"Schedule:Compact"[["case_name1"]]
   dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
@@ -472,20 +499,30 @@ for (comfort_model_type in 2){
             
             idf <- read_idf(path = path_idf, idd = NULL)
             
-            # Update schedules
+            ### Update occupant load schedules
       
             path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
             occ_occupant <- read.csv(path_occ_occupant,header=T)
             occ_total <- occ_occupant[,(Nocc+1)]
             
+            # get Occupancy based on Nday
+            # assume data are saved for 24rows each day
+            start_row <- 24 * (Nday - 1) + 1
+            end_row <- start_row + 23
+            occ_day_data <- occ_occupant[start_row:end_row, 2:17] #occupancy matrix for one day
+            
+            ### Update occupant load schedules
             tmp <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
             dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
             
             for (i in 1:12){
               dt[(2*i+6),6] <- occ_total[24*(Nday-1)+i+7]/100
             }
-            idf$update(dt)
             
+            idf$update(dt)
+
+            
+            # Update load information except the setpoint
             if (zone_index == 1){ # optimize an interior zone
               str_occupancy_mid1 <- "Sch_Occupancy_target"
               str_occupancy_periE <- "Sch_Occupancy"
@@ -568,7 +605,8 @@ for (comfort_model_type in 2){
             idf$update(dt)
             
             idf$save(overwrite = TRUE)
-            
+
+                
             if (opt == 0){ # No GA optimization
               if (system == 1){ # VAV system
                 tasp <- 24
@@ -591,8 +629,12 @@ for (comfort_model_type in 2){
               tasp18 <- tasp
               tasp19 <- tasp
               
+              
+              
+              # pass Occupancy information" and "system" update_when callung update_idf function
               update_idf(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
-                                      tasp14, tasp15, tasp16, tasp17, tasp18, tasp19)
+                         tasp14, tasp15, tasp16, tasp17, tasp18, tasp19, 
+                         occ_day_data, system)
               
               idf$save(overwrite = TRUE)
               idf$run(path_epw,
@@ -602,12 +644,13 @@ for (comfort_model_type in 2){
               Eall <- get_energy(idf)
               Rdissatisfied <- get_discomfort(idf)
               
-              population <- data.frame(index_gen=1,index_ind=1,tasp8=tasp8,tasp9=tasp9, 
-                                       tasp10=tasp10,tasp11=tasp11,tasp12=tasp12,tasp13=tasp13, 
-                                       tasp14=tasp14,tasp15=tasp15,tasp16=tasp16,tasp17=tasp17,
-                                       tasp18=tasp18, tasp19=tasp19,get_energy=Eall*100,
-                                       get_discomfort=Rdissatisfied)
-              pareto <- population[,2:16]
+              # population <- data.frame(index_gen=1,index_ind=1,tasp8=tasp8,tasp9=tasp9, 
+              #                          tasp10=tasp10,tasp11=tasp11,tasp12=tasp12,tasp13=tasp13, 
+              #                          tasp14=tasp14,tasp15=tasp15,tasp16=tasp16,tasp17=tasp17,
+              #                          tasp18=tasp18, tasp19=tasp19,get_energy=Eall*100,
+              #                          get_discomfort=Rdissatisfied)
+              # 
+              # pareto <- population[,2:16]
                 
             }else{
       
@@ -772,54 +815,6 @@ for (comfort_model_type in 2){
   }
 }
 
-#####################################
-# Test for control logic
-#####################################
-## 2024-08-13 K.Horikoshi
-
-path_wd <- "/home/rstudio/localdir"
-path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
-
-data <- read.csv(path_accep)
-
-### Test Zone Control
-
-# Fan Modeが0のデータのみをフィルタリング
-fan_mode_0_data <- subset(data, FanMode == 0)
-
-# 7列目から22列目（X2からX24）を対象にする
-acceptable_temperature_ranges <- fan_mode_0_data[apply(fan_mode_0_data[, 7:22], 1, function(row) {
-  mean(row == 1) >= 0.75
-}), "Indoor.Temp"]
-
-# 結果を表示
-print(acceptable_temperature_ranges)
-
-### Test Personal Hybrid Control
-
-# ユニークな温度帯を取得
-unique_temperatures <- unique(data$Indoor.Temp)
-
-# 各温度帯ごとに最適な環境を探す
-optimal_temperatures <- c()
-
-for (temp in unique_temperatures) {
-  # 同じ温度の行をフィルタリング
-  temp_data <- subset(data, Indoor.Temp == temp)
-  
-  # 7列目から22列目（X2からX24）を対象に、行ごとに75%以上のユーザーが1であるかを確認
-  acceptable_rows <- apply(temp_data[, 7:22], 1, function(row) {
-    mean(row == 1) >= 0.75
-  })
-  
-  # 少なくとも1行で条件を満たしているか確認
-  if (any(acceptable_rows)) {
-    optimal_temperatures <- c(optimal_temperatures, temp)
-  }
-}
-
-# 結果を表示
-print(optimal_temperatures)
 
 #####################################
 # Test for understanding the data structure
@@ -828,16 +823,13 @@ print(optimal_temperatures)
 
 path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf")
 path_cal <- paste0(path_wd,"/AsimEx/cal/VAV") 
-
 path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
 path_cal <- paste0(path_wd,"/AsimEx/cal/Hybrid") 
 
 idf <- read_idf(path = path_idf, idd = NULL)
-
 idf$run(path_epw,
         dir = path_cal,
         wait = TRUE)
-
 job <- idf$last_job()
 
 tmp <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
@@ -853,5 +845,218 @@ for (i in 1:12){
   dt[(2*i+6),6] <- occ_total[24*(Nday-1)+i+7]/100
 }
 
-# Nstep<-24
-# Nsatisfied_ave_all_sim <- numeric(Nstep)
+### test occupancy information
+
+Nocc <- 16 # number of occupant in the zone
+
+path_wd <- "/home/rstudio/localdir"
+path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
+occ_occupant <- read.csv(path_occ_occupant,header=T)
+occ_total <- occ_occupant[,(Nocc+1)]
+
+
+# get Occupancy based on Nday
+# assume data are saved for 24rows each day
+
+Nday<-10
+
+start_row <- 24 * (Nday - 1) + 1
+end_row <- start_row + 23
+occ_day_data <- occ_occupant[start_row:end_row, 2:17]
+
+print(occ_day_data)
+
+occ_total <- occ_occupant[,(Nocc+1)]
+
+print(occ_total)
+
+
+#####################################
+# Test for control logic
+#####################################
+## 2024-08-13 K.Horikoshi
+
+path_wd <- "/home/rstudio/localdir"
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+
+accep_data <- read.csv(path_accep)
+
+### Zone Control
+
+# Filter the data where Fan Mode == 0
+fan_mode_0_data <- subset(accep_data, FanMode == 0)
+
+# Subject set to columns 7 to 22 (User X2 to X24)
+acceptable_temperature_ranges <- fan_mode_0_data[apply(fan_mode_0_data[, 7:22], 1, function(row) {
+  mean(row == 1) >= 0.75
+}), "Indoor.Temp"]
+
+# Result
+print(acceptable_temperature_ranges)
+
+### Personal Control
+
+# Get unique temperature range
+unique_temperatures <- unique(accep_data$Indoor.Temp)
+
+# Search optimal temperatures
+optimal_temperatures <- c()
+
+for (temp in unique_temperatures) {
+  # Filter data for same temperature
+  temp_data <- subset(accep_data, Indoor.Temp == temp)
+  
+  # For subjecy in columns 7 to 22 (User X2 to X24), confirm over 75% user are comfortable
+  acceptable_rows <- apply(temp_data[, 7:22], 1, function(row) {
+    mean(row == 1) >= 0.75
+  })
+  
+  # Confirm achieving the requirement at least one row 
+  if (any(acceptable_rows)) {
+    optimal_temperatures <- c(optimal_temperatures, temp)
+  }
+}
+
+# Result
+print(optimal_temperatures)
+
+
+### Zone Control on time sequence and filter
+
+#Initial setting
+tasp <- 27
+tasp8 <- tasp
+tasp9 <- tasp
+tasp10 <- tasp
+tasp11 <- tasp
+tasp12 <- tasp
+tasp13 <- tasp
+tasp14 <- tasp
+tasp15 <- tasp
+tasp16 <- tasp
+tasp17 <- tasp
+tasp18 <- tasp
+tasp19 <- tasp
+
+
+path_wd <- "/home/rstudio/localdir"
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+accep_data <- read.csv(path_accep)
+
+system <- 1
+
+if (system == 1) { # Zone Control
+  # Define tasp list to update
+  tasp_list <- c(tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
+                 tasp14, tasp15, tasp16, tasp17, tasp18, tasp19)
+  
+  for (time in 8:19) {  # Loop for each hour from 8 to 19
+    # Extract occupancy data for the current hour
+    occupancy_data <- occ_day_data[time, ]  # 16 users' occupancy data for the current hour
+    
+    if (all(occupancy_data == 0)) {
+      # If all occupancy data is 0, record 30 in tasp_list
+      tasp_list[time - 7] <- 30
+    } else {
+      # Filter accep_data where Fan Mode == 0
+      fan_mode_0_data <- subset(accep_data, FanMode == 0)
+      
+      # Apply the occupancy filter to accep_data
+      filtered_data <- fan_mode_0_data[apply(fan_mode_0_data[, 7:22], 1, function(row) {
+        mean(row[occupancy_data == 1] == 1) >= 0.75
+      }), ]
+      
+      # Identify temperature ranges where at least 75% of present users are comfortable
+      acceptable_temperature_ranges <- filtered_data[,"Indoor.Temp"]
+      
+      # Update tasp based on the maximum acceptable temperature if available
+      if (length(acceptable_temperature_ranges) > 0) {
+        tasp_list[time - 7] <- max(acceptable_temperature_ranges)
+      } else {
+        # If no acceptable temperature ranges found, you might want to set a default value or leave tasp unchanged
+        tasp_list[time - 7] <- 30  # Optionally set a default value if nothing is found
+      }
+    }
+    # Print the result for debugging
+    print(paste("Time:", time, "Acceptable Temperature Ranges:"))
+    print(acceptable_temperature_ranges)
+    
+    # Print the result for debugging
+    print(paste("Time:", time, "Max Acceptable Temperature:"))
+    print(tasp_list[time - 7])
+  }
+}
+
+print(tasp_list)
+
+### Zone Control on time sequence and filter
+
+#Initial setting
+tasp <- 27
+tasp8 <- tasp
+tasp9 <- tasp
+tasp10 <- tasp
+tasp11 <- tasp
+tasp12 <- tasp
+tasp13 <- tasp
+tasp14 <- tasp
+tasp15 <- tasp
+tasp16 <- tasp
+tasp17 <- tasp
+tasp18 <- tasp
+tasp19 <- tasp
+
+
+path_wd <- "/home/rstudio/localdir"
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+accep_data <- read.csv(path_accep)
+
+system <- 3
+if (system == 3) { # Personal Control
+  # Define tasp list to update
+  tasp_list <- c(tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
+                 tasp14, tasp15, tasp16, tasp17, tasp18, tasp19)
+  
+  for (time in 8:19) {  # Loop for each hour from 8 to 19
+    # Extract occupancy data for the current hour
+    occupancy_data <- occ_day_data[time, ]  # 16 users' occupancy data for the current hour
+    
+    if (all(occupancy_data == 0)) {
+      # If all occupancy data is 0, record 30 in tasp_list
+      tasp_list[time - 7] <- 30
+    } else {
+      # Get unique temperature range
+      unique_temperatures <- unique(accep_data$Indoor.Temp)
+      
+      # Initialize variable to store maximum acceptable temperature
+      max_temperature <- NA
+      
+      for (temp in unique_temperatures) {
+        # Filter data for the same temperature
+        temp_data <- subset(accep_data, Indoor.Temp == temp)
+        
+        # Check if at least 75% of users are comfortable in any fan mode (columns 7 to 22)
+        acceptable_rows <- apply(temp_data[, 7:22], 1, function(row) {
+          mean(row[occupancy_data == 1] == 1) >= 0.75
+        })
+        
+        # If the requirement is met in at least one row, update max_temperature
+        if (any(acceptable_rows)) {
+          max_temperature <- max(max_temperature, temp, na.rm = TRUE)
+        }
+      }
+      
+      # Update tasp_list with the maximum acceptable temperature if available
+      if (!is.na(max_temperature)) {
+        tasp_list[time - 7] <- max_temperature
+      } else {
+        tasp_list[time - 7] <- 30  # Optionally set a default value if nothing is found
+      }
+    }
+    # Print the result for debugging
+    print(paste("Time:", time, "Max Acceptable Temperature:"))
+    print(tasp_list[time - 7])
+  }
+}
+
+print(tasp_list)
