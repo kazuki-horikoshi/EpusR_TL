@@ -355,13 +355,13 @@ user_probabilities <- matrix(NA, nrow = nrow(env_list), ncol = length(obj_user_m
 for (i in seq_along(names(obj_user_models))) {
   user_id <- names(obj_user_models)[i]
   
-  # ユーザーごとのモデルを取得
+  #ユーザーごとのモデルを取得
   model <- obj_user_models[[user_id]]
   
-  # 2つ目のクラス（TP_ctg = 0）に分類される確率を予測
+  #2つ目のクラス（TP_ctg = 0）に分類される確率を予測
   predicted_probs <- predict(model, newdata = env_list, type = "probs")
   
-  # 2つ目のクラスの確率を user_probabilities の対応する列に保存
+  #2つ目のクラスの確率を user_probabilities の対応する列に保存
   user_probabilities[, i] <- predicted_probs[, "0"]
 }
 
@@ -383,7 +383,6 @@ env_comf_agent <- cbind(env_list, user_probabilities_df)
 
 # 結果を確認
 print(head(env_comf_agent))
-
 
 # テスト対象のユーザーID
 test_users <- c("2", "3", "5", "6")
