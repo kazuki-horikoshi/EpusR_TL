@@ -532,3 +532,202 @@ print("Final Total Acceptance by Time:")
 print(total_acceptance)
 
 
+#####################################
+# Test for understanding the data structure
+#####################################
+### test occupancy information
+
+Nocc <- 16 # number of occupant in the zone
+
+path_wd <- "/home/rstudio/localdir"
+path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
+occ_occupant <- read.csv(path_occ_occupant,header=T)
+occ_total <- occ_occupant[,(Nocc+1)]
+
+# get Occupancy based on Nday
+# assume data are saved for 24rows each day
+
+Nday<-10
+
+start_row <- 24 * (Nday - 1) + 1
+end_row <- start_row + 23
+occ_day_data <- occ_occupant[start_row:end_row, 1:16]
+
+print(occ_day_data)
+occ_total <- occ_occupant[,(Nocc+1)]
+print(occ_total)
+
+tasp <- 27
+tasp8 <- tasp
+tasp9 <- tasp
+tasp10 <- tasp
+tasp11 <- tasp
+tasp12 <- tasp
+tasp13 <- tasp
+tasp14 <- tasp
+tasp15 <- tasp
+tasp16 <- tasp
+tasp17 <- tasp
+tasp18 <- tasp
+tasp19 <- tasp
+
+path_wd <- "/home/rstudio/localdir"
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+accep_data <- read.csv(path_accep)
+
+
+#####################################
+# Test for real acceptance calculation
+#####################################
+
+user_idx <- 1  # Debug for user index 1
+time <- 11  # Debug for time 11
+
+# Initialize vectors to store the total acceptance and total occupancy for each time
+total_acceptance <- rep(0, 12)
+total_occupancy <- rep(0, 12)
+
+# Loop through each time period (8 to 19)
+#for (time in 8:19) {
+
+# Get the corresponding ctrl_mode row for the current time
+ctrl_row <- ctrl_mode[time - 7, ]
+
+# Extract the temperature and fan modes for the current time
+Tair <- ctrl_row["Max_Temperature"]
+fan_modes <-  as.numeric(ctrl_row[3:(2 + Nocc)])  # Convert to numeric to remove names
+
+# Extract occupancy data for the current time
+occupancy_data <- occ_day_data[time, ]    # 16 users' occupancy data for the current hour
+
+# Calculate the total occupancy for the current time
+total_occupancy[time - 7] <- sum(occupancy_data == 1)
+
+# Filter env_accep_agent to match the current Tair and each user's FanMode
+matching_rows <- env_accep_agent$Tair == Tair
+filtered_data <- env_accep_agent[matching_rows, ]
+print("Filtered data based on Tair:")
+print(filtered_data)
+
+for (user_idx in 1:Nocc) {
+  if (occupancy_data[user_idx] == 1) {
+    # Filter by user's FanMode and Tair
+    user_fan_mode <- fan_modes[user_idx]
+    user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 5 + user_idx]
+    print(user_acceptance)
+    
+    # Sum the acceptance for this time period
+    total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
+  }
+}
+
+# Calculate the final satisfaction ratio
+total_acceptance_sum <- sum(total_acceptance, na.rm = TRUE)
+total_occupancy_sum <- sum(total_occupancy, na.rm = TRUE)
+
+if (total_occupancy_sum > 0) {
+  satisfaction_ratio <- total_acceptance_sum / total_occupancy_sum
+} else {
+  satisfaction_ratio <- NA  # Avoid division by zero
+}
+
+print(paste("Satisfaction Ratio:", satisfaction_ratio))
+
+
+
+#####################################
+# Test for real acceptance calculation
+
+user_idx <- 1  # Debug for user index 1
+time <- 11  # Debug for time 11
+
+# Initialize vectors to store the total acceptance and total occupancy for each time
+total_acceptance <- rep(0, 12)
+total_occupancy <- rep(0, 12)
+
+# Loop through each time period (8 to 19)
+for (time in 8:19) {
+  
+  # Get the corresponding ctrl_mode row for the current time
+  ctrl_row <- ctrl_mode[time - 7, ]
+  
+  # Extract the temperature and fan modes for the current time
+  Tair <- ctrl_row["Max_Temperature"]
+  fan_modes <-  as.numeric(ctrl_row[3:(2 + Nocc)])  # Convert to numeric to remove names
+  
+  # Extract occupancy data for the current time
+  occupancy_data <- occ_day_data[time, ]    # 16 users' occupancy data for the current hour
+  
+  # Calculate the total occupancy for the current time
+  total_occupancy[time - 7] <- sum(occupancy_data == 1)
+  
+  # Filter accep_data to match the current Tair and each user's FanMode
+  matching_rows <- accep_data$Indoor.Temp == Tair
+  filtered_data <- accep_data[matching_rows, ]
+  print("Filtered data based on Tair:")
+  print(filtered_data)
+  
+  for (user_idx in 1:Nocc) {
+    if (occupancy_data[user_idx] == 1) {
+      # Filter by user's FanMode and Tair
+      user_fan_mode <- fan_modes[user_idx]
+      user_acceptance <- accep_data[matching_rows & accep_data$FanMode == user_fan_mode, 6 + user_idx]
+      print(user_acceptance)
+      
+      # Sum the acceptance for this time period
+      total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
+    }
+  }
+  
+  print(total_acceptance[time - 7])
+}
+
+# Calculate the final satisfaction ratio
+total_acceptance_sum <- sum(total_acceptance, na.rm = TRUE)
+total_occupancy_sum <- sum(total_occupancy, na.rm = TRUE)
+
+if (total_occupancy_sum > 0) {
+  satisfaction_ratio <- total_acceptance_sum / total_occupancy_sum
+} else {
+  satisfaction_ratio <- NA  # Avoid division by zero
+}
+
+print(paste("Satisfaction Ratio:", satisfaction_ratio))
+
+
+#####################################
+# Test for fan energy calculation
+#####################################
+
+user_idx <- 1  # Debug for user index 1
+time <- 9  # Debug for time 11
+
+# Fan mode electricity consumption (in kW)
+Ecfand <- c(0, 2, 6, 10, 15, 20, 26, 32)/1000  # Ceiling fan electricity from mode 0 to 5
+
+# Initialize a vector to store the total energy consumption for each time period
+total_energy_consumption <- rep(0, nrow(ctrl_mode))
+
+# Loop through each time period
+for (i in 1:nrow(ctrl_mode)) {
+  # Extract the fan modes for all users at the current time
+  fan_modes <- as.numeric(ctrl_mode[i, 3:(2 + Nocc)])  # Convert to numeric to remove names
+  
+  # Calculate energy consumption for each user (exclude NA values)
+  energy_consumption <- sapply(fan_modes, function(fan_mode) {
+    if (!is.na(fan_mode)) {
+      return(Ecfand[fan_mode + 1])  # Add 1 to index since R is 1-based and fan_mode is 0-based
+    } else {
+      return(0)  # No energy consumption if fan mode is NA
+    }
+  })
+  
+  # Sum the energy consumption for all users at the current time
+  total_energy_consumption[i] <- sum(energy_consumption)
+}
+
+# Print the total energy consumption for each time period
+for (i in 1:nrow(ctrl_mode)) {
+  print(paste("Time:", ctrl_mode[i, 1], "Total Energy Consumption (kW):", total_energy_consumption[i]))
+}
+
