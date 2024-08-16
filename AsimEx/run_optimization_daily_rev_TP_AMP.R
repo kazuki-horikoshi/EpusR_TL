@@ -45,8 +45,8 @@ idd <- use_idd(ver, download = "auto")
 path_wd <- "/home/rstudio/localdir"
 path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
 
-path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
-idf <- read_idf(path = path_idf, idd = NULL)
+# path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
+# idf <- read_idf(path = path_idf, idd = NULL)
 
 #job <- idf$run(path_epw, wait = TRUE)
 
@@ -229,10 +229,9 @@ get_energy <- function (idf) {
   # path_idf <- paste0(path_wd,"Singapore_Benchmark_Model_V940_ono_VAV.idf")
   # idf <- read_idf(path = path_idf, idd = NULL)
   # job <- idf$run(path_epw, wait = TRUE)
+  
   job <- idf$last_job()
   stopifnot(!is.null(job))
-  
-  source( "/Users/eikichiono/Documents/07_Program_codes/R/ono_functions.R" )
   
   # calculate energy consumption
   Ecfand <- c(0,2,6,10,15,20,26,32)/1000 # ceiling fan electricity from mode 0 to 7
@@ -252,20 +251,6 @@ get_energy <- function (idf) {
   system <- job$read_table("Schedules")[schedule_name=="STR_SYSTEM",schedule_maximum]
   opt <- job$read_table("Schedules")[schedule_name=="STR_OPT",schedule_maximum]
   Nday <- job$read_table("Schedules")[schedule_name=="NDAY",schedule_maximum]
-
-  # # setting paths
-  # path_wd <- "/Users/eikichiono/Documents/02_Research/MBDC/Github/Document/Rule optimization/Code/Impact_analysis_of_individual_model/"
-  # path_wd2 <- "/Users/eikichiono/Documents/02_Research/Mihara-san PhD experiment/"
-  # 
-  # # setting case names
-  # case_name1 <- job$read_table("Schedules")[schedule_name=="CASE_NAME1",schedule_maximum]
-  # case_name2 <- job$read_table("Schedules")[schedule_name=="CASE_NAME2",schedule_maximum]
-  # 
-  # case_name <- paste0(as.character(tp_combination_index),as.character(comfort_model_type),as.character(comfort_model),
-  #                     as.character(system),as.character(opt),as.character(Nday),
-  #                     as.character(case_name1*10^11),as.character(case_name2*10^11))
-  # 
-  # case_name_path <- paste0(path_wd,"tmp/",case_name,".csv")
 
   
   # calculating the energy
@@ -320,219 +305,214 @@ get_energy <- function (idf) {
   # assuming proportional to target air volume
   Eahu_target <- Eahu*Vtarget/Vahu/Nfloor
   Eplant_target <- Eplant*(Qcoil_mid*Vtarget/Vahu)/Qcoil/Nfloor
-
-    
-  ###Need to edit here
-
+  Ecfan <- numeric(Nstep)
   
-  # occupants info update
-  path_occ_occupant <- paste0(path_wd,"data/occ_occupant.csv")
+  # Calculate fan energy consumption based on ctrl_mode
+  for (i in 1:nrow(ctrl_mode)) {
+    # Extract the fan modes for all users at the current time
+    fan_modes <- as.numeric(ctrl_mode[i, 3:(2 + Nocc)])  # Convert to numeric to remove names
+    
+    # Calculate energy consumption for each user (exclude NA values)
+    energy_consumption <- sapply(fan_modes, function(fan_mode) {
+      if (!is.na(fan_mode)) {
+        return(Ecfand[fan_mode + 1])  # Add 1 to index since R is 1-based and fan_mode is 0-based
+      } else {
+        return(0)  # No energy consumption if fan mode is NA
+      }
+    })
+    
+    # Sum the energy consumption for all users at the current time
+    Ecfan[i] <- sum(energy_consumption)
+  }
+  
 
-  occ_occupant <- read.csv(path_occ_occupant,header=T)
-  occ_occupant <- occ_occupant[(24*(Nday-1)+1):(24*Nday),1:Nocc]  #containing the presence for 24hours, for 16 occupants
-
-  # cpmfort model types 
-  model_name <- c("zone","group","personal")
-  model_type <- c("TP","TP_AMP")
+  # # occupants info update
+  # path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
+  # 
+  # occ_occupant <- read.csv(path_occ_occupant,header=T)
+  # occ_occupant <- occ_occupant[(24*(Nday-1)+1):(24*Nday),1:Nocc]  #containing the presence for 24hours, for 16 occupants
+  # 
+  # comfort model types 
+  # model_name <- c("zone","group","personal")
+  # model_type <- c("TP","TP_AMP")
 
   # comfort model types 
-  path_prob_sim <- paste0(path_wd2,model_type[comfort_model_type],"model_",model_name[comfort_model],".csv")
-  path_prob_eval1 <- paste0(path_wd2,"TPmodel_personal.csv")
-  path_prob_eval2 <- paste0(path_wd2,"TP_AMPmodel_personal.csv")
-
-  prob_sim <- read.csv(path_prob_sim, skip=0, header=T)
-  prob_eval1 <- read.csv(path_prob_eval1, skip=0, header=T)
-  prob_eval2 <- read.csv(path_prob_eval2, skip=0, header=T)
+  # path_prob_sim <- paste0(path_wd2,model_type[comfort_model_type],"model_",model_name[comfort_model],".csv")
+  # path_prob_eval1 <- paste0(path_wd2,"TPmodel_personal.csv")
+  # path_prob_eval2 <- paste0(path_wd2,"TP_AMPmodel_personal.csv")
+  # 
+  # prob_sim <- read.csv(path_prob_sim, skip=0, header=T)
+  # prob_eval1 <- read.csv(path_prob_eval1, skip=0, header=T)
+  # prob_eval2 <- read.csv(path_prob_eval2, skip=0, header=T)
   
   # comfort model types 
     # 1: VAV
     # 2: VAV + ceiling fan
     # 3: VAV + personal fan
 
-  # defining occ number per group, Nocc is set in the fundamental setting 
-  if (system == 1){
-    Ngroup <- 1
-  }else if (system == 2){
-    Ngroup <- 4
-  }else if (system == 3){
-    Ngroup <- 16
-  }
-  Nocc_group <- Nocc/Ngroup # number of occupants per group : Nocc is defined 16
+  # # defining occ number per group, Nocc is set in the fundamental setting 
+  # if (system == 1){
+  #   Ngroup <- 1
+  # }else if (system == 2){
+  #   Ngroup <- 4
+  # }else if (system == 3){
+  #   Ngroup <- 16
+  # }
+  # Nocc_group <- Nocc/Ngroup # number of occupants per group : Nocc is defined 16
   
-  # defining mode range accordind to system types
-  if (system == 1){
-    mode_range <- 0
-  }else if (system > 1 && opt == 0){
-    mode_range <- 3
-  }else{
-    mode_range <- 0:5
-  }
+  # # defining mode range accordind to system types
+  # if (system == 1){
+  #   mode_range <- 0
+  # }else if (system > 1 && opt == 0){
+  #   mode_range <- 3
+  # }else{
+  #   mode_range <- 0:5
+  # }
   
-  # create 24-length vector
-  Nsatisfied_ave_all_sim <- numeric(Nstep)
-  Nsatisfied_ave_all_eval1 <- numeric(Nstep)
-  Nsatisfied_ave_all_eval2 <- numeric(Nstep)
+  # # create 24-length vector
+  # Nsatisfied_ave_all_sim <- numeric(Nstep)
+  # Nsatisfied_ave_all_eval1 <- numeric(Nstep)
+  # Nsatisfied_ave_all_eval2 <- numeric(Nstep)
   
-  Ecfan <- numeric(Nstep)
-  mode <- matrix(numeric(Ngroup*Nstep),nrow=Nstep)
+  # Ecfan <- numeric(Nstep)
+  # mode <- matrix(numeric(Ngroup*Nstep),nrow=Nstep)
   
-  # ta <- rep(26.5,24)
-  # tr <- ta + 2
-
-    for (i in 1:Nstep){
-    if (Eahu[i] > 0){
-
-      # occupant presence for each time steps
-      presence <- unlist(occ_occupant[i,1:Nocc])
-      Npresent <- sum(presence)
-      
-      # assining the possibility of comfort, from each comfort model csv
-      # the comfort model represents of comfort possibility, with temperature range for columns and each occupants models for rows 
-
-      if (Npresent == 0){
-
-      }else{
-        
-        # prob_sim_j <- prob_sim[prob_sim["ta"]==round(ta[i]*10)/10,1:(Nocc+2)]
-        prob_sim_j <- prob_sim[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
-        prob_eval1_j <- prob_eval1[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
-        prob_eval2_j <- prob_eval2[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
-        
-        prob_sim_j <- t(prob_sim_j)
-        prob_eval1_j <- t(prob_eval1_j)
-        prob_eval2_j <- t(prob_eval2_j)
-
-        # assign 0 for who is absent 
-        prob_sim_j[presence==0,] <- 0
-        prob_eval1_j[presence==0,] <- 0
-        prob_eval2_j[presence==0,] <- 0
-        
-        for (group in 1:Ngroup){
-          # for VAV system
-          if (length(mode_range) == 1){
-            # sum satisfaction for all the occupant
-            Nsatisfied_group_sim <- sum(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
-            Nsatisfied_group_eval1 <- sum(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
-            Nsatisfied_group_eval2 <- sum(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
-            
-            mode[i,group] <- mode_range
-            Nsatisfied_ave_all_sim[i] <- Nsatisfied_ave_all_sim[i] + Nsatisfied_group_sim
-            Nsatisfied_ave_all_eval1[i] <- Nsatisfied_ave_all_eval1[i] + Nsatisfied_group_eval1
-            Nsatisfied_ave_all_eval2[i] <- Nsatisfied_ave_all_eval2[i] + Nsatisfied_group_eval2
-            
-          # for operation optimization
-          }else{
-            # sum for all occupant comfort
-            if (Nocc_group > 1){
-              Nsatisfied_group_sim <- apply(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
-              Nsatisfied_group_eval1 <- apply(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
-              Nsatisfied_group_eval2 <- apply(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
-            
-            # just extract whole row when only one occupant exist 
-            }else{
-              Nsatisfied_group_sim <- prob_sim_j[group,]
-              Nsatisfied_group_eval1 <- prob_eval1_j[group,]
-              Nsatisfied_group_eval2 <- prob_eval2_j[group,]
-            }
-            
-            ind_mode <- which.max(Nsatisfied_group_sim)
-            mode[i,group] <- mode_range[ind_mode]
-            Nsatisfied_ave_all_sim[i] <- Nsatisfied_ave_all_sim[i] + Nsatisfied_group_sim[ind_mode]
-            Nsatisfied_ave_all_eval1[i] <- Nsatisfied_ave_all_eval1[i] + Nsatisfied_group_eval1[ind_mode]
-            Nsatisfied_ave_all_eval2[i] <- Nsatisfied_ave_all_eval2[i] + Nsatisfied_group_eval2[ind_mode]
-          }
-          
-        }
-
-        Ecfan[i] <-  sum(Ecfand[mode[i,]+1])
-      }
-
-    }
-  }
+  # # ta <- rep(26.5,24)
+  # # tr <- ta + 2
+  # 
+  #   for (i in 1:Nstep){
+  #   if (Eahu[i] > 0){
+  # 
+  #     # occupant presence for each time steps
+  #     presence <- unlist(occ_occupant[i,1:Nocc])
+  #     Npresent <- sum(presence)
+  #     
+  #     # assining the possibility of comfort, from each comfort model csv
+  #     # the comfort model represents of comfort possibility, with temperature range for columns and each occupants models for rows 
+  # 
+  #     if (Npresent == 0){
+  # 
+  #     }else{
+  #       
+  #       # prob_sim_j <- prob_sim[prob_sim["ta"]==round(ta[i]*10)/10,1:(Nocc+2)]
+  #       prob_sim_j <- prob_sim[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
+  #       prob_eval1_j <- prob_eval1[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
+  #       prob_eval2_j <- prob_eval2[((round(ta[i]*10)-220)*6+1):((round(ta[i]*10)-219)*6),3:(Nocc+2)]
+  #       
+  #       prob_sim_j <- t(prob_sim_j)
+  #       prob_eval1_j <- t(prob_eval1_j)
+  #       prob_eval2_j <- t(prob_eval2_j)
+  # 
+  #       # assign 0 for who is absent 
+  #       prob_sim_j[presence==0,] <- 0
+  #       prob_eval1_j[presence==0,] <- 0
+  #       prob_eval2_j[presence==0,] <- 0
+  #       
+  #       for (group in 1:Ngroup){
+  #         # for VAV system
+  #         if (length(mode_range) == 1){
+  #           # sum satisfaction for all the occupant
+  #           Nsatisfied_group_sim <- sum(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
+  #           Nsatisfied_group_eval1 <- sum(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
+  #           Nsatisfied_group_eval2 <- sum(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),mode_range+1])
+  #           
+  #           mode[i,group] <- mode_range
+  #           Nsatisfied_ave_all_sim[i] <- Nsatisfied_ave_all_sim[i] + Nsatisfied_group_sim
+  #           Nsatisfied_ave_all_eval1[i] <- Nsatisfied_ave_all_eval1[i] + Nsatisfied_group_eval1
+  #           Nsatisfied_ave_all_eval2[i] <- Nsatisfied_ave_all_eval2[i] + Nsatisfied_group_eval2
+  #           
+  #         # for operation optimization
+  #         }else{
+  #           # sum for all occupant comfort
+  #           if (Nocc_group > 1){
+  #             Nsatisfied_group_sim <- apply(prob_sim_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
+  #             Nsatisfied_group_eval1 <- apply(prob_eval1_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
+  #             Nsatisfied_group_eval2 <- apply(prob_eval2_j[((group-1)*Nocc_group+1):(group*Nocc_group),],2,sum)
+  #           
+  #           # just extract whole row when only one occupant exist 
+  #           }else{
+  #             Nsatisfied_group_sim <- prob_sim_j[group,]
+  #             Nsatisfied_group_eval1 <- prob_eval1_j[group,]
+  #             Nsatisfied_group_eval2 <- prob_eval2_j[group,]
+  #           }
+  #           
+  #           ind_mode <- which.max(Nsatisfied_group_sim)
+  #           mode[i,group] <- mode_range[ind_mode]
+  #           Nsatisfied_ave_all_sim[i] <- Nsatisfied_ave_all_sim[i] + Nsatisfied_group_sim[ind_mode]
+  #           Nsatisfied_ave_all_eval1[i] <- Nsatisfied_ave_all_eval1[i] + Nsatisfied_group_eval1[ind_mode]
+  #           Nsatisfied_ave_all_eval2[i] <- Nsatisfied_ave_all_eval2[i] + Nsatisfied_group_eval2[ind_mode]
+  #         }
+  #         
+  #       }
+  # 
+  #       Ecfan[i] <-  sum(Ecfand[mode[i,]+1])
+  #     }
+  # 
+  #   }
+  #   }
   
   Eall <- Eahu_target + Eplant_target + Ecfan
 
-
-  Npresent <- apply(occ_occupant,1,sum)
-
-  A <- cbind(Eall,Npresent,Nsatisfied_ave_all_sim,Nsatisfied_ave_all_eval1,Nsatisfied_ave_all_eval2,ta,Eplant_target,Eahu_target,Ecfan,Eplant,Qcoil,Qmid1,Qmid2,Qmid3,Qmid4,Qmidn,Qmide,Qmids,Qmidw,mode)
-  A[is.nan(A)==TRUE] <- 0
-  A <- rbind(apply(A,2,sum),A[8:19,])
-  Rdissatisfied <- 1 - A[,"Nsatisfied_ave_all_sim"]/A[,"Npresent"]
-  Rdissatisfied_true_TP <- 1 - A[,"Nsatisfied_ave_all_eval1"]/A[,"Npresent"]
-  Rdissatisfied_true_TP_AMP <- 1 - A[,"Nsatisfied_ave_all_eval2"]/A[,"Npresent"]
-  A <- cbind(Rdissatisfied,Rdissatisfied_true_TP,Rdissatisfied_true_TP_AMP,A)
-  
-  A <- as.data.frame(A)
-  write.csv(as.matrix(A),case_name_path, row.names=FALSE)
-
-  tmp <- A[1,1:4]
-  colnames(tmp) <- c("Rdis","Rdis1","Rdis2","Eall")
-  print(tmp)
-  
-  obj <- A[1,"Eall"]
-  return(obj/100)
+  obj <-Eall
+  return(obj)
 }
 
 ################################
 # calculate objective function 2
 ################################
 
-calculate_total_acceptance <- function(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16) {
+calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16) {
+  
   # Initialize vectors to store the total acceptance and total occupancy for each time
   total_acceptance <- rep(0, 12)
   total_occupancy <- rep(0, 12)
   
   # Loop through each time period (8 to 19)
   for (time in 8:19) {
+    
     # Get the corresponding ctrl_mode row for the current time
     ctrl_row <- ctrl_mode[time - 7, ]
-
     
     # Extract the temperature and fan modes for the current time
     Tair <- ctrl_row["Max_Temperature"]
-    fan_modes <- ctrl_row[3:(2 + Nocc)]
+    fan_modes <- as.numeric(ctrl_row[3:(2 + Nocc)])  # Convert to numeric to remove names
     
     # Extract occupancy data for the current time
-    occupancy_data <- occ_day_data[time, ]
+    occupancy_data <- occ_day_data[time, ]    # Nocc users' occupancy data for the current hour
     
     # Calculate the total occupancy for the current time
     total_occupancy[time - 7] <- sum(occupancy_data == 1)
     
     # Filter env_accep_agent to match the current Tair and each user's FanMode
     matching_rows <- env_accep_agent$Tair == Tair
+    filtered_data <- env_accep_agent[matching_rows, ]
+    #print(paste("Filtered data for time", time, "based on Tair:"))
+    #print(filtered_data)
     
     for (user_idx in 1:Nocc) {
       if (occupancy_data[user_idx] == 1) {
         # Filter by user's FanMode and Tair
         user_fan_mode <- fan_modes[user_idx]
         user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 5 + user_idx]
+        #print(paste("User", user_idx, "acceptance at time", time, ":", user_acceptance))
         
         # Sum the acceptance for this time period
         total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
       }
     }
-    
-    # Calculate the average acceptance considering total occupancy
-    if (total_occupancy[time - 7] > 0) {
-      total_acceptance[time - 7] <- total_acceptance[time - 7] / total_occupancy[time - 7]
-    } else {
-      total_acceptance[time - 7] <- NA  # Avoid division by zero
-    }
-    
-    # Print the result for debugging
-    print(paste("Time:", time, "Total Acceptance:", total_acceptance[time - 7], "Total Occupancy:", total_occupancy[time - 7]))
   }
   
-  # Calculate the mean total acceptance across all times (excluding NA values)
-  mean_total_acceptance <- mean(total_acceptance, na.rm = TRUE)
+  # Calculate the final satisfaction ratio
+  total_acceptance_sum <- sum(total_acceptance, na.rm = TRUE)
+  total_occupancy_sum <- sum(total_occupancy, na.rm = TRUE)
   
-  # Print final total acceptance across all times
-  print("Final Total Acceptance by Time:")
-  print(total_acceptance)
+  if (total_occupancy_sum > 0) {
+    satisfaction_ratio <- total_acceptance_sum / total_occupancy_sum
+  } else {
+    satisfaction_ratio <- NA  # Avoid division by zero
+  }
   
-  # Return the mean total acceptance
-  return(mean_total_acceptance)
+  return(satisfaction_ratio)
 }
 
 
@@ -540,10 +520,10 @@ calculate_total_acceptance <- function(ctrl_mode, occ_day_data, env_accep_agent,
 # Setting
 #####################################
 
-tp_combination_index <- 1
+#tp_combination_index <- 1
 
 Nocc <- 16 # number of occupant in the zone
-Nsub <- 26 # number of subjects at thermal comfort experiment
+
 model_name <- c("zone","group","personal")
 model_type <- c("TP","TP_AMP")
 system_name <- c("VAV","Cfan","Pfan")
@@ -553,6 +533,7 @@ comfort_model_type <- 1
 
 month <- 10
 Nday_start <- 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 # September 30
+NDays <- 30  # 30days
 
 path_wd <- "/home/rstudio/localdir"
 
@@ -563,9 +544,15 @@ accep_data <- read.csv(path_accep)
 # Load true acceptance
 env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/env_accep_agent.csv", header = TRUE)
 
+print(ctrl_mode)
+
 #####################################
 # Case loop
 #####################################
+
+#Initialize output
+mean_acceptance_list <- numeric()
+Eall_matrix <- list()
 
 for (comfort_model_type in 2){
   for (system in 3){
@@ -594,12 +581,12 @@ for (comfort_model_type in 2){
         
         week_ini <- 2 # Tuesday
         
-        for (day in 11){
+        for (day in 1:NDays){
           
           week <- day%%7 + week_ini - 1
           Nday_start <- 0
           
-          if (week <= 5){
+          if (week <= 5){             #exclude weekend
             Nday <- Nday_start + day
             
             ###################
@@ -748,11 +735,15 @@ for (comfort_model_type in 2){
                       dir = path_cal,
                       wait = TRUE)
               
-              mean_acceptance <- calculate_total_acceptance(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16)
-              print(mean_acceptance)
-              
+              mean_acceptance <- calculate_acceptance_ratio(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16)
               Eall <- get_energy(idf)
-              print(Eall)
+              #print(mean_acceptance)
+              #print(Eall)
+              
+              
+              # record
+              mean_acceptance_list <- c(mean_acceptance_list, mean_acceptance)
+              Eall_list[[day]] <- Eall
               
             } 
           }
@@ -762,94 +753,16 @@ for (comfort_model_type in 2){
   }
 }
 
+#set directory
+output_dir <- "~/localdir/AsimEx/cal/Result"
 
-#####################################
-# Test for understanding the data structure
-#####################################
-### test occupancy information
+# convert into df
+num_days <- length(mean_acceptance_list)
+mean_acceptance_df <- data.frame(Day = 1:num_days, MeanAcceptance = mean_acceptance_list)
 
-Nocc <- 16 # number of occupant in the zone
+Eall_matrix <- do.call(rbind, Eall_list)
 
-path_wd <- "/home/rstudio/localdir"
-path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
-occ_occupant <- read.csv(path_occ_occupant,header=T)
-occ_total <- occ_occupant[,(Nocc+1)]
+# CSV
+write.csv(mean_acceptance_df, file = file.path(output_dir, "mean_acceptance.csv"), row.names = FALSE)
+write.csv(Eall_matrix, file = file.path(output_dir, "Eall.csv"), row.names = FALSE)
 
-# get Occupancy based on Nday
-# assume data are saved for 24rows each day
-
-Nday<-10
-
-start_row <- 24 * (Nday - 1) + 1
-end_row <- start_row + 23
-occ_day_data <- occ_occupant[start_row:end_row, 1:16]
-
-print(occ_day_data)
-occ_total <- occ_occupant[,(Nocc+1)]
-print(occ_total)
-
-tasp <- 27
-tasp8 <- tasp
-tasp9 <- tasp
-tasp10 <- tasp
-tasp11 <- tasp
-tasp12 <- tasp
-tasp13 <- tasp
-tasp14 <- tasp
-tasp15 <- tasp
-tasp16 <- tasp
-tasp17 <- tasp
-tasp18 <- tasp
-tasp19 <- tasp
-
-path_wd <- "/home/rstudio/localdir"
-path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
-accep_data <- read.csv(path_accep)
-
-#####################################
-# Test for real acceptance calculation
-#####################################
-
-user_idx <- 1  # Debug for user index 1
-time <- 11  # Debug for time 11
-
-# Initialize vectors to store the total acceptance and total occupancy for each time
-total_acceptance <- rep(0, 12)
-total_occupancy <- rep(0, 12)
-
-# Loop through each time period (8 to 19)
-#for (time in 8:19) {
-  
-  # Get the corresponding ctrl_mode row for the current time
-  ctrl_row <- ctrl_mode[time - 7, ]
-
-  # Extract the temperature and fan modes for the current time
-  Tair <- ctrl_row["Max_Temperature"]
-  fan_modes <-  as.numeric(ctrl_row[3:(2 + Nocc)])  # Convert to numeric to remove names
-
-  # Extract occupancy data for the current time
-  occupancy_data <- occ_day_data[time, ]    # 16 users' occupancy data for the current hour
-
-  # Calculate the total occupancy for the current time
-  total_occupancy[time - 7] <- sum(occupancy_data == 1)
-  
-  # Filter env_accep_agent to match the current Tair and each user's FanMode
-  matching_rows <- env_accep_agent$Tair == Tair
-  filtered_data <- env_accep_agent[matching_rows, ]
-  print("Filtered data based on Tair:")
-  print(filtered_data)
-  
-  for (user_idx in 1:Nocc) {
-    if (occupancy_data[user_idx] == 1) {
-      # Filter by user's FanMode and Tair
-      user_fan_mode <- fan_modes[user_idx]
-      user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 5 + user_idx]
-      print(user_acceptance)
-
-      # Sum the acceptance for this time period
-      total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
-    }
-  }
-
-  print(total_acceptance[time - 7])
-  
