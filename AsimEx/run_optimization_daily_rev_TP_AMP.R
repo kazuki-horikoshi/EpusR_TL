@@ -142,6 +142,8 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
         for (temp in unique_temperatures) {
           # Filter data for the same temperature
           temp_data <- subset(accep_data, Indoor.Temp == temp)
+          #temp_data <- subset(env_accep_agent, Tair == temp)
+          print(temp_data)
           
           # Check if at least 75% of users are comfortable with any fan mode (columns 7 to 22)
           user_satisfaction <- apply(temp_data[, 7:(7 + Nocc - 1)], 2, function(col) {
@@ -493,7 +495,7 @@ calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent,
       if (occupancy_data[user_idx] == 1) {
         # Filter by user's FanMode and Tair
         user_fan_mode <- fan_modes[user_idx]
-        user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 5 + user_idx]
+        user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 6 + user_idx]
         #print(paste("User", user_idx, "acceptance at time", time, ":", user_acceptance))
         
         # Sum the acceptance for this time period
@@ -520,7 +522,7 @@ calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent,
 # Setting
 #####################################
 
-#tp_combination_index <- 1
+tp_combination_index <- 1
 
 Nocc <- 16 # number of occupant in the zone
 
@@ -533,18 +535,16 @@ comfort_model_type <- 1
 
 month <- 10
 Nday_start <- 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 # September 30
-NDays <- 30  # 30days
+NDays <- 2  # 30days
 
 path_wd <- "/home/rstudio/localdir"
 
 # Load predicted acceptance
-path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_acceptance_N2.csv")
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_comfort_with_acceptance_N2_0814.csv")
 accep_data <- read.csv(path_accep)
 
 # Load true acceptance
 env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/env_accep_agent.csv", header = TRUE)
-
-print(ctrl_mode)
 
 #####################################
 # Case loop
@@ -553,6 +553,7 @@ print(ctrl_mode)
 #Initialize output
 mean_acceptance_list <- numeric()
 Eall_matrix <- list()
+Eall_list<- list()
 
 for (comfort_model_type in 2){
   for (system in 3){
@@ -580,8 +581,9 @@ for (comfort_model_type in 2){
       for (comfort_model in 3){ #comfort_model_range){
         
         week_ini <- 2 # Tuesday
-        
-        for (day in 1:NDays){
+
+        for (day in 11){
+#        for (day in 1:NDays){
           
           week <- day%%7 + week_ini - 1
           Nday_start <- 0
@@ -723,7 +725,7 @@ for (comfort_model_type in 2){
               tasp18 <- tasp
               tasp19 <- tasp
               
-              # pass Occupancy information" and "system" update_when callung update_idf function
+              # pass Occupancy information" and "system" update_when calling update_idf function
               result <- update_idf(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
                          tasp14, tasp15, tasp16, tasp17, tasp18, tasp19, 
                          occ_day_data, system)
