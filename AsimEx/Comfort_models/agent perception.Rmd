@@ -239,7 +239,8 @@ print(do.call(grid.arrange, c(plot_list, ncol = 2))
 ```
 
 # +-0.1の範囲でノイズを加えるための設定
-noise_range <- 0.1
+#noise_range <- 0.1
+noise_range <- 0.05
 
 # Survey data のノイズを追加したい部分を抽出
 user_columns <- env_comf_agent[, -(1:5)]  # 最初の5列を除いたユーザー番号の列を抽出
