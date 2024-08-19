@@ -45,8 +45,8 @@ idd <- use_idd(ver, download = "auto")
 path_wd <- "/home/rstudio/localdir"
 path_epw <- paste0(path_wd,"/epw/SGP_Singapore.486980_IWEC.epw")
 
-# path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
-# idf <- read_idf(path = path_idf, idd = NULL)
+path_idf <- paste0(path_wd,"/AsimEx/cal/Singapore_Benchmark_Model_V940_ono.idf")
+idf <- read_idf(path = path_idf, idd = NULL)
 
 #job <- idf$run(path_epw, wait = TRUE)
 
@@ -143,7 +143,7 @@ update_idf <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp1
           # Filter data for the same temperature
           temp_data <- subset(accep_data, Indoor.Temp == temp)
           #temp_data <- subset(env_accep_agent, Tair == temp)
-          print(temp_data)
+          #print(temp_data)
           
           # Check if at least 75% of users are comfortable with any fan mode (columns 7 to 22)
           user_satisfaction <- apply(temp_data[, 7:(7 + Nocc - 1)], 2, function(col) {
@@ -463,7 +463,7 @@ get_energy <- function (idf) {
 # calculate objective function 2
 ################################
 
-calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16) {
+calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent, system, Nocc = 16) {
   
   # Initialize vectors to store the total acceptance and total occupancy for each time
   total_acceptance <- rep(0, 12)
@@ -485,21 +485,36 @@ calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent,
     # Calculate the total occupancy for the current time
     total_occupancy[time - 7] <- sum(occupancy_data == 1)
     
-    # Filter env_accep_agent to match the current Tair and each user's FanMode
-    matching_rows <- env_accep_agent$Tair == Tair
-    filtered_data <- env_accep_agent[matching_rows, ]
-    #print(paste("Filtered data for time", time, "based on Tair:"))
-    #print(filtered_data)
-    
-    for (user_idx in 1:Nocc) {
-      if (occupancy_data[user_idx] == 1) {
-        # Filter by user's FanMode and Tair
-        user_fan_mode <- fan_modes[user_idx]
-        user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 6 + user_idx]
-        #print(paste("User", user_idx, "acceptance at time", time, ":", user_acceptance))
-        
-        # Sum the acceptance for this time period
-        total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
+    if (system == 1) {
+      # System 1: Evaluate based on matching Tair and FanMode
+      matching_rows <- env_accep_agent$Tair == Tair
+      filtered_data <- env_accep_agent[matching_rows, ]
+      
+      for (user_idx in 1:Nocc) {
+        if (occupancy_data[user_idx] == 1) {
+          # Filter by user's FanMode and Tair
+          user_fan_mode <- fan_modes[user_idx]
+          user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 6 + user_idx]
+          
+          # Sum the acceptance for this time period
+          total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
+        }
+      }
+    } else if (system == 3) {
+      # System 3: Evaluate based on matching Tair, ignoring FanMode
+      matching_rows <- env_accep_agent$Tair == Tair
+      filtered_data <- env_accep_agent[matching_rows, ]
+      
+      for (user_idx in 1:Nocc) {
+        if (occupancy_data[user_idx] == 1) {
+          # Extract acceptance data for the user
+          user_acceptance_data <- filtered_data[, 6 + user_idx]
+          
+          # Check if there is at least one '1' in the acceptance data
+          if (any(user_acceptance_data == 1, na.rm = TRUE)) {
+            total_acceptance[time - 7] <- total_acceptance[time - 7] + 1
+          }
+        }
       }
     }
   }
@@ -516,7 +531,6 @@ calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent,
   
   return(satisfaction_ratio)
 }
-
 
 #####################################
 # Setting
@@ -535,28 +549,322 @@ comfort_model_type <- 1
 
 month <- 10
 Nday_start <- 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 # September 30
-NDays <- 2  # 30days
+NDays <- 30  # 30days
 
 path_wd <- "/home/rstudio/localdir"
 
-# Load predicted acceptance
-path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/predicted_comfort_with_acceptance_N2_0814.csv")
-accep_data <- read.csv(path_accep)
-
 # Load true acceptance
 env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/env_accep_agent.csv", header = TRUE)
+#env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/user_comf_agent.csv", header = TRUE)
 
 #####################################
-# Case loop
+# N loop (N=2~30)
 #####################################
+
+for (N in seq(2, 30, 2)) {
+  
+  # Load predicted acceptance
+  path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/case3_max30/predicted_acceptance_classes_N", N, ".csv")
+  accep_data <- read.csv(path_accep)
+  
+  #####################################
+  # Case loop
+  #####################################
+  
+  #Initialize output
+  mean_acceptance_df <- numeric()
+  mean_acceptance_list <- numeric()
+  Eall_matrix <- list()
+  Eall_list <- list()
+  
+  for (comfort_model_type in 2){
+    for (system in 1){
+      # 1: VAV
+      # 2: VAV + ceiling fan
+      # 3: VAV + personal fan
+      
+      # we may want to update the registry for each system variation
+      if (system == 1){
+        path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_VAV.idf") 
+        path_cal <- paste0(path_wd,"/AsimEx/cal/VAV") 
+      }else{
+        path_idf <- paste0(path_wd,"/AsimEx/Singapore_Benchmark_Model_V940_ono_Hybrid.idf")
+        path_cal <- paste0(path_wd,"/AsimEx/cal/Hybrid")
+      }
+      
+      for (opt in 0){
+        
+        if (opt == 0){
+          comfort_model_range <- 3
+        }else if (opt == 1){
+          comfort_model_range <- 1:3
+        }
+        
+        for (comfort_model in 3){ #comfort_model_range){
+          
+          week_ini <- 2 # Tuesday
+          
+          #for (day in 11){
+          for (day in 1:NDays){
+            
+            week <- day%%7 + week_ini - 1
+            Nday_start <- 0
+            
+            if (week <= 5){             #exclude weekend
+              Nday <- Nday_start + day
+              
+              ###################
+              # Update schedules 
+              ###################
+              
+              idf <- read_idf(path = path_idf, idd = NULL)
+              
+              ### Update occupant load schedules
+              
+              path_occ_occupant <- paste0(path_wd,"/AsimEx/occ_occupant.csv")
+              occ_occupant <- read.csv(path_occ_occupant,header=T)
+              occ_total <- occ_occupant[,(Nocc+1)]
+              
+              # get Occupancy based on Nday
+              # assume data are saved for 24rows each day
+              start_row <- 24 * (Nday - 1) + 1
+              end_row <- start_row + 23
+              occ_day_data <- occ_occupant[start_row:end_row, 1:16] #occupancy matrix for one day
+              
+              ### Update occupant load schedules
+              tmp <- idf$"Schedule:Compact"[["Sch_Occupancy_Target"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              
+              for (i in 1:12){
+                dt[(2*i+6),6] <- occ_total[24*(Nday-1)+i+7]/100
+              }
+              
+              idf$update(dt)
+              
+              # Update load information except the setpoint
+              if (zone_index == 1){ # optimize an interior zone
+                str_occupancy_mid1 <- "Sch_Occupancy_target"
+                str_occupancy_periE <- "Sch_Occupancy"
+                occupancy_method_mid1 <- "People"
+                occupancy_method_periE <- "Area/Person"
+                occupancy_num_mid1 <- 100
+                occupancy_num_periE <- ""
+                occupancy_areaperson_mid1 <- ""
+                occupancy_areaperson_periE <- 10.77
+              }else if (zone_index == 2){ # optimize a perimeter zone
+                str_occupancy_mid1 <- "Sch_Occupancy"
+                str_occupancy_periE <- "Sch_Occupancy_target"
+                occupancy_method_mid1 <- "Area/Person"
+                occupancy_method_periE <- "People"
+                occupancy_num_mid1 <- ""
+                occupancy_num_periE <- 100
+                occupancy_areaperson_mid1 <- 10.77
+                occupancy_areaperson_periE <- ""
+              }
+              
+              tmp <- idf$People[["Core_Mid1"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt <- dt[1:20,]
+              dt[3,6] <- str_occupancy_mid1
+              dt[4,6] <- occupancy_method_mid1
+              dt[5,6] <- occupancy_num_mid1
+              dt[7,6] <- occupancy_areaperson_mid1
+              idf$update(dt)
+              
+              tmp <- idf$People[["Zone_Mid_E"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt <- dt[1:20,]
+              dt[3,6] <- str_occupancy_periE
+              dt[4,6] <- occupancy_method_periE
+              dt[5,6] <- occupancy_num_periE
+              dt[7,6] <- occupancy_areaperson_periE
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["Nday"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- Nday
+              idf$update(dt)
+              
+              tmp <- idf$"RunPeriod"[["RUNPERIOD 1"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[2,6] <- month
+              dt[3,6] <- day
+              dt[5,6] <- month
+              dt[6,6] <- day
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["tp_combination"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- tp_combination_index
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["zone_index"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- zone_index
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["comfort_model"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- comfort_model
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["comfort_model_type"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- comfort_model_type
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["str_system"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- system
+              idf$update(dt)
+              
+              tmp <- idf$"Schedule:Compact"[["str_opt"]]
+              dt <- data.table::rbindlist(c(list(tmp$to_table()), lapply(tmp$ref_to_object(), function (x) x$to_table())))
+              dt[6,6] <- opt
+              idf$update(dt)
+              
+              idf$save(overwrite = TRUE)
+              
+              if (opt == 0){ # No GA optimization
+                if (system == 1){ # VAV system
+                  tasp <- 24
+                  # mode <- 0
+                }else{ # Hybrid system
+                  tasp <- 27
+                  # mode <- 3
+                }
+                
+                tasp8 <- tasp
+                tasp9 <- tasp
+                tasp10 <- tasp
+                tasp11 <- tasp
+                tasp12 <- tasp
+                tasp13 <- tasp
+                tasp14 <- tasp
+                tasp15 <- tasp
+                tasp16 <- tasp
+                tasp17 <- tasp
+                tasp18 <- tasp
+                tasp19 <- tasp
+                
+                # pass Occupancy information" and "system" update_when calling update_idf function
+                result <- update_idf(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
+                                     tasp14, tasp15, tasp16, tasp17, tasp18, tasp19, 
+                                     occ_day_data, system)
+                
+                ctrl_mode <- result$ctrl_mode
+                
+                idf$save(overwrite = TRUE)
+                idf$run(path_epw,
+                        dir = path_cal,
+                        wait = TRUE)
+                
+                mean_acceptance <- calculate_acceptance_ratio(ctrl_mode, occ_day_data, env_accep_agent,system, Nocc = 16)
+                Eall <- get_energy(idf)
+                #print(mean_acceptance)
+                #print(Eall)
+                
+                
+                # record
+                mean_acceptance_list <- c(mean_acceptance_list, mean_acceptance)
+                Eall_list[[day]] <- Eall
+                
+              } 
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  # set directory
+  output_dir <- "~/localdir/AsimEx/cal/Result"
+  
+  # convert into df
+  num_days <- length(mean_acceptance_list)
+  mean_acceptance_df <- data.frame(Day = 1:num_days, MeanAcceptance = mean_acceptance_list)
+  
+  Eall_matrix <- do.call(rbind, Eall_list)
+  
+  # CSV
+  write.csv(mean_acceptance_df, file = file.path(output_dir, paste0("mean_acceptance_N", N, ".csv")), row.names = FALSE)
+  write.csv(Eall_matrix, file = file.path(output_dir, paste0("Eall_N", N, ".csv")), row.names = FALSE)
+  
+  # assign saving path of ctrl_mode
+  output_path <- file.path(output_dir, paste0("ctrl_mode_N", N, ".csv"))
+  
+  # save ctrl_mode df
+  write.csv(ctrl_mode, file = output_path, row.names = FALSE)
+}
+
+################################
+# summary and save 
+################################
+
+# Load necessary libraries
+#install.packages("dplyr")
+library(dplyr)
+
+# Define the output directory for the results
+output_dir <- "~/localdir/AsimEx/cal/Result"
+
+# Specify the directory where the original CSV files are stored
+input_dir <- "~/localdir/AsimEx/cal/Result/Zone/Case3_Zone"
+
+# Set the range of N values (2 to 30, with step size of 2)
+N_values <- seq(2, 30, 2)
+
+# Initialize a dataframe to store the results
+results <- data.frame(N = integer(), mean_acceptance_sum = numeric(), Eall_sum = numeric())
+
+# Loop over each N value
+for (N in N_values) {
+  
+  # Set the file paths for mean_acceptance and Eall
+  mean_acceptance_path <- file.path(input_dir, paste0("mean_acceptance_N", N, ".csv"))
+  Eall_path <- file.path(input_dir, paste0("Eall_N", N, ".csv"))
+  
+  # Read the CSV files
+  mean_acceptance_df <- read.csv(mean_acceptance_path)
+  Eall_df <- read.csv(Eall_path)
+  
+  # Calculate the sum of mean_acceptance and Eall
+  mean_acceptance_sum <- sum(mean_acceptance_df$MeanAcceptance, na.rm = TRUE)
+  Eall_sum <- sum(as.matrix(Eall_df), na.rm = TRUE)  # Eall_df is a matrix, sum all elements
+  
+  # Append the results to the dataframe
+  results <- rbind(results, data.frame(N = N, mean_acceptance_sum = mean_acceptance_sum, Eall_sum = Eall_sum))
+}
+
+# Save the results to a CSV file
+output_csv_path <- file.path(output_dir, "N_summary.csv")
+write.csv(results, file = output_csv_path, row.names = FALSE)
+
+# Completion message
+cat("Results saved to", output_csv_path, "\n")
+
+
+
+
+
+
+
+#####################################
+# Case loop_not_looping
+#####################################
+
+# Load predicted acceptance
+path_accep <- paste0(path_wd,"/AsimEx/Comfort_models/predicted_acceptance/case3_max30/predicted_acceptance_classes_N8.csv")
+accep_data <- read.csv(path_accep)
 
 #Initialize output
+mean_acceptance_df <- numeric()
 mean_acceptance_list <- numeric()
 Eall_matrix <- list()
 Eall_list<- list()
 
 for (comfort_model_type in 2){
-  for (system in 3){
+  for (system in 1){
     # 1: VAV
     # 2: VAV + ceiling fan
     # 3: VAV + personal fan
@@ -582,8 +890,8 @@ for (comfort_model_type in 2){
         
         week_ini <- 2 # Tuesday
 
-        for (day in 11){
-#        for (day in 1:NDays){
+#        for (day in 11){
+        for (day in 1:NDays){
           
           week <- day%%7 + week_ini - 1
           Nday_start <- 0
@@ -737,7 +1045,7 @@ for (comfort_model_type in 2){
                       dir = path_cal,
                       wait = TRUE)
               
-              mean_acceptance <- calculate_acceptance_ratio(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16)
+              mean_acceptance <- calculate_acceptance_ratio(ctrl_mode, occ_day_data, env_accep_agent,system, Nocc = 16)
               Eall <- get_energy(idf)
               #print(mean_acceptance)
               #print(Eall)
@@ -767,4 +1075,106 @@ Eall_matrix <- do.call(rbind, Eall_list)
 # CSV
 write.csv(mean_acceptance_df, file = file.path(output_dir, "mean_acceptance.csv"), row.names = FALSE)
 write.csv(Eall_matrix, file = file.path(output_dir, "Eall.csv"), row.names = FALSE)
+
+
+# assign saving path of ctrl_mode
+output_path <- "~/localdir/AsimEx/cal/Result/ctrl_mode.csv"
+
+# save ctrl_mode df
+write.csv(ctrl_mode, file = output_path, row.names = FALSE)
+
+
+
+################################
+# backup objective function 2
+################################
+
+calculate_acceptance_ratio <- function(ctrl_mode, occ_day_data, env_accep_agent, Nocc = 16) {
+  
+  # Initialize vectors to store the total acceptance and total occupancy for each time
+  total_acceptance <- rep(0, 12)
+  total_occupancy <- rep(0, 12)
+  
+  # # Loop through each time period (8 to 19)
+  # for (time in 8:19) {
+  #   
+  #   # Get the corresponding ctrl_mode row for the current time
+  #   ctrl_row <- ctrl_mode[time - 7, ]
+  #   
+  #   # Extract the temperature and fan modes for the current time
+  #   Tair <- ctrl_row["Max_Temperature"]
+  #   fan_modes <- as.numeric(ctrl_row[3:(2 + Nocc)])  # Convert to numeric to remove names
+  #   
+  #   # Extract occupancy data for the current time
+  #   occupancy_data <- occ_day_data[time, ]    # Nocc users' occupancy data for the current hour
+  #   
+  #   # Calculate the total occupancy for the current time
+  #   total_occupancy[time - 7] <- sum(occupancy_data == 1)
+  #   
+  #   # Filter env_accep_agent to match the current Tair and each user's FanMode
+  #   matching_rows <- env_accep_agent$Tair == Tair
+  #   filtered_data <- env_accep_agent[matching_rows, ]
+  #   #print(paste("Filtered data for time", time, "based on Tair:"))
+  #   #print(filtered_data)
+  #   
+  #   for (user_idx in 1:Nocc) {
+  #     if (occupancy_data[user_idx] == 1) {
+  #       # Filter by user's FanMode and Tair
+  #       user_fan_mode <- fan_modes[user_idx]
+  #       user_acceptance <- env_accep_agent[matching_rows & env_accep_agent$FanMode == user_fan_mode, 6 + user_idx]
+  #       #print(paste("User", user_idx, "acceptance at time", time, ":", user_acceptance))
+  #       
+  #       # Sum the acceptance for this time period
+  #       total_acceptance[time - 7] <- total_acceptance[time - 7] + sum(user_acceptance, na.rm = TRUE)
+  #     }
+  #   }
+  # }
+  
+  # Loop through each time period (8 to 19)
+  for (time in 8:19) {
+    
+    # Get the corresponding ctrl_mode row for the current time
+    ctrl_row <- ctrl_mode[time - 7, ]
+    
+    # Extract the temperature for the current time
+    Tair <- ctrl_row["Max_Temperature"]
+    
+    # Extract occupancy data for the current time
+    occupancy_data <- occ_day_data[time, ]    # Nocc users' occupancy data for the current hour
+    
+    # Calculate the total occupancy for the current time
+    total_occupancy[time - 7] <- sum(occupancy_data == 1)
+    
+    # Filter env_accep_agent to match the current Tair
+    matching_rows <- env_accep_agent$Tair == Tair
+    filtered_data <- env_accep_agent[matching_rows, ]
+    
+    for (user_idx in 1:Nocc) {
+      if (occupancy_data[user_idx] == 1) {
+        # Extract acceptance data for the user
+        user_acceptance_data <- filtered_data[, 6 + user_idx]
+        
+        # Check if there is at least one '1' in the acceptance data
+        if (any(user_acceptance_data == 1, na.rm = TRUE)) {
+          total_acceptance[time - 7] <- total_acceptance[time - 7] + 1
+        }
+      }
+    }
+  }
+  
+  
+  
+  
+  # Calculate the final satisfaction ratio
+  total_acceptance_sum <- sum(total_acceptance, na.rm = TRUE)
+  total_occupancy_sum <- sum(total_occupancy, na.rm = TRUE)
+  
+  if (total_occupancy_sum > 0) {
+    satisfaction_ratio <- total_acceptance_sum / total_occupancy_sum
+  } else {
+    satisfaction_ratio <- NA  # Avoid division by zero
+  }
+  
+  return(satisfaction_ratio)
+}
 
