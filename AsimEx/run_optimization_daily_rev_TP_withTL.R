@@ -1128,7 +1128,7 @@ comfort_model_type <- 1
 
 month <- 10
 Nday_start <- 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 # September 30
-NDays <- 10  # 30days
+NDays <- 2  # 30days
 
 path_wd <- "/home/rstudio/localdir"
 
@@ -1147,8 +1147,8 @@ occ_occupant <- read.csv(path_occ_occupant,header=T)
 #####################################
 # N loop (N=2~20)
 #####################################
-
-for (N in seq(2, 20, 2)) {
+  
+for (N in seq(2, 2, 2)) {
 
 # Load predicted acceptability
 # path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/ASHRAE/predicted_acceptance_classes", ".csv")
@@ -1359,7 +1359,7 @@ for (N in seq(2, 20, 2)) {
                 tasp19 <- tasp
                 
                 # pass Occupancy information" and "system" update_when calling update_idf function
-                result <- update_idf_max(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
+                result <- update_idf_max_multifan(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
                                      tasp14, tasp15, tasp16, tasp17, tasp18, tasp19, 
                                      occ_day_data, system)
                 
@@ -1371,20 +1371,61 @@ for (N in seq(2, 20, 2)) {
                         dir = path_cal,
                         wait = TRUE)
                 
-                ta <- unlist(idf$report_data(zone_name,"Zone Mean Air Temperature")[,6])
-                tr <- unlist(idf$report_data(zone_name,"Zone Mean Radiant Temperature")[,6])
+                zone_name <- "CORE_MID1"
+                job <- idf$last_job()
+                ta <- unlist(job$report_data(zone_name,"Zone Mean Air Temperature")[,6])
+                tr <- unlist(job$report_data(zone_name,"Zone Mean Radiant Temperature")[,6])
                 rh <- unlist(job$report_data(zone_name,"Zone Air Relative Humidity")[,6])
                 
+                # Continue with adding ta, tr, rh data
+                # Define the row indices for data from 8 AM to 7 PM (19:00)
+                time_indices <- 8:19
                 
-                #mean_acceptance <- calculate_acceptance_ratio_multifan(ctrl_mode, occ_day_data, env_accep_agent,system, Nocc = 16)
-                Eall <- get_energy(idf)
-                #print(mean_acceptance)
-                #print(Eall)
+                # Filter data for the period from 8 AM to 7 PM
+                ta_filtered <- ta[time_indices]
+                tr_filtered <- tr[time_indices]
+                rh_filtered <- rh[time_indices]
+                
+                # Check if ctrl_mode is a character vector or already a data frame
+                if (is.character(ctrl_mode)) {
+                  # Determine the number of columns for the data frame
+                  number_of_columns <- 2 + Nocc  # Adjust this number based on your actual data
+                  
+                  # Convert character vector to a data frame correctly
+                  ctrl_mode <- as.data.frame(matrix(ctrl_mode, ncol = number_of_columns, byrow = FALSE))
+                  
+                  # Add appropriate column names
+                  colnames(ctrl_mode) <- c("Time", "Max_Temperature", paste0("FanMode_User_", 1:(ncol(ctrl_mode) - 2)))
+                  
+                } else if (!is.data.frame(ctrl_mode)) {
+                  # If ctrl_mode is not a data frame and not a character vector, convert it to a data frame
+                  ctrl_mode <- as.data.frame(ctrl_mode)
+                }
+                
+                # Convert necessary columns from character to numeric, if applicable
+                ctrl_mode$Time <- as.numeric(ctrl_mode$Time)
+                ctrl_mode$Max_Temperature <- as.numeric(ctrl_mode$Max_Temperature)
+                for (i in 1:Nocc) {
+                  ctrl_mode[[paste0("FanMode_User_", i)]] <- as.character(ctrl_mode[[paste0("FanMode_User_", i)]])
+                }
                 
                 
+                # Ensure the filtered data is the correct length and add to ctrl_mode
+                if (length(ta_filtered) == nrow(ctrl_mode) && length(tr_filtered) == nrow(ctrl_mode) && length(rh_filtered) == nrow(ctrl_mode)) {
+                  ctrl_mode$Temperature_Air <- ta_filtered
+                  ctrl_mode$Temperature_Radiant <- tr_filtered
+                  ctrl_mode$Relative_Humidity <- rh_filtered
+                } else {
+                  stop("Filtered data length does not match ctrl_mode row count.")
+                }
+                
+                # Check the result
+                #print(ctrl_mode)
+                        
                 # record
-                mean_acceptance_list <- c(mean_acceptance_list, mean_acceptance)
+                Eall <- get_energy(idf)
                 Eall_list[[day]] <- Eall
+                
                 
               } 
             }
@@ -1394,24 +1435,22 @@ for (N in seq(2, 20, 2)) {
     }
   }
   
-  # set directory
+  # Set output directory and create sub-directory for each N
   output_dir <- "~/localdir/AsimEx/cal/Result"
+  sub_dir <- file.path(output_dir, paste0("N_", N))
+  dir.create(sub_dir, showWarnings = FALSE, recursive = TRUE)
   
-  # convert into df
-  num_days <- length(mean_acceptance_list)
-  mean_acceptance_df <- data.frame(Day = 1:num_days, MeanAcceptance = mean_acceptance_list)
-  
+  # Convert energy into df
   Eall_matrix <- do.call(rbind, Eall_list)
   
-  # CSV
-  write.csv(mean_acceptance_df, file = file.path(output_dir, paste0("mean_acceptance_N", N, ".csv")), row.names = FALSE)
-  write.csv(Eall_matrix, file = file.path(output_dir, paste0("Eall_N", N, ".csv")), row.names = FALSE)
+  # Save CSV for energy data
+  write.csv(Eall_matrix, file = file.path(sub_dir, paste0("Eall_N", N, ".csv")), row.names = FALSE)
   
-  # assign saving path of ctrl_mode
-  output_path <- file.path(output_dir, paste0("ctrl_mode_N", N, ".csv"))
-  
-  # save ctrl_mode df
-  write.csv(ctrl_mode, file = output_path, row.names = FALSE)
+  # Save CSV for ctrl_mode data for each day
+  for (day in 1:NDays) {
+    ctrl_mode_path <- file.path(sub_dir, paste0("ctrl_mode_N", N, "_Day_", day, ".csv"))
+    write.csv(ctrl_mode, file = ctrl_mode_path, row.names = FALSE)
+  }
 }
 
 ################################
