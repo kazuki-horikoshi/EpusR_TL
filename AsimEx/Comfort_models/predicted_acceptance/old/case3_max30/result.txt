@@ -1,0 +1,15 @@
+N=2 - Average Accuracy: 0.6326, Average Weighted F1: 0.6308
+N=4 - Average Accuracy: 0.6505, Average Weighted F1: 0.6374
+N=6 - Average Accuracy: 0.6559, Average Weighted F1: 0.6544
+N=8 - Average Accuracy: 0.6667, Average Weighted F1: 0.6629
+N=10 - Average Accuracy: 0.6846, Average Weighted F1: 0.6770
+N=12 - Average Accuracy: 0.6828, Average Weighted F1: 0.6682
+N=14 - Average Accuracy: 0.7115, Average Weighted F1: 0.6929
+N=16 - Average Accuracy: 0.7025, Average Weighted F1: 0.6908
+N=18 - Average Accuracy: 0.7133, Average Weighted F1: 0.7027
+N=20 - Average Accuracy: 0.7312, Average Weighted F1: 0.7296
+N=22 - Average Accuracy: 0.7455, Average Weighted F1: 0.7430
+N=24 - Average Accuracy: 0.7706, Average Weighted F1: 0.7688
+N=26 - Average Accuracy: 0.7975, Average Weighted F1: 0.7926
+N=28 - Average Accuracy: 0.8280, Average Weighted F1: 0.8215
+N=30 - Average Accuracy: 0.8280, Average Weighted F1: 0.8241

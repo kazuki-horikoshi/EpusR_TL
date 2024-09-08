@@ -1,0 +1,5 @@
+5%noise
+standardashraescaler
+eval-loss
+30patience
+based on entropy
