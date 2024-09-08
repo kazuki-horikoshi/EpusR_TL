@@ -56,9 +56,9 @@ idf <- read_idf(path = path_idf, idd = NULL)
 
 # Cases considering maximizing comfort
 
-#update_idf_max <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
-#                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
-#                        occ_day_data, system) {
+update_idf_max <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
+                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
+                        occ_day_data, system) {
   
   # create the vector to include temperature schedule for full-day timeline
   tasp <- c(tasp8,tasp9,tasp10,tasp11,tasp12,tasp13,tasp14,tasp15,tasp16,tasp17,tasp18,tasp19)
@@ -1148,7 +1148,7 @@ occ_occupant <- read.csv(path_occ_occupant,header=T)
 # N loop (N=2~20)
 #####################################
   
-for (N in seq(2, 2, 2)) {
+for (N in seq(2, 4, 2)) {
 
 # Load predicted acceptability
 # path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/ASHRAE/predicted_acceptance_classes", ".csv")
@@ -1189,6 +1189,9 @@ for (N in seq(2, 2, 2)) {
   mean_acceptance_list <- numeric()
   Eall_matrix <- list()
   Eall_list <- list()
+  
+  # Initialize a dataframe to store all ctrl_mode data for the current N
+  all_ctrl_mode <- data.frame()
   
   for (comfort_model_type in 2){
     for (system in 3){
@@ -1419,13 +1422,13 @@ for (N in seq(2, 2, 2)) {
                   stop("Filtered data length does not match ctrl_mode row count.")
                 }
                 
-                # Check the result
-                #print(ctrl_mode)
-                        
-                # record
+                # Add NDay column and append ctrl_mode data to all_ctrl_mode
+                ctrl_mode$NDay <- day
+                all_ctrl_mode <- rbind(all_ctrl_mode, ctrl_mode)
+                
+                # Record energy and acceptability
                 Eall <- get_energy(idf)
                 Eall_list[[day]] <- Eall
-                
                 
               } 
             }
@@ -1437,20 +1440,16 @@ for (N in seq(2, 2, 2)) {
   
   # Set output directory and create sub-directory for each N
   output_dir <- "~/localdir/AsimEx/cal/Result"
-  sub_dir <- file.path(output_dir, paste0("N_", N))
-  dir.create(sub_dir, showWarnings = FALSE, recursive = TRUE)
   
   # Convert energy into df
   Eall_matrix <- do.call(rbind, Eall_list)
   
   # Save CSV for energy data
-  write.csv(Eall_matrix, file = file.path(sub_dir, paste0("Eall_N", N, ".csv")), row.names = FALSE)
+  write.csv(Eall_matrix, file = file.path(output_dir, paste0("Eall_N", N, ".csv")), row.names = FALSE)
   
-  # Save CSV for ctrl_mode data for each day
-  for (day in 1:NDays) {
-    ctrl_mode_path <- file.path(sub_dir, paste0("ctrl_mode_N", N, "_Day_", day, ".csv"))
-    write.csv(ctrl_mode, file = ctrl_mode_path, row.names = FALSE)
-  }
+  # Save combined ctrl_mode df for all NDays
+  output_path <- file.path(output_dir, paste0("ctrl_mode_N", N, ".csv"))
+  write.csv(all_ctrl_mode, file = output_path, row.names = FALSE)
 }
 
 ################################

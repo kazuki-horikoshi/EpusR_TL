@@ -56,9 +56,9 @@ idf <- read_idf(path = path_idf, idd = NULL)
 
 # Cases considering maximizing comfort
 
-#update_idf_max <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
-#                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
-#                        occ_day_data, system) {
+update_idf_max <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
+                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
+                        occ_day_data, system) {
   
   # create the vector to include temperature schedule for full-day timeline
   tasp <- c(tasp8,tasp9,tasp10,tasp11,tasp12,tasp13,tasp14,tasp15,tasp16,tasp17,tasp18,tasp19)
@@ -437,9 +437,9 @@ update_idf_max_multifan <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp
 
 # Cases considering achieving some goals
 
-#update_idf_goal <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
-#                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
-#                        occ_day_data, system) {
+update_idf_goal <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tasp11=26L, tasp12=26L, tasp13=26L, 
+                        tasp14=26L, tasp15=26L, tasp16=26L, tasp17=26L, tasp18=26L, tasp19=26L,
+                        occ_day_data, system) {
   
   # create the vector to include temperature schedule for full-day timeline
   tasp <- c(tasp8,tasp9,tasp10,tasp11,tasp12,tasp13,tasp14,tasp15,tasp16,tasp17,tasp18,tasp19)
@@ -643,7 +643,7 @@ update_idf_goal_multifan <- function (idf, tasp8=26L, tasp9=26L, tasp10=26L, tas
         
         # Apply the occupancy filter to accep_data
         filtered_data <- fan_mode_0_data[apply(fan_mode_0_data[, 7:(6 + Nocc)], 1, function(row) {
-          mean(row[occupancy_data == 1] == 1) >= 0.5
+          mean(row[occupancy_data == 1] == 1) >= 0.6
         }), ]
         
         # Identify temperature ranges where at least 50% of present users are comfortable
@@ -1040,7 +1040,7 @@ calculate_acceptance_ratio_multifan <- function(ctrl_mode, occ_day_data, env_acc
 
 
 #averaging comfort average every hour, that connects to lower comfort
-#calculate_acceptance_ratio_multifan <- function(ctrl_mode, occ_day_data, env_accep_agent, system, Nocc = 16) {
+# calculate_acceptance_ratio_multifan <- function(ctrl_mode, occ_day_data, env_accep_agent, system, Nocc = 16) {
   
   # Initialize vectors to store the total acceptance and total occupancy for each time
   total_acceptance <- rep(0, 12)
@@ -1134,7 +1134,7 @@ path_wd <- "/home/rstudio/localdir"
 
 # Load true acceptability
 #env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/predicted_acceptance_classes_SDE2", header = TRUE)
-#env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/predicted_tp_ctg_classes_SDE2_full.csv", header = TRUE)
+#env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/case2_fulllearning240831/predicted_tp_ctg_classes_SDE2_full.csv", header = TRUE)
 env_accep_agent <- read.csv("~/localdir/AsimEx/Comfort_models/true_acceptance/case4_fulllearning240902/predicted_tp_ctg_classes.csv", header = TRUE)
 
 filterlist<-c(3,9,10,12,14,20)
@@ -1160,7 +1160,7 @@ for (N in seq(2, 20, 2)) {
 # Load predicted no-change preference
 
 ###ASHRAE base model
-#  path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/ASHRAE_TP/predicted_tp_ctg_classes", ".csv")
+# path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/ASHRAE_TP/predicted_tp_ctg_classes", ".csv")
   
 ###true comfort model as reference
 #  path_accep <- paste0(path_wd, "/AsimEx/Comfort_models/predicted_acceptance/SDE2_TP_case2_fulllearning/predicted_tp_ctg_classes", ".csv")
@@ -1191,7 +1191,7 @@ for (N in seq(2, 20, 2)) {
   Eall_list <- list()
   
   for (comfort_model_type in 2){
-    for (system in 3){
+    for (system in 1){
       # 1: VAV
       # 2: VAV + ceiling fan
       # 3: VAV + personal fan
@@ -1359,7 +1359,7 @@ for (N in seq(2, 20, 2)) {
                 tasp19 <- tasp
                 
                 # pass Occupancy information" and "system" update_when calling update_idf function
-                result <- update_idf_max(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
+                result <- update_idf_goal(idf, tasp8, tasp9, tasp10, tasp11, tasp12, tasp13, 
                                      tasp14, tasp15, tasp16, tasp17, tasp18, tasp19, 
                                      occ_day_data, system)
                 
@@ -1371,12 +1371,8 @@ for (N in seq(2, 20, 2)) {
                         dir = path_cal,
                         wait = TRUE)
                 
-                ta <- unlist(idf$report_data(zone_name,"Zone Mean Air Temperature")[,6])
-                tr <- unlist(idf$report_data(zone_name,"Zone Mean Radiant Temperature")[,6])
-                rh <- unlist(job$report_data(zone_name,"Zone Air Relative Humidity")[,6])
                 
-                
-                #mean_acceptance <- calculate_acceptance_ratio_multifan(ctrl_mode, occ_day_data, env_accep_agent,system, Nocc = 16)
+                mean_acceptance <- calculate_acceptance_ratio(ctrl_mode, occ_day_data, env_accep_agent,system, Nocc = 16)
                 Eall <- get_energy(idf)
                 #print(mean_acceptance)
                 #print(Eall)
@@ -1423,7 +1419,7 @@ for (N in seq(2, 20, 2)) {
 library(dplyr)
 
 # Specify the directory where the original CSV files are stored
-input_dir <- "~/localdir/AsimEx/cal/Result/TP/Personal/240902_similar_truecomfort"
+input_dir <- "~/localdir/AsimEx/cal/Result/TP/Zone/240904_zone_max_case2"
 # Define the output directory for the results
 output_dir <- input_dir
 
@@ -1432,8 +1428,6 @@ N_values <- seq(2, 20, 2)
 
 # Initialize a dataframe to store the results
 results <- data.frame(N = integer(), mean_acceptance_sum = numeric(), Eall_sum = numeric())
-
-#N<-20
 
 # Loop over each N value
 for (N in N_values) {
@@ -1468,7 +1462,7 @@ cat("Results saved to", output_csv_path, "\n")
 library(dplyr)
 
 # Specify the directory where the original CSV files are stored
-input_dir <- "~/localdir/AsimEx/cal/Result/TP/Personal/240829_TP_comparefull_75%"
+input_dir <- "~/localdir/AsimEx/cal/Result/TP/Zone/240904_zone_maxcomfort"
 # Define the output directory for the results
 output_dir <- input_dir
 
@@ -1505,3 +1499,4 @@ write.csv(combined_results, file = output_csv_path, row.names = FALSE)
 
 # Completion message
 cat("Combined results saved to", output_csv_path, "\n")
+
