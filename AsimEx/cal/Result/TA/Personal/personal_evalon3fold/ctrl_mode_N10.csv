@@ -1,0 +1,13 @@
+"Time","Max_Temperature","FanMode_User_1","FanMode_User_2","FanMode_User_3","FanMode_User_4","FanMode_User_5","FanMode_User_6","FanMode_User_7","FanMode_User_8","FanMode_User_9","FanMode_User_10","FanMode_User_11","FanMode_User_12","FanMode_User_13","FanMode_User_14","FanMode_User_15","FanMode_User_16"
+8,30,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+9,23,NA,NA,1,1,NA,NA,NA,1,NA,NA,NA,1,1,1,NA,NA
+10,23,NA,NA,1,NA,NA,1,1,1,1,1,1,1,1,1,1,NA
+11,29,1,0,1,2,NA,2,2,1,0,1,NA,NA,0,2,1,2
+12,29,1,0,1,2,NA,2,2,1,NA,1,0,1,NA,NA,1,2
+13,23,NA,NA,NA,NA,1,NA,NA,NA,NA,NA,1,NA,1,1,NA,1
+14,29,1,0,1,NA,2,2,2,1,0,NA,NA,NA,0,NA,1,NA
+15,23,NA,NA,1,1,1,1,NA,1,1,NA,1,1,1,NA,NA,1
+16,29,1,0,1,2,2,NA,2,1,NA,1,0,1,NA,2,1,2
+17,23,NA,NA,1,1,1,1,1,1,1,1,1,1,NA,NA,1,1
+18,26.5,NA,NA,0,NA,NA,NA,2,NA,NA,0,NA,NA,NA,1,0,0
+19,30,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
