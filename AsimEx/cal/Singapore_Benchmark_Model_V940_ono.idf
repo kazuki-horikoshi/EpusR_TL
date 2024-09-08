@@ -27,10 +27,10 @@ Version,
 !-   ===========  ALL OBJECTS IN CLASS: SIMULATIONCONTROL ===========
 
 SimulationControl,
-    No,                      !- Do Zone Sizing Calculation
-    No,                      !- Do System Sizing Calculation
-    No,                      !- Do Plant Sizing Calculation
-    No,                      !- Run Simulation for Sizing Periods
+    Yes,                     !- Do Zone Sizing Calculation
+    Yes,                     !- Do System Sizing Calculation
+    Yes,                     !- Do Plant Sizing Calculation
+    No,                     !- Run Simulation for Sizing Periods
     Yes,                     !- Run Simulation for Weather File Run Periods
     No,                      !- Do HVAC Sizing Simulation for Sizing Periods
     1;                       !- Maximum Number of HVAC Sizing Simulation Passes
@@ -44,7 +44,7 @@ Building,
     City,                    !- Terrain
     0.04,                    !- Loads Convergence Tolerance Value {W}
     0.2,                     !- Temperature Convergence Tolerance Value {deltaC}
-    FullExterior,            !- Solar Distribution
+    FullExterior, !- Solar Distribution
     40,                      !- Maximum Number of Warmup Days
     6;                       !- Minimum Number of Warmup Days
 
@@ -66,7 +66,7 @@ SurfaceConvectionAlgorithm:Inside,
 !-   ===========  ALL OBJECTS IN CLASS: SURFACECONVECTIONALGORITHM:OUTSIDE ===========
 
 SurfaceConvectionAlgorithm:Outside,
-    DOE-2;                   !- Algorithm
+    DOE-2;                    !- Algorithm
 
 
 !-   ===========  ALL OBJECTS IN CLASS: HEATBALANCEALGORITHM ===========
@@ -260,19 +260,19 @@ SizingPeriod:DesignDay,
 
 RunPeriod,
     RUNPERIOD 1,             !- Name
-    10,                      !- Begin Month
-    10,                      !- Begin Day of Month
+    10,                       !- Begin Month
+    1,                       !- Begin Day of Month
     ,                        !- Begin Year
     10,                      !- End Month
-    10,                      !- End Day of Month
+    1,                      !- End Day of Month
     ,                        !- End Year
-    Tuesday,                 !- Day of Week for Start Day
+    Tuesday,                !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
     No,                      !- Use Weather File Daylight Saving Period
     No,                      !- Apply Weekend Holiday Rule
     Yes,                     !- Use Weather File Rain Indicators
     Yes,                     !- Use Weather File Snow Indicators
-    No;                      !- Treat Weather as Actual
+    ;                        !- Treat Weather as Actual
 
 
 !-   ===========  ALL OBJECTS IN CLASS: RUNPERIODCONTROL:SPECIALDAYS ===========
@@ -504,259 +504,259 @@ Schedule:Compact,
     On/Off,                  !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0,                       !- Field 4
-    Until: 19:00,            !- Field 5
-    1,                       !- Field 6
-    Until: 24:00,            !- Field 7
-    0,                       !- Field 8
-    For: Saturday,           !- Field 9
-    Until: 24:00,            !- Field 10
-    0,                       !- Field 11
-    For: Sunday Holidays,    !- Field 12
-    Until: 24:00,            !- Field 13
-    0,                       !- Field 14
-    For: SummerDesignDay AllOtherDays,  !- Field 15
-    Until: 07:00,            !- Field 16
-    0,                       !- Field 17
-    Until: 19:00,            !- Field 18
-    1,                       !- Field 19
-    Until: 24:00,            !- Field 20
-    0;                       !- Field 21
+    Until: 07:00,            !- Field 15
+    0,                       !- Field 16
+    Until: 19:00,            !- Field 37
+    1,                       !- Field 38
+    Until: 24:00,            !- Field 49
+    0,                       !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0,                       !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0,                       !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0,                       !- A165
+    Until: 19:00,            !- A186
+    1,                       !- A187
+    Until: 24:00,            !- A198
+    0;                       !- A199
 
 Schedule:Compact,
     Sch_ACMV,                !- Name
     On/Off,                  !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0,                       !- Field 4
-    Until: 19:00,            !- Field 5
-    1,                       !- Field 6
-    Until: 24:00,            !- Field 7
-    0,                       !- Field 8
-    For: Saturday,           !- Field 9
-    Until: 24:00,            !- Field 10
-    0,                       !- Field 11
-    For: Sunday Holidays,    !- Field 12
-    Until: 24:00,            !- Field 13
-    0,                       !- Field 14
-    For: SummerDesignDay AllOtherDays,  !- Field 15
-    Until: 07:00,            !- Field 16
-    0,                       !- Field 17
-    Until: 19:00,            !- Field 18
-    1,                       !- Field 19
-    Until: 24:00,            !- Field 20
-    0;                       !- Field 21
+    Until: 07:00,            !- Field 15
+    0,                       !- Field 16
+    Until: 19:00,            !- Field 37
+    1,                       !- Field 38
+    Until: 24:00,            !- Field 49
+    0,                       !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0,                       !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0,                       !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0,                       !- A165
+    Until: 19:00,            !- A186
+    1,                       !- A187
+    Until: 24:00,            !- A198
+    0;                       !- A199
 
 Schedule:Compact,
     Sch_Occupancy,           !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0,                       !- Field 4
-    Until: 08:00,            !- Field 5
-    0.5,                     !- Field 6
-    Until: 12:00,            !- Field 7
-    0.95,                    !- Field 8
-    Until: 13:00,            !- Field 9
-    0.5,                     !- Field 10
-    Until: 17:00,            !- Field 11
-    0.95,                    !- Field 12
-    Until: 18:00,            !- Field 13
-    0.5,                     !- Field 14
-    Until: 19:00,            !- Field 15
-    0.05,                    !- Field 16
-    Until: 24:00,            !- Field 17
-    0,                       !- Field 18
-    For: Saturday,           !- Field 19
-    Until: 24:00,            !- Field 20
-    0,                       !- Field 21
-    For: Sunday Holidays,    !- Field 22
-    Until: 24:00,            !- Field 23
-    0,                       !- Field 24
-    For: SummerDesignDay AllOtherDays,  !- Field 25
-    Until: 07:00,            !- Field 26
-    0,                       !- Field 27
-    Until: 19:00,            !- Field 28
-    1,                       !- Field 29
-    Until: 24:00,            !- Field 30
-    0;                       !- Field 31
+    Until: 07:00,            !- Field 15
+    0,                       !- Field 16
+    Until: 08:00,            !- Field 17
+    0.5,                     !- Field 18
+    Until: 12:00,            !- Field 25
+    0.95,                    !- Field 26
+    Until: 13:00,            !- Field 27
+    0.5,                     !- Field 28
+    Until: 17:00,            !- Field 35
+    0.95,                    !- Field 36
+    Until: 18:00,            !- Field 37
+    0.5,                     !- Field 38
+    Until: 19:00,            !- Field 39
+    0.05,                    !- Field 40
+    Until: 24:00,            !- Field 49
+    0,                       !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0,                       !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0,                       !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0,                       !- A165
+    Until: 19:00,            !- A184
+    1,                       !- A185
+    Until: 24:00,            !- A198
+    0;                       !- A199
 
 Schedule:Compact,
     Sch_Lighting_Carpark,    !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0.5,                     !- Field 4
-    Until: 24:00,            !- Field 5
-    1,                       !- Field 6
-    For: Saturday,           !- Field 7
-    Until: 07:00,            !- Field 8
-    0.5,                     !- Field 9
-    Until: 24:00,            !- Field 10
-    1,                       !- Field 11
-    For: Sunday Holidays,    !- Field 12
-    Until: 07:00,            !- Field 13
-    0.5,                     !- Field 14
-    Until: 24:00,            !- Field 15
-    1,                       !- Field 16
-    For: SummerDesignDay AllOtherDays,  !- Field 17
-    Until: 07:00,            !- Field 18
-    0.5,                     !- Field 19
-    Until: 24:00,            !- Field 20
-    1;                       !- Field 21
+    Until: 07:00,            !- Field 15
+    0.5,                     !- Field 16
+    Until: 24:00,            !- Field 49
+    1,                       !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 07:00,            !- Field 64
+    0.5,                     !- Field 65
+    Until: 24:00,            !- Field 98
+    1,                       !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 07:00,            !- Field 113
+    0.5,                     !- Field 114
+    Until: 24:00,            !- Field 147
+    1,                       !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0.5,                     !- A165
+    Until: 24:00,            !- A198
+    1;                       !- A199
 
 Schedule:Compact,
     Sch_Lighting_Staircase,  !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0.5,                     !- Field 4
-    Until: 19:00,            !- Field 5
-    1,                       !- Field 6
-    Until: 24:00,            !- Field 7
-    0.5,                     !- Field 8
-    For: Saturday,           !- Field 9
-    Until: 24:00,            !- Field 10
-    0.5,                     !- Field 11
-    For: Sunday Holidays,    !- Field 12
-    Until: 24:00,            !- Field 13
-    0.5,                     !- Field 14
-    For: SummerDesignDay AllOtherDays,  !- Field 15
-    Until: 07:00,            !- Field 16
-    0.5,                     !- Field 17
-    Until: 19:00,            !- Field 18
-    1,                       !- Field 19
-    Until: 24:00,            !- Field 20
-    0.5;                     !- Field 21
+    Until: 07:00,            !- A164
+    0.5,                     !- Field 16
+    Until: 19:00,            !- Field 39
+    1,                       !- Field 40
+    Until: 24:00,            !- Field 49
+    0.5,                     !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0.5,                     !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0.5,                     !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0.5,                     !- A165
+    Until: 19:00,            !- A188
+    1,                       !- A189
+    Until: 24:00,            !- A198
+    0.5;                     !- A199
 
 Schedule:Compact,
     Sch_Lighting_Offices&Toilets,  !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 06:00,            !- Field 3
-    0.05,                    !- Field 4
-    Until: 07:00,            !- Field 5
-    0.1,                     !- Field 6
-    Until: 08:00,            !- Field 7
-    0.27714,                 !- Field 8
-    Until: 17:00,            !- Field 9
-    0.83142,                 !- Field 10
-    Until: 18:00,            !- Field 11
-    0.27714,                 !- Field 12
-    Until: 19:00,            !- Field 13
-    0.1,                     !- Field 14
-    Until: 24:00,            !- Field 15
-    0.05,                    !- Field 16
-    For: Saturday,           !- Field 17
-    Until: 24:00,            !- Field 18
-    0.05,                    !- Field 19
-    For: Sunday Holidays,    !- Field 20
-    Until: 24:00,            !- Field 21
-    0.05,                    !- Field 22
-    For: SummerDesignDay AllOtherDays,  !- Field 23
-    Until: 07:00,            !- Field 24
-    0.1,                     !- Field 25
-    Until: 19:00,            !- Field 26
-    1,                       !- Field 27
-    Until: 24:00,            !- Field 28
-    0.1;                     !- Field 29
+    Until: 06:00,            !- Field 13
+    0.05,                    !- Field 14
+    Until: 07:00,            !- Field 15
+    0.1,                     !- Field 16
+    Until: 08:00,            !- Field 17
+    0.27714,                 !- Field 18
+    Until: 17:00,            !- Field 35
+    0.83142,                 !- Field 36
+    Until: 18:00,            !- Field 37
+    0.27714,                 !- Field 38
+    Until: 19:00,            !- Field 39
+    0.1,                     !- Field 40
+    Until: 24:00,            !- Field 49
+    0.05,                    !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0.05,                    !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0.05,                    !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0.1,                     !- A165
+    Until: 19:00,            !- A184
+    1,                       !- A185
+    Until: 24:00,            !- A198
+    0.1;                     !- A199
 
 Schedule:Compact,
     Sch_Equipment,           !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    0.05,                    !- Field 4
-    Until: 08:00,            !- Field 5
-    0.38,                    !- Field 6
-    Until: 12:00,            !- Field 7
-    0.856,                   !- Field 8
-    Until: 13:00,            !- Field 9
-    0.38,                    !- Field 10
-    Until: 17:00,            !- Field 11
-    0.856,                   !- Field 12
-    Until: 18:00,            !- Field 13
-    0.38,                    !- Field 14
-    Until: 24:00,            !- Field 15
+    Until: 07:00,            !- Field 15
     0.05,                    !- Field 16
-    For: Saturday,           !- Field 17
-    Until: 24:00,            !- Field 18
-    0.05,                    !- Field 19
-    For: Sunday Holidays,    !- Field 20
-    Until: 24:00,            !- Field 21
-    0.05,                    !- Field 22
-    For: SummerDesignDay AllOtherDays,  !- Field 23
-    Until: 07:00,            !- Field 24
-    0.05,                    !- Field 25
-    Until: 19:00,            !- Field 26
-    1,                       !- Field 27
-    Until: 24:00,            !- Field 28
-    0.05;                    !- Field 29
+    Until: 08:00,            !- Field 17
+    0.38,                    !- Field 18
+    Until: 12:00,            !- Field 25
+    0.856,                   !- Field 26
+    Until: 13:00,            !- Field 27
+    0.38,                    !- Field 28
+    Until: 17:00,            !- Field 35
+    0.856,                   !- Field 36
+    Until: 18:00,            !- Field 37
+    0.38,                    !- Field 38
+    Until: 24:00,            !- Field 49
+    0.05,                    !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0.05,                    !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0.05,                    !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    0.05,                    !- A165
+    Until: 19:00,            !- A184
+    1,                       !- A185
+    Until: 24:00,            !- A198
+    0.05;                    !- A199
 
 Schedule:Compact,
     Sch_Infiltration,        !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 07:00,            !- Field 3
-    1,                       !- Field 4
-    Until: 19:00,            !- Field 5
-    0.25,                    !- Field 6
-    Until: 24:00,            !- Field 7
-    1,                       !- Field 8
-    For: Saturday,           !- Field 9
-    Until: 24:00,            !- Field 10
-    1,                       !- Field 11
-    For: Sunday Holidays,    !- Field 12
-    Until: 24:00,            !- Field 13
-    1,                       !- Field 14
-    For: SummerDesignDay AllOtherDays,  !- Field 15
-    Until: 07:00,            !- Field 16
-    1,                       !- Field 17
-    Until: 19:00,            !- Field 18
-    0.25,                    !- Field 19
-    Until: 24:00,            !- Field 20
-    1;                       !- Field 21
+    Until: 07:00,            !- Field 15
+    1,                       !- Field 16
+    Until: 19:00,            !- Field 35
+    0.25,                    !- Field 36
+    Until: 24:00,            !- Field 49
+    1,                       !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    1,                       !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    1,                       !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 07:00,            !- A164
+    1,                       !- A165
+    Until: 19:00,            !- A184
+    0.25,                    !- A185
+    Until: 24:00,            !- A198
+    1;                       !- A199
 
 Schedule:Compact,
     Sch_LiFTs,               !- Name
     Fraction,                !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: Weekdays,           !- Field 2
-    Until: 06:00,            !- Field 3
-    0.01,                    !- Field 4
-    Until: 07:00,            !- Field 5
-    0.1,                     !- Field 6
-    Until: 08:00,            !- Field 7
-    0.2,                     !- Field 8
-    Until: 10:00,            !- Field 9
-    0.25,                    !- Field 10
-    Until: 15:00,            !- Field 11
-    0.1,                     !- Field 12
-    Until: 17:00,            !- Field 13
-    0.25,                    !- Field 14
-    Until: 18:00,            !- Field 15
-    0.2,                     !- Field 16
-    Until: 19:00,            !- Field 17
-    0.1,                     !- Field 18
-    Until: 24:00,            !- Field 19
-    0.01,                    !- Field 20
-    For: Saturday,           !- Field 21
-    Until: 24:00,            !- Field 22
-    0.01,                    !- Field 23
-    For: Sunday Holidays,    !- Field 24
-    Until: 24:00,            !- Field 25
-    0.01,                    !- Field 26
-    For: SummerDesignDay AllOtherDays,  !- Field 27
-    Until: 24:00,            !- Field 28
-    0.01;                    !- Field 29
+    Until: 06:00,            !- Field 13
+    0.01,                    !- Field 14
+    Until: 07:00,            !- Field 15
+    0.1,                     !- Field 16
+    Until: 08:00,            !- Field 17
+    0.2,                     !- Field 18
+    Until: 10:00,            !- Field 21
+    0.25,                    !- Field 22
+    Until: 15:00,            !- Field 31
+    0.1,                     !- Field 32
+    Until: 17:00,            !- Field 35
+    0.25,                    !- Field 36
+    Until: 18:00,            !- Field 37
+    0.2,                     !- Field 38
+    Until: 19:00,            !- Field 39
+    0.1,                     !- Field 40
+    Until: 24:00,            !- Field 49
+    0.01,                    !- Field 50
+    For: Saturday,           !- Field 51
+    Until: 24:00,            !- Field 98
+    0.01,                    !- Field 99
+    For: Sunday Holidays,    !- Field 100
+    Until: 24:00,            !- Field 147
+    0.01,                    !- Field 148
+    For: SummerDesignDay AllOtherDays,  !- Field 149
+    Until: 24:00,            !- A198
+    0.01;                    !- A199
 
 Schedule:Compact,
     Sch_ExteriorFacadeLights,!- Name
@@ -789,179 +789,20 @@ Schedule:Compact,
     1.0;                     !- Field 4
 
 Schedule:Compact,
-    sch_setpoint_core,       !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 7:00,             !- Field 3
-    30,                      !- Field 4
-    Until: 8:00,             !- Field 5
-    30,                      !- Field 6
-    Until: 9:00,             !- Field 7
-    25.5,                    !- Field 8
-    Until: 10:00,            !- Field 9
-    23.5,                    !- Field 10
-    Until: 11:00,            !- Field 11
-    23,                      !- Field 12
-    Until: 12:00,            !- Field 13
-    23,                      !- Field 14
-    Until: 13:00,            !- Field 15
-    22,                      !- Field 16
-    Until: 14:00,            !- Field 17
-    23,                      !- Field 18
-    Until: 15:00,            !- Field 19
-    22,                      !- Field 20
-    Until: 16:00,            !- Field 21
-    23,                      !- Field 22
-    Until: 17:00,            !- Field 23
-    22,                      !- Field 24
-    Until: 18:00,            !- Field 25
-    22.5,                    !- Field 26
-    Until: 19:00,            !- Field 27
-    30,                      !- Field 28
-    Until: 24:00,            !- Field 29
-    30;                      !- Field 30
-
-Schedule:Compact,
-    sch_setpoint_peri,       !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 7:00,             !- Field 3
-    30,                      !- Field 4
-    Until: 8:00,             !- Field 5
-    29,                      !- Field 6
-    Until: 9:00,             !- Field 7
-    24.5,                    !- Field 8
-    Until: 10:00,            !- Field 9
-    22.5,                    !- Field 10
-    Until: 11:00,            !- Field 11
-    22,                      !- Field 12
-    Until: 12:00,            !- Field 13
-    22,                      !- Field 14
-    Until: 13:00,            !- Field 15
-    21,                      !- Field 16
-    Until: 14:00,            !- Field 17
-    22,                      !- Field 18
-    Until: 15:00,            !- Field 19
-    21,                      !- Field 20
-    Until: 16:00,            !- Field 21
-    22,                      !- Field 22
-    Until: 17:00,            !- Field 23
-    21,                      !- Field 24
-    Until: 18:00,            !- Field 25
-    21.5,                    !- Field 26
-    Until: 19:00,            !- Field 27
-    29,                      !- Field 28
-    Until: 24:00,            !- Field 29
-    30;                      !- Field 30
-
-Schedule:Compact,
-    Sch_Occupancy_Target,    !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 7:00,             !- Field 3
-    0,                       !- Field 4
-    Until: 8:00,             !- Field 5
-    0,                       !- Field 6
-    Until: 9:00,             !- Field 7
-    0.07,                    !- Field 8
-    Until: 10:00,            !- Field 9
-    0.12,                    !- Field 10
-    Until: 11:00,            !- Field 11
-    0.13,                    !- Field 12
-    Until: 12:00,            !- Field 13
-    0.12,                    !- Field 14
-    Until: 13:00,            !- Field 15
-    0.06,                    !- Field 16
-    Until: 14:00,            !- Field 17
-    0.1,                     !- Field 18
-    Until: 15:00,            !- Field 19
-    0.11,                    !- Field 20
-    Until: 16:00,            !- Field 21
-    0.13,                    !- Field 22
-    Until: 17:00,            !- Field 23
-    0.13,                    !- Field 24
-    Until: 18:00,            !- Field 25
-    0.06,                    !- Field 26
-    Until: 19:00,            !- Field 27
-    0,                       !- Field 28
-    Until: 24:00,            !- Field 29
-    0;                       !- Field 30
-
-Schedule:Compact,
-    tp_combination,          !- Name
-    Any Number,              !- Schedule Type Limits Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar,  !- Name
+    Temperature,             !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: AllDays,            !- Field 2
     Until: 24:00,            !- Field 3
-    1;                       !- Field 4
+    26;                      !- Field 4
 
 Schedule:Compact,
-    comfort_model,           !- Name
-    Any Number,              !- Schedule Type Limits Name
+    Sch_Zone_Cooling_Setpoint_Solar,  !- Name
+    Temperature,             !- Schedule Type Limits Name
     Through: 12/31,          !- Field 1
     For: AllDays,            !- Field 2
     Until: 24:00,            !- Field 3
-    3;                       !- Field 4
-
-Schedule:Compact,
-    comfort_model_type,      !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    2;                       !- Field 4
-
-Schedule:Compact,
-    str_system,              !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    3;                       !- Field 4
-
-Schedule:Compact,
-    str_opt,                 !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    0;                       !- Field 4
-
-Schedule:Compact,
-    zone_index,              !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    1;                       !- Field 4
-
-Schedule:Compact,
-    Nday,                    !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    10;                      !- Field 4
-
-Schedule:Compact,
-    case_name1,              !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    7.0707070707;            !- Field 4
-
-Schedule:Compact,
-    case_name2,              !- Name
-    Any Number,              !- Schedule Type Limits Name
-    Through: 12/31,          !- Field 1
-    For: AllDays,            !- Field 2
-    Until: 24:00,            !- Field 3
-    7.0707070707;            !- Field 4
-
+    25;                      !- Field 4
 
 !-   ===========  ALL OBJECTS IN CLASS: MATERIAL ===========
 
@@ -1300,7 +1141,7 @@ Zone,
     Yes;                     !- Part of Total Floor Area
 
 Zone,
-    Core_Mid1,               !- Name
+    Core_Mid1,                !- Name
     0,                       !- Direction of Relative North {deg}
     0,                       !- X Origin {m}
     0,                       !- Y Origin {m}
@@ -1315,7 +1156,7 @@ Zone,
     Yes;                     !- Part of Total Floor Area
 
 Zone,
-    Core_Mid2,               !- Name
+    Core_Mid2,                !- Name
     0,                       !- Direction of Relative North {deg}
     0,                       !- X Origin {m}
     0,                       !- Y Origin {m}
@@ -1330,7 +1171,7 @@ Zone,
     Yes;                     !- Part of Total Floor Area
 
 Zone,
-    Core_Mid3,               !- Name
+    Core_Mid3,                !- Name
     0,                       !- Direction of Relative North {deg}
     0,                       !- X Origin {m}
     0,                       !- Y Origin {m}
@@ -1345,7 +1186,7 @@ Zone,
     Yes;                     !- Part of Total Floor Area
 
 Zone,
-    Core_Mid4,               !- Name
+    Core_Mid4,                !- Name
     0,                       !- Direction of Relative North {deg}
     0,                       !- X Origin {m}
     0,                       !- Y Origin {m}
@@ -1903,532 +1744,552 @@ BuildingSurface:Detailed,
     14.8;                    !- Vertex 4 Z-coordinate {m}
 
 BuildingSurface:Detailed,
-    Core_Mid1_Ceiling,       !- Name
+    Core_Mid1_Ceiling,        !- Name
     Ceiling,                 !- Surface Type
     SGP_Drop_Ceiling,        !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Zone,                    !- Outside Boundary Condition
     Mid_Plenum,              !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    43.256,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    43.256,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    4.5732,
+    43.256,
+    32.8434,
+    4.5732,
+    43.256,
+    32.8434,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid1_Floor,         !- Name
+    Core_Mid1_Floor,          !- Name
     Floor,                   !- Surface Type
     SGP_Floor,               !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid1_Floor,         !- Outside Boundary Condition Object
+    Core_Mid1_Floor,          !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    40.456,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    40.456;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    18.70835,
+    40.456,
+    32.8434,
+    4.5732,
+    40.456,
+    20.65380465,
+    4.5732,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456;
 
 BuildingSurface:Detailed,
-    Core_Mid1_Wall_S,        !- Name
+    Core_Mid1_Wall_S,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid1_Wall_S-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    4.5732,                  !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    4.5732,                  !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    4.5732,
+    43.256,
+    20.65380465,
+    4.5732,
+    40.456,
+    32.8434,
+    4.5732,
+    40.456,
+    32.8434,
+    4.5732,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid1_Wall_N,        !- Name
+    Core_Mid1_Wall_N,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid4_Wall_S,        !- Outside Boundary Condition Object
+    Core_Mid4_Wall_S,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    18.70835,
+    43.256,
+    32.8434,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid1_Wall_E,        !- Name
+    Core_Mid1_Wall_E,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid1_Wall_E-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    4.5732,                  !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    4.5732,
+    43.256,
+    32.8434,
+    4.5732,
+    40.456,
+    32.8434,
+    18.70835,
+    40.456,
+    32.8434,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid1_Wall_W,        !- Name
+    Core_Mid1_Wall_W,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid1,               !- Zone Name
+    Core_Mid1,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid2_Wall_E,        !- Outside Boundary Condition Object
+    Core_Mid2_Wall_E,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    4.5732,                  !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    4.5732,
+    40.456,
+    20.65380465,
+    4.5732,
+    43.256;
+
+
+
+
+
+
+
 
 BuildingSurface:Detailed,
-    Core_Mid2_Ceiling,       !- Name
+    Core_Mid2_Ceiling,        !- Name
     Ceiling,                 !- Surface Type
     SGP_Drop_Ceiling,        !- Construction Name
-    Core_Mid2,               !- Zone Name
+    Core_Mid2,                !- Zone Name
     Zone,                    !- Outside Boundary Condition
     Mid_Plenum,              !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    8.464209292,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    8.464209292,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    43.256,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    43.256,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    8.464209292,
+    18.70835,
+    43.256,
+    8.464209292,
+    4.5732,
+    43.256,
+    20.65380465,
+    4.5732,
+    43.256,
+    20.65380465,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid2_Floor,         !- Name
+    Core_Mid2_Floor,          !- Name
     Floor,                   !- Surface Type
     SGP_Floor,               !- Construction Name
-    Core_Mid2,               !- Zone Name
+    Core_Mid2,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid2_Floor,         !- Outside Boundary Condition Object
+    Core_Mid2_Floor,          !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    40.456,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    8.464209292,             !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    8.464209292,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    40.456;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    4.5732,
+    40.456,
+    8.464209292,
+    4.5732,
+    40.456,
+    8.464209292,
+    18.70835,
+    40.456;
 
 BuildingSurface:Detailed,
-    Core_Mid2_Wall_S,        !- Name
+    Core_Mid2_Wall_S,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid2,               !- Zone Name
+    Core_Mid2,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid2_Wall_S-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    8.464209292,             !- Vertex 1 X-coordinate {m}
-    4.5732,                  !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    8.464209292,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    4.5732,                  !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    4.5732,                  !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    8.464209292,
+    4.5732,
+    43.256,
+    8.464209292,
+    4.5732,
+    40.456,
+    20.65380465,
+    4.5732,
+    40.456,
+    20.65380465,
+    4.5732,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid2_Wall_N,        !- Name
+    Core_Mid2_Wall_N,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid2,               !- Zone Name
+    Core_Mid2,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid3_Wall_S,        !- Outside Boundary Condition Object
+    Core_Mid3_Wall_S,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    8.464209292,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    8.464209292,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    18.70835,
+    40.456,
+    8.464209292,
+    18.70835,
+    40.456,
+    8.464209292,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid2_Wall_E,        !- Name
+    Core_Mid2_Wall_E,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid2,               !- Zone Name
+    Core_Mid2,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid1_Wall_W,        !- Outside Boundary Condition Object
+    Core_Mid1_Wall_W,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    4.5732,                  !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    4.5732,                  !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    4.5732,
+    43.256,
+    20.65380465,
+    4.5732,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    43.256;
+
+
+
 
 BuildingSurface:Detailed,
-    Core_Mid3_Ceiling,       !- Name
+    Core_Mid3_Ceiling,        !- Name
     Ceiling,                 !- Surface Type
     SGP_Drop_Ceiling,        !- Construction Name
-    Core_Mid3,               !- Zone Name
+    Core_Mid3,                !- Zone Name
     Zone,                    !- Outside Boundary Condition
     Mid_Plenum,              !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    8.464209292,             !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    8.464209292,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    43.256,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    43.256,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    8.464209292,
+    32.8435,
+    43.256,
+    8.464209292,
+    18.70835,
+    43.256,
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    32.8435,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid3_Floor,         !- Name
+    Core_Mid3_Floor,          !- Name
     Floor,                   !- Surface Type
     SGP_Floor,               !- Construction Name
-    Core_Mid3,               !- Zone Name
+    Core_Mid3,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid3_Floor,         !- Outside Boundary Condition Object
+    Core_Mid3_Floor,          !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    40.456,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    8.464209292,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    8.464209292,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    40.456;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    32.8435,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    8.464209292,
+    18.70835,
+    40.456,
+    8.464209292,
+    32.8435,
+    40.456;
 
 BuildingSurface:Detailed,
-    Core_Mid3_Wall_S,        !- Name
+    Core_Mid3_Wall_S,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid3,               !- Zone Name
+    Core_Mid3,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid2_Wall_N,        !- Outside Boundary Condition Object
+    Core_Mid2_Wall_N,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    8.464209292,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    8.464209292,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    8.464209292,
+    18.70835,
+    43.256,
+    8.464209292,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid3_Wall_N,        !- Name
+    Core_Mid3_Wall_N,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid3,               !- Zone Name
+    Core_Mid3,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid3_Wall_N-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    32.8435,                 !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    8.464209292,             !- Vertex 3 X-coordinate {m}
-    32.8435,                 !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    8.464209292,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    32.8435,
+    43.256,
+    20.65380465,
+    32.8435,
+    40.456,
+    8.464209292,
+    32.8435,
+    40.456,
+    8.464209292,
+    32.8435,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid3_Wall_E,        !- Name
+    Core_Mid3_Wall_E,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid3,               !- Zone Name
+    Core_Mid3,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid4_Wall_W,        !- Outside Boundary Condition Object
+    Core_Mid4_Wall_W,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    32.8435,                 !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    32.8435,
+    40.456,
+    20.65380465,
+    32.8435,
+    43.256;
+
+
+
+
 
 BuildingSurface:Detailed,
-    Core_Mid4_Ceiling,       !- Name
+    Core_Mid4_Ceiling,        !- Name
     Ceiling,                 !- Surface Type
     SGP_Drop_Ceiling,        !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Zone,                    !- Outside Boundary Condition
     Mid_Plenum,              !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    43.256,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    43.256,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    32.8435,
+    43.256,
+    20.65380465,
+    18.70835,
+    43.256,
+    32.8434,
+    18.70835,
+    43.256,
+    32.8434,
+    32.8435,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid4_Floor,         !- Name
+    Core_Mid4_Floor,          !- Name
     Floor,                   !- Surface Type
     SGP_Floor,               !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid4_Floor,         !- Outside Boundary Condition Object
+    Core_Mid4_Floor,          !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    40.456,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    40.456;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    32.8435,
+    40.456,
+    32.8434,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    32.8435,
+    40.456;
 
 BuildingSurface:Detailed,
-    Core_Mid4_Wall_S,        !- Name
+    Core_Mid4_Wall_S,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid1_Wall_N,        !- Outside Boundary Condition Object
+    Core_Mid1_Wall_N,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    18.70835,
+    43.256,
+    20.65380465,
+    18.70835,
+    40.456,
+    32.8434,
+    18.70835,
+    40.456,
+    32.8434,
+    18.70835,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid4_Wall_N,        !- Name
+    Core_Mid4_Wall_N,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid4_Wall_N-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    32.8435,                 !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    32.8435,                 !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    32.8435,
+    43.256,
+    32.8434,
+    32.8435,
+    40.456,
+    20.65380465,
+    32.8435,
+    40.456,
+    20.65380465,
+    32.8435,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid4_Wall_E,        !- Name
+    Core_Mid4_Wall_E,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
     Core_Mid4_Wall_E-AutoCreated,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    32.8434,                 !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    32.8434,                 !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    32.8434,                 !- Vertex 3 X-coordinate {m}
-    32.8435,                 !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    32.8434,                 !- Vertex 4 X-coordinate {m}
-    32.8435,                 !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    32.8434,
+    18.70835,
+    43.256,
+    32.8434,
+    18.70835,
+    40.456,
+    32.8434,
+    32.8435,
+    40.456,
+    32.8434,
+    32.8435,
+    43.256;
 
 BuildingSurface:Detailed,
-    Core_Mid4_Wall_W,        !- Name
+    Core_Mid4_Wall_W,         !- Name
     Wall,                    !- Surface Type
     SGP_Infrared_Wall,       !- Construction Name
-    Core_Mid4,               !- Zone Name
+    Core_Mid4,                !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid3_Wall_E,        !- Outside Boundary Condition Object
+    Core_Mid3_Wall_E,  !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
-    32.8435,                 !- Vertex 1 Y-coordinate {m}
-    43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
-    32.8435,                 !- Vertex 2 Y-coordinate {m}
-    40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
-    40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
-    43.256;                  !- Vertex 4 Z-coordinate {m}
+    20.65380465,
+    32.8435,
+    43.256,
+    20.65380465,
+    32.8435,
+    40.456,
+    20.65380465,
+    18.70835,
+    40.456,
+    20.65380465,
+    18.70835,
+    43.256;
+
+
+
+
+
+
 
 BuildingSurface:Detailed,
     Core_Top_Ceiling,        !- Name
@@ -3180,7 +3041,7 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_N,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid3_Wall_N,        !- Outside Boundary Condition Object
+    Core_Mid3_Wall_N,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
@@ -3191,10 +3052,10 @@ BuildingSurface:Detailed,
     8.46420929244,           !- Vertex 2 X-coordinate {m}
     32.8435,                 !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
+    20.65380465,                 !- Vertex 3 X-coordinate {m}
     32.8435,                 !- Vertex 3 Y-coordinate {m}
     40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
+    20.65380465,                 !- Vertex 4 X-coordinate {m}
     32.8435,                 !- Vertex 4 Y-coordinate {m}
     43.256;                  !- Vertex 4 Z-coordinate {m}
 
@@ -3204,15 +3065,15 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_N,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid4_Wall_N,        !- Outside Boundary Condition Object
+    Core_Mid4_Wall_N,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
+    20.65380465,           !- Vertex 1 X-coordinate {m}
     32.8435,                 !- Vertex 1 Y-coordinate {m}
     43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
+    20.65380465,           !- Vertex 2 X-coordinate {m}
     32.8435,                 !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
     32.8434,                 !- Vertex 3 X-coordinate {m}
@@ -3348,16 +3209,16 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_E,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid1_Wall_E,        !- Outside Boundary Condition Object
+    Core_Mid1_Wall_E,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
     32.8434,                 !- Vertex 1 X-coordinate {m}
-    18.70835,                !- Vertex 1 Y-coordinate {m}
+    18.70835,                 !- Vertex 1 Y-coordinate {m}
     43.256,                  !- Vertex 1 Z-coordinate {m}
     32.8434,                 !- Vertex 2 X-coordinate {m}
-    18.70835,                !- Vertex 2 Y-coordinate {m}
+    18.70835,                 !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
     32.8434,                 !- Vertex 3 X-coordinate {m}
     4.5732,                  !- Vertex 3 Y-coordinate {m}
@@ -3372,7 +3233,7 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_E,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid4_Wall_E,        !- Outside Boundary Condition Object
+    Core_Mid4_Wall_E,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
@@ -3384,10 +3245,10 @@ BuildingSurface:Detailed,
     32.8435,                 !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
     32.8434,                 !- Vertex 3 X-coordinate {m}
-    18.70835,                !- Vertex 3 Y-coordinate {m}
+    18.70835,                  !- Vertex 3 Y-coordinate {m}
     40.456,                  !- Vertex 3 Z-coordinate {m}
     32.8434,                 !- Vertex 4 X-coordinate {m}
-    18.70835,                !- Vertex 4 Y-coordinate {m}
+    18.70835,                  !- Vertex 4 Y-coordinate {m}
     43.256;                  !- Vertex 4 Z-coordinate {m}
 
 BuildingSurface:Detailed,
@@ -4572,7 +4433,7 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_S,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid1_Wall_S,        !- Outside Boundary Condition Object
+    Core_Mid1_Wall_S,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
@@ -4583,10 +4444,10 @@ BuildingSurface:Detailed,
     32.8434,                 !- Vertex 2 X-coordinate {m}
     4.5732,                  !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
-    20.65380465,             !- Vertex 3 X-coordinate {m}
+    20.65380465,           !- Vertex 3 X-coordinate {m}
     4.5732,                  !- Vertex 3 Y-coordinate {m}
     40.456,                  !- Vertex 3 Z-coordinate {m}
-    20.65380465,             !- Vertex 4 X-coordinate {m}
+    20.65380465,           !- Vertex 4 X-coordinate {m}
     4.5732,                  !- Vertex 4 Y-coordinate {m}
     43.256;                  !- Vertex 4 Z-coordinate {m}
 
@@ -4596,15 +4457,15 @@ BuildingSurface:Detailed,
     SGP_Infrared_Wall,       !- Construction Name
     Zone_Mid_S,              !- Zone Name
     Surface,                 !- Outside Boundary Condition
-    Core_Mid2_Wall_S,        !- Outside Boundary Condition Object
+    Core_Mid2_Wall_S,         !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
     4,                       !- Number of Vertices
-    20.65380465,             !- Vertex 1 X-coordinate {m}
+    20.65380465,                 !- Vertex 1 X-coordinate {m}
     4.5732,                  !- Vertex 1 Y-coordinate {m}
     43.256,                  !- Vertex 1 Z-coordinate {m}
-    20.65380465,             !- Vertex 2 X-coordinate {m}
+    20.65380465,                 !- Vertex 2 X-coordinate {m}
     4.5732,                  !- Vertex 2 Y-coordinate {m}
     40.456,                  !- Vertex 2 Z-coordinate {m}
     8.46420929244,           !- Vertex 3 X-coordinate {m}
@@ -5124,7 +4985,7 @@ BuildingSurface:Detailed,
     SGP_Brick_Wall,          !- Construction Name
     Mid_Toilet,              !- Zone Name
     Zone,                    !- Outside Boundary Condition
-    Core_Mid3,               !- Outside Boundary Condition Object
+    Core_Mid3,                !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
@@ -5244,7 +5105,7 @@ BuildingSurface:Detailed,
     SGP_Brick_Wall,          !- Construction Name
     Mid_Stairs,              !- Zone Name
     Zone,                    !- Outside Boundary Condition
-    Core_Mid2,               !- Outside Boundary Condition Object
+    Core_Mid2,                !- Outside Boundary Condition Object
     NoSun,                   !- Sun Exposure
     NoWind,                  !- Wind Exposure
     AutoCalculate,           !- View Factor to Ground
@@ -7615,28 +7476,28 @@ InternalMass,
     1683.88926592;           !- Surface Area {m2}
 
 InternalMass,
-    Core_Mid1_InternalMass,  !- Name
+    Core_Mid1_InternalMass,   !- Name
     SGP_InteriorFurnishings, !- Construction Name
-    Core_Mid1,               !- Zone or ZoneList Name
-    420.9723165;             !- Surface Area {m2}
+    Core_Mid1,                !- Zone or ZoneList Name
+    420.9723165;           !- Surface Area {m2}
 
 InternalMass,
-    Core_Mid2_InternalMass,  !- Name
+    Core_Mid2_InternalMass,   !- Name
     SGP_InteriorFurnishings, !- Construction Name
-    Core_Mid2,               !- Zone or ZoneList Name
-    420.9723165;             !- Surface Area {m2}
+    Core_Mid2,                !- Zone or ZoneList Name
+    420.9723165;           !- Surface Area {m2}
 
 InternalMass,
-    Core_Mid3_InternalMass,  !- Name
+    Core_Mid3_InternalMass,   !- Name
     SGP_InteriorFurnishings, !- Construction Name
-    Core_Mid3,               !- Zone or ZoneList Name
-    420.9723165;             !- Surface Area {m2}
+    Core_Mid3,                !- Zone or ZoneList Name
+    420.9723165;           !- Surface Area {m2}
 
 InternalMass,
-    Core_Mid4_InternalMass,  !- Name
+    Core_Mid4_InternalMass,   !- Name
     SGP_InteriorFurnishings, !- Construction Name
-    Core_Mid4,               !- Zone or ZoneList Name
-    420.9723165;             !- Surface Area {m2}
+    Core_Mid4,                !- Zone or ZoneList Name
+    420.9723165;           !- Surface Area {m2}
 
 InternalMass,
     Core_Top_InternalMass,   !- Name
@@ -7837,7 +7698,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7853,35 +7714,13 @@ People,
     Fanger;                  !- Thermal Comfort Model 1 Type
 
 People,
-    Core_Mid1,               !- Name
-    Core_Mid1,               !- Zone or ZoneList Name
-    Sch_Occupancy_target,    !- Number of People Schedule Name
-    People,                  !- Number of People Calculation Method
-    100,                     !- Number of People
-    ,                        !- People per Zone Floor Area {person/m2}
-    ,                        !- Zone Floor Area per Person {m2/person}
-    0.58,                    !- Fraction Radiant
-    AutoCalculate,           !- Sensible Heat Fraction
-    Sch_Activity,            !- Activity Level Schedule Name
-    3.82e-08,                !- Carbon Dioxide Generation Rate {m3/s-W}
-    No,                      !- Enable ASHRAE 55 Comfort Warnings
-    ZoneAveraged,            !- Mean Radiant Temperature Calculation Type
-    ,                        !- Surface Name/Angle Factor List Name
-    Sch_Work_Eff,            !- Work Efficiency Schedule Name
-    ClothingInsulationSchedule,  !- Clothing Insulation Calculation Method
-    ,                        !- Clothing Insulation Calculation Method Schedule Name
-    Sch_Clothing,            !- Clothing Insulation Schedule Name
-    Sch_Air_Velo,            !- Air Velocity Schedule Name
-    Fanger;                  !- Thermal Comfort Model 1 Type
-
-People,
-    Core_Mid2,               !- Name
-    Core_Mid2,               !- Zone or ZoneList Name
+    Core_Mid1,                !- Name
+    Core_Mid1,                !- Zone or ZoneList Name
     Sch_Occupancy,           !- Number of People Schedule Name
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7897,13 +7736,13 @@ People,
     Fanger;                  !- Thermal Comfort Model 1 Type
 
 People,
-    Core_Mid3,               !- Name
-    Core_Mid3,               !- Zone or ZoneList Name
+    Core_Mid2,                !- Name
+    Core_Mid2,                !- Zone or ZoneList Name
     Sch_Occupancy,           !- Number of People Schedule Name
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7919,13 +7758,35 @@ People,
     Fanger;                  !- Thermal Comfort Model 1 Type
 
 People,
-    Core_Mid4,               !- Name
-    Core_Mid4,               !- Zone or ZoneList Name
+    Core_Mid3,                !- Name
+    Core_Mid3,                !- Zone or ZoneList Name
     Sch_Occupancy,           !- Number of People Schedule Name
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
+    0.58,                    !- Fraction Radiant
+    AutoCalculate,           !- Sensible Heat Fraction
+    Sch_Activity,            !- Activity Level Schedule Name
+    ,                        !- Carbon Dioxide Generation Rate {m3/s-W}
+    No,                      !- Enable ASHRAE 55 Comfort Warnings
+    ZoneAveraged,            !- Mean Radiant Temperature Calculation Type
+    ,                        !- Surface Name/Angle Factor List Name
+    Sch_Work_Eff,            !- Work Efficiency Schedule Name
+    ClothingInsulationSchedule,  !- Clothing Insulation Calculation Method
+    ,                        !- Clothing Insulation Calculation Method Schedule Name
+    Sch_Clothing,            !- Clothing Insulation Schedule Name
+    Sch_Air_Velo,            !- Air Velocity Schedule Name
+    Fanger;                  !- Thermal Comfort Model 1 Type
+
+People,
+    Core_Mid4,                !- Name
+    Core_Mid4,                !- Zone or ZoneList Name
+    Sch_Occupancy,           !- Number of People Schedule Name
+    Area/Person,             !- Number of People Calculation Method
+    ,                        !- Number of People
+    ,                        !- People per Zone Floor Area {person/m2}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7947,7 +7808,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7969,7 +7830,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -7991,7 +7852,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8013,7 +7874,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8035,7 +7896,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8057,7 +7918,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8079,11 +7940,11 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
-    3.82e-08,                !- Carbon Dioxide Generation Rate {m3/s-W}
+    ,                        !- Carbon Dioxide Generation Rate {m3/s-W}
     No,                      !- Enable ASHRAE 55 Comfort Warnings
     ZoneAveraged,            !- Mean Radiant Temperature Calculation Type
     ,                        !- Surface Name/Angle Factor List Name
@@ -8101,7 +7962,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8123,7 +7984,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8145,7 +8006,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8167,7 +8028,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8189,7 +8050,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8211,7 +8072,7 @@ People,
     Area/Person,             !- Number of People Calculation Method
     ,                        !- Number of People
     ,                        !- People per Zone Floor Area {person/m2}
-    10.77,                   !- Zone Floor Area per Person {m2/person}
+    10.77,                      !- Zone Floor Area per Person {m2/person}
     0.58,                    !- Fraction Radiant
     AutoCalculate,           !- Sensible Heat Fraction
     Sch_Activity,            !- Activity Level Schedule Name
@@ -8245,8 +8106,8 @@ Lights,
     No;                      !- Return Air Fraction Calculated from Plenum Temperature
 
 Lights,
-    Core_Mid1_Lights,        !- Name
-    Core_Mid1,               !- Zone or ZoneList Name
+    Core_Mid1_Lights,         !- Name
+    Core_Mid1,                !- Zone or ZoneList Name
     Sch_Lighting_Offices&Toilets,  !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Lighting Level {W}
@@ -8260,8 +8121,8 @@ Lights,
     No;                      !- Return Air Fraction Calculated from Plenum Temperature
 
 Lights,
-    Core_Mid2_Lights,        !- Name
-    Core_Mid2,               !- Zone or ZoneList Name
+    Core_Mid2_Lights,         !- Name
+    Core_Mid2,                !- Zone or ZoneList Name
     Sch_Lighting_Offices&Toilets,  !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Lighting Level {W}
@@ -8275,8 +8136,8 @@ Lights,
     No;                      !- Return Air Fraction Calculated from Plenum Temperature
 
 Lights,
-    Core_Mid3_Lights,        !- Name
-    Core_Mid3,               !- Zone or ZoneList Name
+    Core_Mid3_Lights,         !- Name
+    Core_Mid3,                !- Zone or ZoneList Name
     Sch_Lighting_Offices&Toilets,  !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Lighting Level {W}
@@ -8290,8 +8151,8 @@ Lights,
     No;                      !- Return Air Fraction Calculated from Plenum Temperature
 
 Lights,
-    Core_Mid4_Lights,        !- Name
-    Core_Mid4,               !- Zone or ZoneList Name
+    Core_Mid4_Lights,         !- Name
+    Core_Mid4,                !- Zone or ZoneList Name
     Sch_Lighting_Offices&Toilets,  !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Lighting Level {W}
@@ -8720,8 +8581,8 @@ ElectricEquipment,
     MiscPlug;                !- End-Use Subcategory
 
 ElectricEquipment,
-    Core_Mid1_MiscPlug_Equip,!- Name
-    Core_Mid1,               !- Zone or ZoneList Name
+    Core_Mid1_MiscPlug_Equip, !- Name
+    Core_Mid1,                !- Zone or ZoneList Name
     Sch_Equipment,           !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Design Level {W}
@@ -8733,8 +8594,8 @@ ElectricEquipment,
     MiscPlug;                !- End-Use Subcategory
 
 ElectricEquipment,
-    Core_Mid2_MiscPlug_Equip,!- Name
-    Core_Mid2,               !- Zone or ZoneList Name
+    Core_Mid2_MiscPlug_Equip, !- Name
+    Core_Mid2,                !- Zone or ZoneList Name
     Sch_Equipment,           !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Design Level {W}
@@ -8746,8 +8607,8 @@ ElectricEquipment,
     MiscPlug;                !- End-Use Subcategory
 
 ElectricEquipment,
-    Core_Mid3_MiscPlug_Equip,!- Name
-    Core_Mid3,               !- Zone or ZoneList Name
+    Core_Mid3_MiscPlug_Equip, !- Name
+    Core_Mid3,                !- Zone or ZoneList Name
     Sch_Equipment,           !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Design Level {W}
@@ -8759,8 +8620,8 @@ ElectricEquipment,
     MiscPlug;                !- End-Use Subcategory
 
 ElectricEquipment,
-    Core_Mid4_MiscPlug_Equip,!- Name
-    Core_Mid4,               !- Zone or ZoneList Name
+    Core_Mid4_MiscPlug_Equip, !- Name
+    Core_Mid4,                !- Zone or ZoneList Name
     Sch_Equipment,           !- Schedule Name
     Watts/Area,              !- Design Level Calculation Method
     ,                        !- Design Level {W}
@@ -9390,7 +9251,7 @@ ZoneMixing,
     ,                        !- Flow Rate per Zone Floor Area {m3/s-m2}
     ,                        !- Flow Rate per Person {m3/s-person}
     ,                        !- Air Changes per Hour {1/hr}
-    Core_Mid3,               !- Source Zone Name
+    Core_Mid3,                !- Source Zone Name
     0;                       !- Delta Temperature {deltaC}
 
 ZoneMixing,
@@ -9503,28 +9364,28 @@ DesignSpecification:OutdoorAir,
     0;                       !- Outdoor Air Flow per Zone {m3/s}
 
 DesignSpecification:OutdoorAir,
-    SZ_DSOA_Core_Mid1,       !- Name
+    SZ_DSOA_Core_Mid1,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04,                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
     0;                       !- Outdoor Air Flow per Zone {m3/s}
 
 DesignSpecification:OutdoorAir,
-    SZ_DSOA_Core_Mid2,       !- Name
+    SZ_DSOA_Core_Mid2,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04,                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
     0;                       !- Outdoor Air Flow per Zone {m3/s}
 
 DesignSpecification:OutdoorAir,
-    SZ_DSOA_Core_Mid3,       !- Name
+    SZ_DSOA_Core_Mid3,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04,                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
     0;                       !- Outdoor Air Flow per Zone {m3/s}
 
 DesignSpecification:OutdoorAir,
-    SZ_DSOA_Core_Mid4,       !- Name
+    SZ_DSOA_Core_Mid4,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04,                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
@@ -9682,25 +9543,25 @@ DesignSpecification:OutdoorAir,
     6e-04;                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
 
 DesignSpecification:OutdoorAir,
-    CM_DSOA_Core_Mid1,       !- Name
+    CM_DSOA_Core_Mid1,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04;                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
 
 DesignSpecification:OutdoorAir,
-    CM_DSOA_Core_Mid2,       !- Name
+    CM_DSOA_Core_Mid2,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04;                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
 
 DesignSpecification:OutdoorAir,
-    CM_DSOA_Core_Mid3,       !- Name
+    CM_DSOA_Core_Mid3,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04;                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
 
 DesignSpecification:OutdoorAir,
-    CM_DSOA_Core_Mid4,       !- Name
+    CM_DSOA_Core_Mid4,        !- Name
     Maximum,                 !- Outdoor Air Method
     0.0055,                  !- Outdoor Air Flow per Person {m3/s-person}
     6e-04;                   !- Outdoor Air Flow per Zone Floor Area {m3/s-m2}
@@ -9793,25 +9654,25 @@ DesignSpecification:ZoneAirDistribution,
     ;                        !- Zone Air Distribution Effectiveness Schedule Name
 
 DesignSpecification:ZoneAirDistribution,
-    CM_DSZAD_Core_Mid1,      !- Name
+    CM_DSZAD_Core_Mid1,       !- Name
     1,                       !- Zone Air Distribution Effectiveness in Cooling Mode {dimensionless}
     1,                       !- Zone Air Distribution Effectiveness in Heating Mode {dimensionless}
     ;                        !- Zone Air Distribution Effectiveness Schedule Name
 
 DesignSpecification:ZoneAirDistribution,
-    CM_DSZAD_Core_Mid2,      !- Name
+    CM_DSZAD_Core_Mid2,       !- Name
     1,                       !- Zone Air Distribution Effectiveness in Cooling Mode {dimensionless}
     1,                       !- Zone Air Distribution Effectiveness in Heating Mode {dimensionless}
     ;                        !- Zone Air Distribution Effectiveness Schedule Name
 
 DesignSpecification:ZoneAirDistribution,
-    CM_DSZAD_Core_Mid3,      !- Name
+    CM_DSZAD_Core_Mid3,       !- Name
     1,                       !- Zone Air Distribution Effectiveness in Cooling Mode {dimensionless}
     1,                       !- Zone Air Distribution Effectiveness in Heating Mode {dimensionless}
     ;                        !- Zone Air Distribution Effectiveness Schedule Name
 
 DesignSpecification:ZoneAirDistribution,
-    CM_DSZAD_Core_Mid4,      !- Name
+    CM_DSZAD_Core_Mid4,       !- Name
     1,                       !- Zone Air Distribution Effectiveness in Cooling Mode {dimensionless}
     1,                       !- Zone Air Distribution Effectiveness in Heating Mode {dimensionless}
     ;                        !- Zone Air Distribution Effectiveness Schedule Name
@@ -9881,7 +9742,7 @@ Sizing:Zone,
     autosize;                !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
 
 Sizing:Zone,
-    Core_Mid1,               !- Zone or ZoneList Name
+    Core_Mid1,                !- Zone or ZoneList Name
     SupplyAirTemperature,    !- Zone Cooling Design Supply Air Temperature Input Method
     13.5,                    !- Zone Cooling Design Supply Air Temperature {C}
     ,                        !- Zone Cooling Design Supply Air Temperature Difference {deltaC}
@@ -9890,7 +9751,7 @@ Sizing:Zone,
     ,                        !- Zone Heating Design Supply Air Temperature Difference {deltaC}
     0.0085,                  !- Zone Cooling Design Supply Air Humidity Ratio {kgWater/kgDryAir}
     0.008,                   !- Zone Heating Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-    SZ_DSOA_Core_Mid1,       !- Design Specification Outdoor Air Object Name
+    SZ_DSOA_Core_Mid1,        !- Design Specification Outdoor Air Object Name
     0,                       !- Zone Heating Sizing Factor
     1.2,                     !- Zone Cooling Sizing Factor
     DesignDay,               !- Cooling Design Air Flow Method
@@ -9910,7 +9771,7 @@ Sizing:Zone,
     autosize;                !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
 
 Sizing:Zone,
-    Core_Mid2,               !- Zone or ZoneList Name
+    Core_Mid2,                !- Zone or ZoneList Name
     SupplyAirTemperature,    !- Zone Cooling Design Supply Air Temperature Input Method
     13.5,                    !- Zone Cooling Design Supply Air Temperature {C}
     ,                        !- Zone Cooling Design Supply Air Temperature Difference {deltaC}
@@ -9919,7 +9780,7 @@ Sizing:Zone,
     ,                        !- Zone Heating Design Supply Air Temperature Difference {deltaC}
     0.0085,                  !- Zone Cooling Design Supply Air Humidity Ratio {kgWater/kgDryAir}
     0.008,                   !- Zone Heating Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-    SZ_DSOA_Core_Mid2,       !- Design Specification Outdoor Air Object Name
+    SZ_DSOA_Core_Mid2,        !- Design Specification Outdoor Air Object Name
     0,                       !- Zone Heating Sizing Factor
     1.2,                     !- Zone Cooling Sizing Factor
     DesignDay,               !- Cooling Design Air Flow Method
@@ -9939,7 +9800,7 @@ Sizing:Zone,
     autosize;                !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
 
 Sizing:Zone,
-    Core_Mid3,               !- Zone or ZoneList Name
+    Core_Mid3,                !- Zone or ZoneList Name
     SupplyAirTemperature,    !- Zone Cooling Design Supply Air Temperature Input Method
     13.5,                    !- Zone Cooling Design Supply Air Temperature {C}
     ,                        !- Zone Cooling Design Supply Air Temperature Difference {deltaC}
@@ -9948,7 +9809,7 @@ Sizing:Zone,
     ,                        !- Zone Heating Design Supply Air Temperature Difference {deltaC}
     0.0085,                  !- Zone Cooling Design Supply Air Humidity Ratio {kgWater/kgDryAir}
     0.008,                   !- Zone Heating Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-    SZ_DSOA_Core_Mid3,       !- Design Specification Outdoor Air Object Name
+    SZ_DSOA_Core_Mid3,        !- Design Specification Outdoor Air Object Name
     0,                       !- Zone Heating Sizing Factor
     1.2,                     !- Zone Cooling Sizing Factor
     DesignDay,               !- Cooling Design Air Flow Method
@@ -9968,7 +9829,7 @@ Sizing:Zone,
     autosize;                !- Dedicated Outdoor Air High Setpoint Temperature for Design {C}
 
 Sizing:Zone,
-    Core_Mid4,               !- Zone or ZoneList Name
+    Core_Mid4,                !- Zone or ZoneList Name
     SupplyAirTemperature,    !- Zone Cooling Design Supply Air Temperature Input Method
     13.5,                    !- Zone Cooling Design Supply Air Temperature {C}
     ,                        !- Zone Cooling Design Supply Air Temperature Difference {deltaC}
@@ -9977,7 +9838,7 @@ Sizing:Zone,
     ,                        !- Zone Heating Design Supply Air Temperature Difference {deltaC}
     0.0085,                  !- Zone Cooling Design Supply Air Humidity Ratio {kgWater/kgDryAir}
     0.008,                   !- Zone Heating Design Supply Air Humidity Ratio {kgWater/kgDryAir}
-    SZ_DSOA_Core_Mid4,       !- Design Specification Outdoor Air Object Name
+    SZ_DSOA_Core_Mid4,        !- Design Specification Outdoor Air Object Name
     0,                       !- Zone Heating Sizing Factor
     1.2,                     !- Zone Cooling Sizing Factor
     DesignDay,               !- Cooling Design Air Flow Method
@@ -10379,7 +10240,7 @@ Sizing:Zone,
 Sizing:System,
     VAV_Bot,                 !- AirLoop Name
     Total,                   !- Type of Load to Size On
-    5.8,                     !- Design Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Design Outdoor Air Flow Rate {m3/s}
     0.25,                    !- Central Heating Maximum System Air Flow Ratio
     7,                       !- Preheat Design Temperature {C}
     0.008,                   !- Preheat Design Humidity Ratio {kgWater/kgDryAir}
@@ -10406,11 +10267,11 @@ Sizing:System,
     ZoneSum,                 !- System Outdoor Air Method
     1,                       !- Zone Maximum Outdoor Air Fraction {dimensionless}
     CoolingDesignCapacity,   !- Cooling Design Capacity Method
-    148097.28,               !- Cooling Design Capacity {W}
+    autosize,                !- Cooling Design Capacity {W}
     ,                        !- Cooling Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Cooling Design Capacity
     HeatingDesignCapacity,   !- Heating Design Capacity Method
-    0,                       !- Heating Design Capacity {W}
+    autosize,                !- Heating Design Capacity {W}
     ,                        !- Heating Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Heating Design Capacity
     OnOff;                   !- Central Cooling Capacity Control Method
@@ -10418,7 +10279,7 @@ Sizing:System,
 Sizing:System,
     VAV_Mid,                 !- AirLoop Name
     Total,                   !- Type of Load to Size On
-    77.2,                    !- Design Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Design Outdoor Air Flow Rate {m3/s}
     0.25,                    !- Central Heating Maximum System Air Flow Ratio
     7,                       !- Preheat Design Temperature {C}
     0.008,                   !- Preheat Design Humidity Ratio {kgWater/kgDryAir}
@@ -10445,11 +10306,11 @@ Sizing:System,
     ZoneSum,                 !- System Outdoor Air Method
     1,                       !- Zone Maximum Outdoor Air Fraction {dimensionless}
     CoolingDesignCapacity,   !- Cooling Design Capacity Method
-    2042497.83,              !- Cooling Design Capacity {W}
+    autosize,                !- Cooling Design Capacity {W}
     ,                        !- Cooling Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Cooling Design Capacity
     HeatingDesignCapacity,   !- Heating Design Capacity Method
-    0,                       !- Heating Design Capacity {W}
+    autosize,                !- Heating Design Capacity {W}
     ,                        !- Heating Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Heating Design Capacity
     OnOff;                   !- Central Cooling Capacity Control Method
@@ -10457,7 +10318,7 @@ Sizing:System,
 Sizing:System,
     VAV_Top,                 !- AirLoop Name
     Total,                   !- Type of Load to Size On
-    5.42,                    !- Design Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Design Outdoor Air Flow Rate {m3/s}
     0.25,                    !- Central Heating Maximum System Air Flow Ratio
     7,                       !- Preheat Design Temperature {C}
     0.008,                   !- Preheat Design Humidity Ratio {kgWater/kgDryAir}
@@ -10484,11 +10345,11 @@ Sizing:System,
     ZoneSum,                 !- System Outdoor Air Method
     1,                       !- Zone Maximum Outdoor Air Fraction {dimensionless}
     CoolingDesignCapacity,   !- Cooling Design Capacity Method
-    141196.35,               !- Cooling Design Capacity {W}
+    autosize,                !- Cooling Design Capacity {W}
     ,                        !- Cooling Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Cooling Design Capacity
     HeatingDesignCapacity,   !- Heating Design Capacity Method
-    0,                       !- Heating Design Capacity {W}
+    autosize,                !- Heating Design Capacity {W}
     ,                        !- Heating Design Capacity Per Floor Area {W/m2}
     ,                        !- Fraction of Autosized Heating Design Capacity
     OnOff;                   !- Central Cooling Capacity Control Method
@@ -10519,32 +10380,32 @@ ZoneControl:Thermostat,
     Core_Bot_SPSched;        !- Control 1 Name
 
 ZoneControl:Thermostat,
-    Core_Mid1_Thermostat,    !- Name
-    Core_Mid1,               !- Zone or ZoneList Name
+    Core_Mid1_Thermostat,     !- Name
+    Core_Mid1,                !- Zone or ZoneList Name
     Sch_Zone_Thermostat_Control_Type,  !- Control Type Schedule Name
     ThermostatSetpoint:SingleCooling,  !- Control 1 Object Type
-    Core_Mid1_SPSched;       !- Control 1 Name
+    Core_Mid1_SPSched;        !- Control 1 Name
 
 ZoneControl:Thermostat,
-    Core_Mid2_Thermostat,    !- Name
-    Core_Mid2,               !- Zone or ZoneList Name
+    Core_Mid2_Thermostat,     !- Name
+    Core_Mid2,                !- Zone or ZoneList Name
     Sch_Zone_Thermostat_Control_Type,  !- Control Type Schedule Name
     ThermostatSetpoint:SingleCooling,  !- Control 1 Object Type
-    Core_Mid2_SPSched;       !- Control 1 Name
+    Core_Mid2_SPSched;        !- Control 1 Name
 
 ZoneControl:Thermostat,
-    Core_Mid3_Thermostat,    !- Name
-    Core_Mid3,               !- Zone or ZoneList Name
+    Core_Mid3_Thermostat,     !- Name
+    Core_Mid3,                !- Zone or ZoneList Name
     Sch_Zone_Thermostat_Control_Type,  !- Control Type Schedule Name
     ThermostatSetpoint:SingleCooling,  !- Control 1 Object Type
-    Core_Mid3_SPSched;       !- Control 1 Name
+    Core_Mid3_SPSched;        !- Control 1 Name
 
 ZoneControl:Thermostat,
-    Core_Mid4_Thermostat,    !- Name
-    Core_Mid4,               !- Zone or ZoneList Name
+    Core_Mid4_Thermostat,     !- Name
+    Core_Mid4,                !- Zone or ZoneList Name
     Sch_Zone_Thermostat_Control_Type,  !- Control Type Schedule Name
     ThermostatSetpoint:SingleCooling,  !- Control 1 Object Type
-    Core_Mid4_SPSched;       !- Control 1 Name
+    Core_Mid4_SPSched;        !- Control 1 Name
 
 ZoneControl:Thermostat,
     Core_Top_Thermostat,     !- Name
@@ -10642,75 +10503,75 @@ ZoneControl:Thermostat,
 
 ThermostatSetpoint:SingleCooling,
     Core_Bot_SPSched,        !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
-    Core_Mid1_SPSched,       !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Core_Mid1_SPSched,        !- Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
-    Core_Mid2_SPSched,       !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Core_Mid2_SPSched,        !- Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
-    Core_Mid3_SPSched,       !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Core_Mid3_SPSched,        !- Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
-    Core_Mid4_SPSched,       !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Core_Mid4_SPSched,        !- Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Core_Top_SPSched,        !- Name
-    sch_setpoint_core;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Wo_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Bot_N_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Bot_E_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Bot_S_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Bot_W_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Mid_N_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Mid_E_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Mid_S_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Mid_W_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Top_N_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Top_E_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Top_S_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 ThermostatSetpoint:SingleCooling,
     Zone_Top_W_SPSched,      !- Name
-    sch_setpoint_peri;       !- Setpoint Temperature Schedule Name
+    Sch_Zone_Cooling_Setpoint_Solar;  !- Setpoint Temperature Schedule Name
 
 
 !-   ===========  ALL OBJECTS IN CLASS: AIRTERMINAL:SINGLEDUCT:VAV:NOREHEAT ===========
@@ -10720,7 +10581,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Bot_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Bot_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    2.13,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10732,7 +10593,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Mid1_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Mid1_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    6.74,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10744,7 +10605,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Mid2_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Mid2_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    6.75,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10756,7 +10617,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Mid3_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Mid3_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    6.58,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10768,7 +10629,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Mid4_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Mid4_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    6.66,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10780,7 +10641,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Core_Top_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Core_Top_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    1.91,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10792,7 +10653,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Bot_N_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Bot_N_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    1.1,                     !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10804,7 +10665,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Bot_E_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Bot_E_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    0.884395,                !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10816,7 +10677,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Bot_S_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Bot_S_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    1.09,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10828,7 +10689,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Bot_W_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Bot_W_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    0.874818,                !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10840,7 +10701,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Mid_N_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Mid_N_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    15.15,                   !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10852,7 +10713,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Mid_E_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Mid_E_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    11.82,                   !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10864,7 +10725,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Mid_S_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Mid_S_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    16.72,                   !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10876,7 +10737,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Mid_W_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Mid_W_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    11.55,                   !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10888,7 +10749,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Top_N_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Top_N_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    1.03,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10900,7 +10761,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Top_E_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Top_E_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    0.82228,                 !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10912,7 +10773,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Top_S_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Top_S_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    1.14,                    !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10924,7 +10785,7 @@ AirTerminal:SingleDuct:VAV:NoReheat,
     Sch_Always_On,           !- Availability Schedule Name
     Zone_Top_W_VAV_Box_Outlet_Node,  !- Air Outlet Node Name
     Zone_Top_W_VAV_Box_Inlet_Node,  !- Air Inlet Node Name
-    0.812592,                !- Maximum Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Air Flow Rate {m3/s}
     Constant,                !- Zone Minimum Air Flow Input Method
     0.2,                     !- Constant Minimum Air Flow Fraction
     ,                        !- Fixed Minimum Air Flow Rate {m3/s}
@@ -10941,25 +10802,25 @@ ZoneHVAC:AirDistributionUnit,
     Core_Bot_VAV_Box_Component;  !- Air Terminal Name
 
 ZoneHVAC:AirDistributionUnit,
-    Core_Mid1_VAV_Box,       !- Name
+    Core_Mid1_VAV_Box,        !- Name
     Core_Mid1_VAV_Box_Outlet_Node,  !- Air Distribution Unit Outlet Node Name
     AirTerminal:SingleDuct:VAV:NoReheat,  !- Air Terminal Object Type
     Core_Mid1_VAV_Box_Component;  !- Air Terminal Name
 
 ZoneHVAC:AirDistributionUnit,
-    Core_Mid2_VAV_Box,       !- Name
+    Core_Mid2_VAV_Box,        !- Name
     Core_Mid2_VAV_Box_Outlet_Node,  !- Air Distribution Unit Outlet Node Name
     AirTerminal:SingleDuct:VAV:NoReheat,  !- Air Terminal Object Type
     Core_Mid2_VAV_Box_Component;  !- Air Terminal Name
 
 ZoneHVAC:AirDistributionUnit,
-    Core_Mid3_VAV_Box,       !- Name
+    Core_Mid3_VAV_Box,        !- Name
     Core_Mid3_VAV_Box_Outlet_Node,  !- Air Distribution Unit Outlet Node Name
     AirTerminal:SingleDuct:VAV:NoReheat,  !- Air Terminal Object Type
     Core_Mid3_VAV_Box_Component;  !- Air Terminal Name
 
 ZoneHVAC:AirDistributionUnit,
-    Core_Mid4_VAV_Box,       !- Name
+    Core_Mid4_VAV_Box,        !- Name
     Core_Mid4_VAV_Box_Outlet_Node,  !- Air Distribution Unit Outlet Node Name
     AirTerminal:SingleDuct:VAV:NoReheat,  !- Air Terminal Object Type
     Core_Mid4_VAV_Box_Component;  !- Air Terminal Name
@@ -11056,40 +10917,40 @@ ZoneHVAC:EquipmentList,
     ;                        !- Zone Equipment 1 Sequential Heating Fraction Schedule Name
 
 ZoneHVAC:EquipmentList,
-    Core_Mid1_Equipment,     !- Name
+    Core_Mid1_Equipment,      !- Name
     SequentialLoad,          !- Load Distribution Scheme
     ZoneHVAC:AirDistributionUnit,  !- Zone Equipment 1 Object Type
-    Core_Mid1_VAV_Box,       !- Zone Equipment 1 Name
+    Core_Mid1_VAV_Box,        !- Zone Equipment 1 Name
     1,                       !- Zone Equipment 1 Cooling Sequence
     1,                       !- Zone Equipment 1 Heating or No-Load Sequence
     ,                        !- Zone Equipment 1 Sequential Cooling Fraction Schedule Name
     ;                        !- Zone Equipment 1 Sequential Heating Fraction Schedule Name
 
 ZoneHVAC:EquipmentList,
-    Core_Mid2_Equipment,     !- Name
+    Core_Mid2_Equipment,      !- Name
     SequentialLoad,          !- Load Distribution Scheme
     ZoneHVAC:AirDistributionUnit,  !- Zone Equipment 1 Object Type
-    Core_Mid2_VAV_Box,       !- Zone Equipment 1 Name
+    Core_Mid2_VAV_Box,        !- Zone Equipment 1 Name
     1,                       !- Zone Equipment 1 Cooling Sequence
     1,                       !- Zone Equipment 1 Heating or No-Load Sequence
     ,                        !- Zone Equipment 1 Sequential Cooling Fraction Schedule Name
     ;                        !- Zone Equipment 1 Sequential Heating Fraction Schedule Name
 
 ZoneHVAC:EquipmentList,
-    Core_Mid3_Equipment,     !- Name
+    Core_Mid3_Equipment,      !- Name
     SequentialLoad,          !- Load Distribution Scheme
     ZoneHVAC:AirDistributionUnit,  !- Zone Equipment 1 Object Type
-    Core_Mid3_VAV_Box,       !- Zone Equipment 1 Name
+    Core_Mid3_VAV_Box,        !- Zone Equipment 1 Name
     1,                       !- Zone Equipment 1 Cooling Sequence
     1,                       !- Zone Equipment 1 Heating or No-Load Sequence
     ,                        !- Zone Equipment 1 Sequential Cooling Fraction Schedule Name
     ;                        !- Zone Equipment 1 Sequential Heating Fraction Schedule Name
 
 ZoneHVAC:EquipmentList,
-    Core_Mid4_Equipment,     !- Name
+    Core_Mid4_Equipment,      !- Name
     SequentialLoad,          !- Load Distribution Scheme
     ZoneHVAC:AirDistributionUnit,  !- Zone Equipment 1 Object Type
-    Core_Mid4_VAV_Box,       !- Zone Equipment 1 Name
+    Core_Mid4_VAV_Box,        !- Zone Equipment 1 Name
     1,                       !- Zone Equipment 1 Cooling Sequence
     1,                       !- Zone Equipment 1 Heating or No-Load Sequence
     ,                        !- Zone Equipment 1 Sequential Cooling Fraction Schedule Name
@@ -11267,36 +11128,36 @@ ZoneHVAC:EquipmentConnections,
     Core_Bot_Return_Air_Node;!- Zone Return Air Node or NodeList Name
 
 ZoneHVAC:EquipmentConnections,
-    Core_Mid1,               !- Zone Name
-    Core_Mid1_Equipment,     !- Zone Conditioning Equipment List Name
-    Core_Mid1_Inlet_Nodes,   !- Zone Air Inlet Node or NodeList Name
+    Core_Mid1,                !- Zone Name
+    Core_Mid1_Equipment,      !- Zone Conditioning Equipment List Name
+    Core_Mid1_Inlet_Nodes,    !- Zone Air Inlet Node or NodeList Name
     ,                        !- Zone Air Exhaust Node or NodeList Name
-    Core_Mid1_Air_Node,      !- Zone Air Node Name
-    Core_Mid1_Return_Air_Node;  !- Zone Return Air Node or NodeList Name
+    Core_Mid1_Air_Node,       !- Zone Air Node Name
+    Core_Mid1_Return_Air_Node;!- Zone Return Air Node or NodeList Name
 
 ZoneHVAC:EquipmentConnections,
-    Core_Mid2,               !- Zone Name
-    Core_Mid2_Equipment,     !- Zone Conditioning Equipment List Name
-    Core_Mid2_Inlet_Nodes,   !- Zone Air Inlet Node or NodeList Name
+    Core_Mid2,                !- Zone Name
+    Core_Mid2_Equipment,      !- Zone Conditioning Equipment List Name
+    Core_Mid2_Inlet_Nodes,    !- Zone Air Inlet Node or NodeList Name
     ,                        !- Zone Air Exhaust Node or NodeList Name
-    Core_Mid2_Air_Node,      !- Zone Air Node Name
-    Core_Mid2_Return_Air_Node;  !- Zone Return Air Node or NodeList Name
+    Core_Mid2_Air_Node,       !- Zone Air Node Name
+    Core_Mid2_Return_Air_Node;!- Zone Return Air Node or NodeList Name
 
 ZoneHVAC:EquipmentConnections,
-    Core_Mid3,               !- Zone Name
-    Core_Mid3_Equipment,     !- Zone Conditioning Equipment List Name
-    Core_Mid3_Inlet_Nodes,   !- Zone Air Inlet Node or NodeList Name
+    Core_Mid3,                !- Zone Name
+    Core_Mid3_Equipment,      !- Zone Conditioning Equipment List Name
+    Core_Mid3_Inlet_Nodes,    !- Zone Air Inlet Node or NodeList Name
     ,                        !- Zone Air Exhaust Node or NodeList Name
-    Core_Mid3_Air_Node,      !- Zone Air Node Name
-    Core_Mid3_Return_Air_Node;  !- Zone Return Air Node or NodeList Name
+    Core_Mid3_Air_Node,       !- Zone Air Node Name
+    Core_Mid3_Return_Air_Node;!- Zone Return Air Node or NodeList Name
 
 ZoneHVAC:EquipmentConnections,
-    Core_Mid4,               !- Zone Name
-    Core_Mid4_Equipment,     !- Zone Conditioning Equipment List Name
-    Core_Mid4_Inlet_Nodes,   !- Zone Air Inlet Node or NodeList Name
+    Core_Mid4,                !- Zone Name
+    Core_Mid4_Equipment,      !- Zone Conditioning Equipment List Name
+    Core_Mid4_Inlet_Nodes,    !- Zone Air Inlet Node or NodeList Name
     ,                        !- Zone Air Exhaust Node or NodeList Name
-    Core_Mid4_Air_Node,      !- Zone Air Node Name
-    Core_Mid4_Return_Air_Node;  !- Zone Return Air Node or NodeList Name
+    Core_Mid4_Air_Node,       !- Zone Air Node Name
+    Core_Mid4_Return_Air_Node;!- Zone Return Air Node or NodeList Name
 
 ZoneHVAC:EquipmentConnections,
     Core_Top,                !- Zone Name
@@ -11434,7 +11295,7 @@ Fan:VariableVolume,
     Sch_ACMV,                !- Availability Schedule Name
     0.61,                    !- Fan Total Efficiency
     1000,                    !- Pressure Rise {Pa}
-    5.8,                     !- Maximum Flow Rate {m3/s}
+    Autosize,                !- Maximum Flow Rate {m3/s}
     Fraction,                !- Fan Power Minimum Flow Rate Input Method
     0.5,                     !- Fan Power Minimum Flow Fraction
     ,                        !- Fan Power Minimum Air Flow Rate {m3/s}
@@ -11454,7 +11315,7 @@ Fan:VariableVolume,
     Sch_ACMV,                !- Availability Schedule Name
     0.61,                    !- Fan Total Efficiency
     1000,                    !- Pressure Rise {Pa}
-    77.2,                    !- Maximum Flow Rate {m3/s}
+    Autosize,                !- Maximum Flow Rate {m3/s}
     Fraction,                !- Fan Power Minimum Flow Rate Input Method
     0.5,                     !- Fan Power Minimum Flow Fraction
     ,                        !- Fan Power Minimum Air Flow Rate {m3/s}
@@ -11474,7 +11335,7 @@ Fan:VariableVolume,
     Sch_ACMV,                !- Availability Schedule Name
     0.61,                    !- Fan Total Efficiency
     1000,                    !- Pressure Rise {Pa}
-    5.42,                    !- Maximum Flow Rate {m3/s}
+    Autosize,                !- Maximum Flow Rate {m3/s}
     Fraction,                !- Fan Power Minimum Flow Rate Input Method
     0.5,                     !- Fan Power Minimum Flow Fraction
     ,                        !- Fan Power Minimum Air Flow Rate {m3/s}
@@ -11540,13 +11401,13 @@ Fan:ZoneExhaust,
 Coil:Cooling:Water,
     VAV_Bot_Coil,            !- Name
     Sch_Always_On,           !- Availability Schedule Name
-    0.006415,                !- Design Water Flow Rate {m3/s}
-    5.8,                     !- Design Air Flow Rate {m3/s}
-    6.7,                     !- Design Inlet Water Temperature {C}
-    26.14,                   !- Design Inlet Air Temperature {C}
-    11.47,                   !- Design Outlet Air Temperature {C}
-    0.010472,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
-    0.008,                   !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Water Flow Rate {m3/s}
+    Autosize,                !- Design Air Flow Rate {m3/s}
+    Autosize,                !- Design Inlet Water Temperature {C}
+    Autosize,                !- Design Inlet Air Temperature {C}
+    Autosize,                !- Design Outlet Air Temperature {C}
+    Autosize,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
     VAV_Bot_Coil_W_Inlet_Node,  !- Water Inlet Node Name
     VAV_Bot_Coil_W_Outlet_Node,  !- Water Outlet Node Name
     VAV_Bot_Coil_Air_Inlet_Node,  !- Air Inlet Node Name
@@ -11557,13 +11418,13 @@ Coil:Cooling:Water,
 Coil:Cooling:Water,
     VAV_Mid_Coil,            !- Name
     Sch_Always_On,           !- Availability Schedule Name
-    0.088472,                !- Design Water Flow Rate {m3/s}
-    77.2,                    !- Design Air Flow Rate {m3/s}
-    6.7,                     !- Design Inlet Water Temperature {C}
-    26.21,                   !- Design Inlet Air Temperature {C}
-    11.47,                   !- Design Outlet Air Temperature {C}
-    0.010736,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
-    0.008,                   !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Water Flow Rate {m3/s}
+    Autosize,                !- Design Air Flow Rate {m3/s}
+    Autosize,                !- Design Inlet Water Temperature {C}
+    Autosize,                !- Design Inlet Air Temperature {C}
+    Autosize,                !- Design Outlet Air Temperature {C}
+    Autosize,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
     VAV_Mid_Coil_W_Inlet_Node,  !- Water Inlet Node Name
     VAV_Mid_Coil_W_Outlet_Node,  !- Water Outlet Node Name
     VAV_Mid_Coil_Air_Inlet_Node,  !- Air Inlet Node Name
@@ -11574,13 +11435,13 @@ Coil:Cooling:Water,
 Coil:Cooling:Water,
     VAV_Top_Coil,            !- Name
     Sch_Always_On,           !- Availability Schedule Name
-    0.006116,                !- Design Water Flow Rate {m3/s}
-    5.42,                    !- Design Air Flow Rate {m3/s}
-    6.7,                     !- Design Inlet Water Temperature {C}
-    26.18,                   !- Design Inlet Air Temperature {C}
-    11.47,                   !- Design Outlet Air Temperature {C}
-    0.010615,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
-    0.008,                   !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Water Flow Rate {m3/s}
+    Autosize,                !- Design Air Flow Rate {m3/s}
+    Autosize,                !- Design Inlet Water Temperature {C}
+    Autosize,                !- Design Inlet Air Temperature {C}
+    Autosize,                !- Design Outlet Air Temperature {C}
+    Autosize,                !- Design Inlet Air Humidity Ratio {kgWater/kgDryAir}
+    Autosize,                !- Design Outlet Air Humidity Ratio {kgWater/kgDryAir}
     VAV_Top_Coil_W_Inlet_Node,  !- Water Inlet Node Name
     VAV_Top_Coil_W_Outlet_Node,  !- Water Outlet Node Name
     VAV_Top_Coil_Air_Inlet_Node,  !- Air Inlet Node Name
@@ -11599,7 +11460,7 @@ Controller:WaterCoil,
     VAV_Bot_Coil_Fan_Air_Node,  !- Sensor Node Name
     VAV_Bot_Coil_W_Inlet_Node,  !- Actuator Node Name
     ,                        !- Controller Convergence Tolerance {deltaC}
-    0.006415,                !- Maximum Actuated Flow {m3/s}
+    Autosize,                !- Maximum Actuated Flow {m3/s}
     0;                       !- Minimum Actuated Flow {m3/s}
 
 Controller:WaterCoil,
@@ -11610,7 +11471,7 @@ Controller:WaterCoil,
     VAV_Mid_Coil_Fan_Air_Node,  !- Sensor Node Name
     VAV_Mid_Coil_W_Inlet_Node,  !- Actuator Node Name
     ,                        !- Controller Convergence Tolerance {deltaC}
-    0.088472,                !- Maximum Actuated Flow {m3/s}
+    Autosize,                !- Maximum Actuated Flow {m3/s}
     0;                       !- Minimum Actuated Flow {m3/s}
 
 Controller:WaterCoil,
@@ -11621,7 +11482,7 @@ Controller:WaterCoil,
     VAV_Top_Coil_Fan_Air_Node,  !- Sensor Node Name
     VAV_Top_Coil_W_Inlet_Node,  !- Actuator Node Name
     ,                        !- Controller Convergence Tolerance {deltaC}
-    0.006116,                !- Maximum Actuated Flow {m3/s}
+    Autosize,                !- Maximum Actuated Flow {m3/s}
     0;                       !- Minimum Actuated Flow {m3/s}
 
 
@@ -11634,7 +11495,7 @@ Controller:OutdoorAir,
     VAV_Bot_Coil_Air_Inlet_Node,  !- Mixed Air Node Name
     VAV_Bot_OAInlet_Node,    !- Actuator Node Name
     0,                       !- Minimum Outdoor Air Flow Rate {m3/s}
-    5.8,                     !- Maximum Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Outdoor Air Flow Rate {m3/s}
     NoEconomizer,            !- Economizer Control Type
     Modulateflow,            !- Economizer Control Action Type
     ,                        !- Economizer Maximum Limit Dry-Bulb Temperature {C}
@@ -11656,7 +11517,7 @@ Controller:OutdoorAir,
     VAV_Mid_Coil_Air_Inlet_Node,  !- Mixed Air Node Name
     VAV_Mid_OAInlet_Node,    !- Actuator Node Name
     0,                       !- Minimum Outdoor Air Flow Rate {m3/s}
-    77.2,                    !- Maximum Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Outdoor Air Flow Rate {m3/s}
     NoEconomizer,            !- Economizer Control Type
     Modulateflow,            !- Economizer Control Action Type
     ,                        !- Economizer Maximum Limit Dry-Bulb Temperature {C}
@@ -11678,7 +11539,7 @@ Controller:OutdoorAir,
     VAV_Top_Coil_Air_Inlet_Node,  !- Mixed Air Node Name
     VAV_Top_OAInlet_Node,    !- Actuator Node Name
     0,                       !- Minimum Outdoor Air Flow Rate {m3/s}
-    5.42,                    !- Maximum Outdoor Air Flow Rate {m3/s}
+    Autosize,                !- Maximum Outdoor Air Flow Rate {m3/s}
     NoEconomizer,            !- Economizer Control Type
     Modulateflow,            !- Economizer Control Action Type
     ,                        !- Economizer Maximum Limit Dry-Bulb Temperature {C}
@@ -11746,30 +11607,30 @@ Controller:MechanicalVentilation,
     Yes,                     !- Demand Controlled Ventilation
     VentilationRateProcedure,!- System Outdoor Air Method
     ,                        !- Zone Maximum Outdoor Air Fraction {dimensionless}
-    Core_Mid1,               !- Zone or ZoneList 1 Name
-    CM_DSOA_Core_Mid1,       !- Design Specification Outdoor Air Object Name 1
-    CM_DSZAD_Core_Mid1,      !- Design Specification Zone Air Distribution Object Name 1
-    Core_Mid2,               !- Zone or ZoneList 2 Name
-    CM_DSOA_Core_Mid2,       !- Design Specification Outdoor Air Object Name 2
-    CM_DSZAD_Core_Mid2,      !- Design Specification Zone Air Distribution Object Name 2
-    Core_Mid3,               !- Zone or ZoneList 3 Name
-    CM_DSOA_Core_Mid3,       !- Design Specification Outdoor Air Object Name 3
-    CM_DSZAD_Core_Mid3,      !- Design Specification Zone Air Distribution Object Name 3
-    Core_Mid4,               !- Zone or ZoneList 4 Name
-    CM_DSOA_Core_Mid4,       !- Design Specification Outdoor Air Object Name 4
-    CM_DSZAD_Core_Mid4,      !- Design Specification Zone Air Distribution Object Name 4
-    Zone_Mid_S,              !- Zone or ZoneList 5 Name
-    CM_DSOA_Zone_Mid_S,      !- Design Specification Outdoor Air Object Name 5
-    CM_DSZAD_Zone_Mid_S,     !- Design Specification Zone Air Distribution Object Name 5
-    Zone_Mid_E,              !- Zone or ZoneList 6 Name
-    CM_DSOA_Zone_Mid_E,      !- Design Specification Outdoor Air Object Name 6
-    CM_DSZAD_Zone_Mid_E,     !- Design Specification Zone Air Distribution Object Name 6
-    Zone_Mid_N,              !- Zone or ZoneList 7 Name
-    CM_DSOA_Zone_Mid_N,      !- Design Specification Outdoor Air Object Name 7
-    CM_DSZAD_Zone_Mid_N,     !- Design Specification Zone Air Distribution Object Name 7
-    Zone_Mid_W,              !- Zone or ZoneList 8 Name
-    CM_DSOA_Zone_Mid_W,      !- Design Specification Outdoor Air Object Name 8
-    CM_DSZAD_Zone_Mid_W;     !- Design Specification Zone Air Distribution Object Name 8
+    Core_Mid1,                !- Zone or ZoneList 1 Name
+    CM_DSOA_Core_Mid1,        !- Design Specification Outdoor Air Object Name 1
+    CM_DSZAD_Core_Mid1,       !- Design Specification Zone Air Distribution Object Name 1
+    Core_Mid2,                !- Zone or ZoneList 1 Name
+    CM_DSOA_Core_Mid2,        !- Design Specification Outdoor Air Object Name 1
+    CM_DSZAD_Core_Mid2,       !- Design Specification Zone Air Distribution Object Name 1
+    Core_Mid3,                !- Zone or ZoneList 1 Name
+    CM_DSOA_Core_Mid3,        !- Design Specification Outdoor Air Object Name 1
+    CM_DSZAD_Core_Mid3,       !- Design Specification Zone Air Distribution Object Name 1
+    Core_Mid4,                !- Zone or ZoneList 1 Name
+    CM_DSOA_Core_Mid4,        !- Design Specification Outdoor Air Object Name 1
+    CM_DSZAD_Core_Mid4,       !- Design Specification Zone Air Distribution Object Name 1
+    Zone_Mid_S,              !- Zone or ZoneList 2 Name
+    CM_DSOA_Zone_Mid_S,      !- Design Specification Outdoor Air Object Name 2
+    CM_DSZAD_Zone_Mid_S,     !- Design Specification Zone Air Distribution Object Name 2
+    Zone_Mid_E,              !- Zone or ZoneList 3 Name
+    CM_DSOA_Zone_Mid_E,      !- Design Specification Outdoor Air Object Name 3
+    CM_DSZAD_Zone_Mid_E,     !- Design Specification Zone Air Distribution Object Name 3
+    Zone_Mid_N,              !- Zone or ZoneList 4 Name
+    CM_DSOA_Zone_Mid_N,      !- Design Specification Outdoor Air Object Name 4
+    CM_DSZAD_Zone_Mid_N,     !- Design Specification Zone Air Distribution Object Name 4
+    Zone_Mid_W,              !- Zone or ZoneList 5 Name
+    CM_DSOA_Zone_Mid_W,      !- Design Specification Outdoor Air Object Name 5
+    CM_DSZAD_Zone_Mid_W;     !- Design Specification Zone Air Distribution Object Name 5
 
 
 !-   ===========  ALL OBJECTS IN CLASS: AIRLOOPHVAC:CONTROLLERLIST ===========
@@ -11814,7 +11675,7 @@ AirLoopHVAC,
     VAV_Bot,                 !- Name
     VAV_Bot_Controllers,     !- Controller List Name
     ,                        !- Availability Manager List Name
-    5.8,                     !- Design Supply Air Flow Rate {m3/s}
+    Autosize,                !- Design Supply Air Flow Rate {m3/s}
     VAV_Bot_Air_Loop_Branches,  !- Branch List Name
     ,                        !- Connector List Name
     VAV_Bot_Supply_Equip_Inlet_Node,  !- Supply Side Inlet Node Name
@@ -11826,7 +11687,7 @@ AirLoopHVAC,
     VAV_Mid,                 !- Name
     VAV_Mid_Controllers,     !- Controller List Name
     ,                        !- Availability Manager List Name
-    77.2,                    !- Design Supply Air Flow Rate {m3/s}
+    Autosize,                !- Design Supply Air Flow Rate {m3/s}
     VAV_Mid_Air_Loop_Branches,  !- Branch List Name
     ,                        !- Connector List Name
     VAV_Mid_Supply_Equip_Inlet_Node,  !- Supply Side Inlet Node Name
@@ -11838,7 +11699,7 @@ AirLoopHVAC,
     VAV_Top,                 !- Name
     VAV_Top_Controllers,     !- Controller List Name
     ,                        !- Availability Manager List Name
-    5.42,                    !- Design Supply Air Flow Rate {m3/s}
+    Autosize,                !- Design Supply Air Flow Rate {m3/s}
     VAV_Top_Air_Loop_Branches,  !- Branch List Name
     ,                        !- Connector List Name
     VAV_Top_Supply_Equip_Inlet_Node,  !- Supply Side Inlet Node Name
@@ -11925,13 +11786,13 @@ AirLoopHVAC:ZoneSplitter,
     VAV_Mid_Supply_Air_Splitter,  !- Name
     VAV_Mid_Zone_Equip_Inlet_Node,  !- Inlet Node Name
     Core_Mid1_VAV_Box_Inlet_Node,  !- Outlet 1 Node Name
-    Core_Mid2_VAV_Box_Inlet_Node,  !- Outlet 2 Node Name
-    Core_Mid3_VAV_Box_Inlet_Node,  !- Outlet 3 Node Name
-    Core_Mid4_VAV_Box_Inlet_Node,  !- Outlet 4 Node Name
-    Zone_Mid_N_VAV_Box_Inlet_Node,  !- Outlet 5 Node Name
-    Zone_Mid_E_VAV_Box_Inlet_Node,  !- Outlet 6 Node Name
-    Zone_Mid_S_VAV_Box_Inlet_Node,  !- Outlet 7 Node Name
-    Zone_Mid_W_VAV_Box_Inlet_Node;  !- Outlet 8 Node Name
+    Core_Mid2_VAV_Box_Inlet_Node,  !- Outlet 1 Node Name
+    Core_Mid3_VAV_Box_Inlet_Node,  !- Outlet 1 Node Name
+    Core_Mid4_VAV_Box_Inlet_Node,  !- Outlet 1 Node Name
+    Zone_Mid_N_VAV_Box_Inlet_Node,  !- Outlet 2 Node Name
+    Zone_Mid_E_VAV_Box_Inlet_Node,  !- Outlet 3 Node Name
+    Zone_Mid_S_VAV_Box_Inlet_Node,  !- Outlet 4 Node Name
+    Zone_Mid_W_VAV_Box_Inlet_Node;  !- Outlet 5 Node Name
 
 AirLoopHVAC:ZoneSplitter,
     VAV_Top_Supply_Air_Splitter,  !- Name
@@ -12006,10 +11867,10 @@ AirLoopHVAC:ReturnPlenum,
     Zone_Mid_E_Return_Air_Node,  !- Inlet 2 Node Name
     Zone_Mid_N_Return_Air_Node,  !- Inlet 3 Node Name
     Zone_Mid_W_Return_Air_Node,  !- Inlet 4 Node Name
-    Core_Mid1_Return_Air_Node,  !- Inlet 5 Node Name
-    Core_Mid2_Return_Air_Node,  !- Inlet 6 Node Name
-    Core_Mid3_Return_Air_Node,  !- Inlet 7 Node Name
-    Core_Mid4_Return_Air_Node;  !- Inlet 8 Node Name
+    Core_Mid1_Return_Air_Node,!- Inlet 5 Node Name
+    Core_Mid2_Return_Air_Node,!- Inlet 5 Node Name
+    Core_Mid3_Return_Air_Node,!- Inlet 5 Node Name
+    Core_Mid4_Return_Air_Node;!- Inlet 5 Node Name
 
 AirLoopHVAC:ReturnPlenum,
     Topfloor_Return_Plenum,  !- Name
@@ -12409,19 +12270,19 @@ NodeList,
     Core_Bot_VAV_Box_Outlet_Node;  !- Node 1 Name
 
 NodeList,
-    Core_Mid1_Inlet_Nodes,   !- Name
+    Core_Mid1_Inlet_Nodes,    !- Name
     Core_Mid1_VAV_Box_Outlet_Node;  !- Node 1 Name
 
 NodeList,
-    Core_Mid2_Inlet_Nodes,   !- Name
+    Core_Mid2_Inlet_Nodes,    !- Name
     Core_Mid2_VAV_Box_Outlet_Node;  !- Node 1 Name
 
 NodeList,
-    Core_Mid3_Inlet_Nodes,   !- Name
+    Core_Mid3_Inlet_Nodes,    !- Name
     Core_Mid3_VAV_Box_Outlet_Node;  !- Node 1 Name
 
 NodeList,
-    Core_Mid4_Inlet_Nodes,   !- Name
+    Core_Mid4_Inlet_Nodes,    !- Name
     Core_Mid4_VAV_Box_Outlet_Node;  !- Node 1 Name
 
 NodeList,
@@ -12566,7 +12427,7 @@ HeaderedPumps:ConstantSpeed,
     2,                       !- Number of Pumps in Bank
     Sequential,              !- Flow Sequencing Control Scheme
     150000,                  !- Design Pump Head {Pa}
-    34424.3,                 !- Design Power Consumption {W}
+    Autosize,                !- Design Power Consumption {W}
     0.926,                   !- Motor Efficiency
     0,                       !- Fraction of Motor Inefficiencies to Fluid Stream
     Intermittent;            !- Pump Control Type
@@ -12582,7 +12443,7 @@ HeaderedPumps:VariableSpeed,
     2,                       !- Number of Pumps in Bank
     Sequential,              !- Flow Sequencing Control Scheme
     2e+05,                   !- Design Pump Head {Pa}
-    33806.54,                !- Design Power Consumption {W}
+    Autosize,                !- Design Power Consumption {W}
     0.932,                   !- Motor Efficiency
     0,                       !- Fraction of Motor Inefficiencies to Fluid Stream
     0.0015303,               !- Coefficient 1 of the Part Load Performance Curve
@@ -12597,12 +12458,12 @@ HeaderedPumps:VariableSpeed,
 
 Chiller:Electric:ReformulatedEIR,
     SGP_Chiller_1,           !- Name
-    2335822.52,              !- Reference Capacity {W}
+    1400000,                 !- Reference Capacity {W}
     6.1,                     !- Reference COP {W/W}
     6.7,                     !- Reference Leaving Chilled Water Temperature {C}
     35,                      !- Reference Leaving Condenser Water Temperature {C}
-    0.101003,                !- Reference Chilled Water Flow Rate {m3/s}
-    0.070264,                !- Reference Condenser Water Flow Rate {m3/s}
+    Autosize,                !- Reference Chilled Water Flow Rate {m3/s}
+    Autosize,                !- Reference Condenser Water Flow Rate {m3/s}
     WC_Cent_2010_Pb_CapFT,   !- Cooling Capacity Function of Temperature Curve Name
     WC_Cent_2010_Pb_EIRFT,   !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
     LeavingCondenserWaterTemperature,  !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Type
@@ -12622,12 +12483,12 @@ Chiller:Electric:ReformulatedEIR,
 
 Chiller:Electric:ReformulatedEIR,
     SGP_Chiller_2,           !- Name
-    2335822.52,              !- Reference Capacity {W}
+    1400000,                 !- Reference Capacity {W}
     6.1,                     !- Reference COP {W/W}
     6.7,                     !- Reference Leaving Chilled Water Temperature {C}
     35,                      !- Reference Leaving Condenser Water Temperature {C}
-    0.101003,                !- Reference Chilled Water Flow Rate {m3/s}
-    0.070264,                !- Reference Condenser Water Flow Rate {m3/s}
+    Autosize,                !- Reference Chilled Water Flow Rate {m3/s}
+    Autosize,                !- Reference Condenser Water Flow Rate {m3/s}
     WC_Cent_2010_Pb_CapFT,   !- Cooling Capacity Function of Temperature Curve Name
     WC_Cent_2010_Pb_EIRFT,   !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
     LeavingCondenserWaterTemperature,  !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Type
@@ -12656,9 +12517,9 @@ CoolingTower:SingleSpeed,
     62.5,                    !- Design Air Flow Rate {m3/s}
     16500,                   !- Design Fan Power {W}
     150000,                  !- Design U-Factor Times Area Value {W/K}
-    7.81,                    !- Free Convection Regime Air Flow Rate {m3/s}
+    AutoCalculate,           !- Free Convection Regime Air Flow Rate {m3/s}
     0.125,                   !- Free Convection Regime Air Flow Rate Sizing Factor
-    15000,                   !- Free Convection Regime U-Factor Times Area Value {W/K}
+    Autosize,                !- Free Convection Regime U-Factor Times Area Value {W/K}
     0.1,                     !- Free Convection U-Factor Times Area Value Sizing Factor
     UFactorTimesAreaAndDesignWaterFlowRate,  !- Performance Input Method
     1.25,                    !- Heat Rejection Capacity and Nominal Capacity Sizing Ratio
@@ -12695,9 +12556,9 @@ CoolingTower:SingleSpeed,
     62.5,                    !- Design Air Flow Rate {m3/s}
     16500,                   !- Design Fan Power {W}
     150000,                  !- Design U-Factor Times Area Value {W/K}
-    7.81,                    !- Free Convection Regime Air Flow Rate {m3/s}
+    AutoCalculate,           !- Free Convection Regime Air Flow Rate {m3/s}
     0.125,                   !- Free Convection Regime Air Flow Rate Sizing Factor
-    15000,                   !- Free Convection Regime U-Factor Times Area Value {W/K}
+    Autosize,                !- Free Convection Regime U-Factor Times Area Value {W/K}
     0.1,                     !- Free Convection U-Factor Times Area Value Sizing Factor
     UFactorTimesAreaAndDesignWaterFlowRate,  !- Performance Input Method
     1.25,                    !- Heat Rejection Capacity and Nominal Capacity Sizing Ratio
@@ -12737,9 +12598,9 @@ PlantLoop,
     ChW_Supply_Outlet_Node,  !- Loop Temperature Setpoint Node Name
     98,                      !- Maximum Loop Temperature {C}
     1,                       !- Minimum Loop Temperature {C}
-    0.101003,                !- Maximum Loop Flow Rate {m3/s}
+    Autosize,                !- Maximum Loop Flow Rate {m3/s}
     0,                       !- Minimum Loop Flow Rate {m3/s}
-    12.12,                   !- Plant Loop Volume {m3}
+    AutoCalculate,           !- Plant Loop Volume {m3}
     ChW_Supply_Inlet_Node,   !- Plant Side Inlet Node Name
     ChW_Supply_Outlet_Node,  !- Plant Side Outlet Node Name
     ChW_Supply_Branches,     !- Plant Side Branch List Name
@@ -12764,9 +12625,9 @@ CondenserLoop,
     CndW_Supply_Outlet_Node, !- Condenser Loop Temperature Setpoint Node Name
     80,                      !- Maximum Loop Temperature {C}
     5,                       !- Minimum Loop Temperature {C}
-    0.191119,                !- Maximum Loop Flow Rate {m3/s}
+    Autosize,                !- Maximum Loop Flow Rate {m3/s}
     0,                       !- Minimum Loop Flow Rate {m3/s}
-    22.93,                   !- Condenser Loop Volume {m3}
+    Autosize,                !- Condenser Loop Volume {m3}
     CndW_Supply_Inlet_Node,  !- Condenser Side Inlet Node Name
     CndW_Supply_Outlet_Node, !- Condenser Side Outlet Node Name
     CndW_Supply_Branches,    !- Condenser Side Branch List Name
@@ -14028,42 +13889,22 @@ OutputControl:Table:Style,
 !-   ===========  ALL OBJECTS IN CLASS: OUTPUT:VARIABLE ===========
 
 Output:Variable,
-    Core_Mid1,               !- Key Value
+    Core_Mid1,                       !- Key Value
     Zone Air Relative Humidity,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    Core_Mid1,               !- Key Value
+    Core_Mid1,                       !- Key Value
     Zone Mean Radiant Temperature,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    Core_Mid1,               !- Key Value
+    Core_Mid1,                       !- Key Value
     Zone Mean Air Temperature,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    Core_Mid1,               !- Key Value
-    Zone People Occupant Count,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_E,              !- Key Value
-    Zone Air Relative Humidity,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_E,              !- Key Value
-    Zone Mean Radiant Temperature,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_E,              !- Key Value
-    Zone Mean Air Temperature,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_E,              !- Key Value
+    Core_Mid1,                       !- Key Value
     Zone People Occupant Count,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 
@@ -14098,12 +13939,12 @@ Output:Variable,
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    VAV_Mid_Fan,             !- Key Value
+    VAV_Mid_Fan,                       !- Key Value
     Fan Electricity Rate,    !- Variable Name
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    VAV_Mid_Fan_Outlet,      !- Key Value
+    VAV_Mid_Fan_Outlet,  !- Key Value
     System Node Temperature, !- Variable Name
     Hourly;                  !- Reporting Frequency
 
@@ -14118,42 +13959,7 @@ Output:Variable,
     Hourly;                  !- Reporting Frequency
 
 Output:Variable,
-    Core_Mid1_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Core_Mid2_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Core_Mid3_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Core_Mid4_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_N_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_E_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_S_VAV_Box_Outlet_Node,  !- Key Value
-    System Node Mass Flow Rate,  !- Variable Name
-    Hourly;                  !- Reporting Frequency
-
-Output:Variable,
-    Zone_Mid_W_VAV_Box_Outlet_Node,  !- Key Value
+    Core_Mid1_VAV_Box_Outlet_Node,      !- Key Value
     System Node Mass Flow Rate,  !- Variable Name
     Hourly;                  !- Reporting Frequency
 

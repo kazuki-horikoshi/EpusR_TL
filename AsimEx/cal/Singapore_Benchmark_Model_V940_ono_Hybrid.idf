@@ -261,10 +261,10 @@ SizingPeriod:DesignDay,
 RunPeriod,
     RUNPERIOD 1,             !- Name
     10,                      !- Begin Month
-    10,                      !- Begin Day of Month
+    11,                      !- Begin Day of Month
     ,                        !- Begin Year
     10,                      !- End Month
-    10,                      !- End Day of Month
+    11,                      !- End Day of Month
     ,                        !- End Year
     Tuesday,                 !- Day of Week for Start Day
     No,                      !- Use Weather File Holidays and Special Days
@@ -796,29 +796,29 @@ Schedule:Compact,
     Until: 7:00,             !- Field 3
     30,                      !- Field 4
     Until: 8:00,             !- Field 5
-    30,                      !- Field 6
+    27,                      !- Field 6
     Until: 9:00,             !- Field 7
-    25.5,                    !- Field 8
+    27,                      !- Field 8
     Until: 10:00,            !- Field 9
-    23.5,                    !- Field 10
+    27,                      !- Field 10
     Until: 11:00,            !- Field 11
-    23,                      !- Field 12
+    27,                      !- Field 12
     Until: 12:00,            !- Field 13
-    23,                      !- Field 14
+    27,                      !- Field 14
     Until: 13:00,            !- Field 15
-    22,                      !- Field 16
+    27,                      !- Field 16
     Until: 14:00,            !- Field 17
-    23,                      !- Field 18
+    27,                      !- Field 18
     Until: 15:00,            !- Field 19
-    22,                      !- Field 20
+    27,                      !- Field 20
     Until: 16:00,            !- Field 21
-    23,                      !- Field 22
+    27,                      !- Field 22
     Until: 17:00,            !- Field 23
-    22,                      !- Field 24
+    27,                      !- Field 24
     Until: 18:00,            !- Field 25
-    22.5,                    !- Field 26
+    27,                      !- Field 26
     Until: 19:00,            !- Field 27
-    30,                      !- Field 28
+    27,                      !- Field 28
     Until: 24:00,            !- Field 29
     30;                      !- Field 30
 
@@ -830,29 +830,29 @@ Schedule:Compact,
     Until: 7:00,             !- Field 3
     30,                      !- Field 4
     Until: 8:00,             !- Field 5
-    29,                      !- Field 6
+    26,                      !- Field 6
     Until: 9:00,             !- Field 7
-    24.5,                    !- Field 8
+    26,                      !- Field 8
     Until: 10:00,            !- Field 9
-    22.5,                    !- Field 10
+    26,                      !- Field 10
     Until: 11:00,            !- Field 11
-    22,                      !- Field 12
+    26,                      !- Field 12
     Until: 12:00,            !- Field 13
-    22,                      !- Field 14
+    26,                      !- Field 14
     Until: 13:00,            !- Field 15
-    21,                      !- Field 16
+    26,                      !- Field 16
     Until: 14:00,            !- Field 17
-    22,                      !- Field 18
+    26,                      !- Field 18
     Until: 15:00,            !- Field 19
-    21,                      !- Field 20
+    26,                      !- Field 20
     Until: 16:00,            !- Field 21
-    22,                      !- Field 22
+    26,                      !- Field 22
     Until: 17:00,            !- Field 23
-    21,                      !- Field 24
+    26,                      !- Field 24
     Until: 18:00,            !- Field 25
-    21.5,                    !- Field 26
+    26,                      !- Field 26
     Until: 19:00,            !- Field 27
-    29,                      !- Field 28
+    26,                      !- Field 28
     Until: 24:00,            !- Field 29
     30;                      !- Field 30
 
@@ -866,25 +866,25 @@ Schedule:Compact,
     Until: 8:00,             !- Field 5
     0,                       !- Field 6
     Until: 9:00,             !- Field 7
-    0.07,                    !- Field 8
+    0.05,                    !- Field 8
     Until: 10:00,            !- Field 9
-    0.12,                    !- Field 10
+    0.14,                    !- Field 10
     Until: 11:00,            !- Field 11
-    0.13,                    !- Field 12
+    0.15,                    !- Field 12
     Until: 12:00,            !- Field 13
-    0.12,                    !- Field 14
+    0.14,                    !- Field 14
     Until: 13:00,            !- Field 15
-    0.06,                    !- Field 16
+    0.02,                    !- Field 16
     Until: 14:00,            !- Field 17
-    0.1,                     !- Field 18
+    0.11,                    !- Field 18
     Until: 15:00,            !- Field 19
-    0.11,                    !- Field 20
+    0.14,                    !- Field 20
     Until: 16:00,            !- Field 21
-    0.13,                    !- Field 22
+    0.14,                    !- Field 22
     Until: 17:00,            !- Field 23
-    0.13,                    !- Field 24
+    0.12,                    !- Field 24
     Until: 18:00,            !- Field 25
-    0.06,                    !- Field 26
+    0.07,                    !- Field 26
     Until: 19:00,            !- Field 27
     0,                       !- Field 28
     Until: 24:00,            !- Field 29
@@ -944,7 +944,7 @@ Schedule:Compact,
     Through: 12/31,          !- Field 1
     For: AllDays,            !- Field 2
     Until: 24:00,            !- Field 3
-    10;                      !- Field 4
+    11;                      !- Field 4
 
 Schedule:Compact,
     case_name1,              !- Name
