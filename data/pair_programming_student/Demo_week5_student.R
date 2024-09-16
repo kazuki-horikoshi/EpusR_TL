@@ -41,7 +41,7 @@ df <- read_csv(here("data", "df.csv"))
 # df_path <- here("data","df.csv")
 # df <- read_csv(df_path)
 
-weather_data <- read_csv(here("data", "weather_data.csv"))
+weather_data <- read_csv(here("pair_programming_student","data", "weather_data.csv"))
 
 # ---------------- Useful Function ---------------------
 # 1. filter(): you can filter your data frame based on a specific column value

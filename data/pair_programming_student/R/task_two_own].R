@@ -71,3 +71,4 @@ ggplot(radiation_long, aes(x = factor(month), y = radiation_value, fill = radiat
        y = "Radiation (W/m²)", 
        fill = "Radiation Type") +
   theme_minimal()
+
